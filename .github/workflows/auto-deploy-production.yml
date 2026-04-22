@@ -136,11 +136,53 @@ jobs:
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 
-      - name: Write env for frontend build
-        working-directory: frontend
+      - name: Resolve Vercel scope (user/team id)
+        id: scope
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          echo "VITE_API_URL=${{ needs.deploy-backend.outputs.service_url }}" > .env.production
-          cat .env.production
+          set -e
+          U=$(curl -s -H "Authorization: Bearer $VERCEL_TOKEN" https://api.vercel.com/v2/user)
+          echo "$U" | jq '{user:.user.username,email:.user.email,id:.user.id}'
+          USER_ID=$(echo "$U" | jq -r '.user.id')
+          echo "user_id=$USER_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Ensure Vercel project exists
+        id: project
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          PROJECT_NAME: whatsapp-ai-automation
+          BACKEND_URL: ${{ needs.deploy-backend.outputs.service_url }}
+        run: |
+          set -e
+          PN="$PROJECT_NAME"
+          # Check if project exists
+          CHECK=$(curl -s -o /tmp/proj.json -w "%{http_code}" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            "https://api.vercel.com/v9/projects/$PN")
+          if [ "$CHECK" != "200" ]; then
+            echo "Creating Vercel project $PN..."
+            curl -s -X POST "https://api.vercel.com/v10/projects" \
+              -H "Authorization: Bearer $VERCEL_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "$(jq -n --arg name "$PN" --arg api "$BACKEND_URL" '{
+                name: $name,
+                framework: "vite",
+                rootDirectory: "frontend",
+                buildCommand: "npm run build",
+                outputDirectory: "dist",
+                environmentVariables: [
+                  {key:"VITE_API_URL", value:$api, type:"plain", target:["production","preview","development"]}
+                ]
+              }')" | jq '{id,name,framework}'
+          else
+            echo "Project $PN already exists."
+            # Upsert VITE_API_URL env
+            curl -s -X POST "https://api.vercel.com/v10/projects/$PN/env?upsert=true" \
+              -H "Authorization: Bearer $VERCEL_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "$(jq -n --arg api "$BACKEND_URL" '{key:"VITE_API_URL", value:$api, type:"plain", target:["production","preview","development"]}')" | jq '.key // .error'
+          fi
 
       - name: Deploy to Vercel (production)
         id: vercel
@@ -148,29 +190,51 @@ jobs:
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           BACKEND_URL: ${{ needs.deploy-backend.outputs.service_url }}
+          PROJECT_NAME: whatsapp-ai-automation
         run: |
           set -e
-          # Link/create Vercel project (idempotent)
-          vercel link --yes \
-            --project whatsapp-ai-automation \
-            --token "$VERCEL_TOKEN" || true
-
-          vercel pull --yes --environment=production --token "$VERCEL_TOKEN" || true
-
-          # Ensure VITE_API_URL is set in Vercel production env
-          printf '%s' "$BACKEND_URL" | vercel env add VITE_API_URL production --token "$VERCEL_TOKEN" --force || true
-
-          # Build & deploy to prod
-          vercel build --prod --token "$VERCEL_TOKEN"
-          DEPLOY_URL=$(vercel deploy --prebuilt --prod --token "$VERCEL_TOKEN")
-          echo "Deployed: $DEPLOY_URL"
-          echo "url=$DEPLOY_URL" >> "$GITHUB_OUTPUT"
+          echo "VITE_API_URL=$BACKEND_URL" > .env.production
+          DEPLOY_URL=$(vercel deploy \
+            --prod \
+            --yes \
+            --token "$VERCEL_TOKEN" \
+            --name "$PROJECT_NAME" \
+            --cwd "$PWD" 2>&1 | tee /tmp/vercel.log | tail -n1)
+          echo "Raw deploy URL: $DEPLOY_URL"
+          if [[ "$DEPLOY_URL" != https://* ]]; then
+            echo "Deploy failed. Log tail:"
+            tail -n 100 /tmp/vercel.log
+            exit 1
+          fi
+          # Alias to the canonical project domain
+          ALIAS="${PROJECT_NAME}.vercel.app"
+          vercel alias set "$DEPLOY_URL" "$ALIAS" --token "$VERCEL_TOKEN" || true
+          FINAL_URL="https://$ALIAS"
+          echo "FINAL URL: $FINAL_URL"
+          echo "url=$FINAL_URL" >> "$GITHUB_OUTPUT"
+          echo "deploy_url=$DEPLOY_URL" >> "$GITHUB_OUTPUT"
 
   verify:
     name: Verify Live Services
     runs-on: ubuntu-latest
     needs: [deploy-backend, deploy-frontend]
     steps:
+      - name: Write URLs file for artifact
+        run: |
+          mkdir -p out
+          cat > out/urls.json <<EOF
+          {
+            "backend": "${{ needs.deploy-backend.outputs.service_url }}",
+            "frontend": "${{ needs.deploy-frontend.outputs.url }}"
+          }
+          EOF
+          cat out/urls.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: deployment-urls
+          path: out/urls.json
+
       - name: Print URLs
         run: |
           echo "=================================="
