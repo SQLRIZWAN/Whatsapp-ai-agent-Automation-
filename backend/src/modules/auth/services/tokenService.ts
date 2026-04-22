@@ -4,9 +4,9 @@ import { JwtPayload } from '@shared/types/common.types'
 import logger from '@shared/utils/logger'
 
 export class TokenService {
-  generateToken(payload: JwtPayload, expiresIn = CONFIG.JWT_EXPIRY): string {
+  generateToken(payload: JwtPayload, expiresIn: any = CONFIG.JWT_EXPIRY): string {
     try {
-      return jwt.sign(payload, CONFIG.JWT_SECRET, { expiresIn })
+      return jwt.sign(payload, CONFIG.JWT_SECRET as any, { expiresIn } as any)
     } catch (error) {
       logger.error('Error generating token:', error)
       throw error

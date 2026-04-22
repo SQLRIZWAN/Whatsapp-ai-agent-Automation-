@@ -4,7 +4,7 @@ import logger from '@shared/utils/logger'
 
 let db: admin.firestore.Firestore | null = null
 
-export const initializeFirestore = async (): Promise<admin.firestore.Firestore> => {
+export const initializeFirestore = async (): Promise<admin.firestore.Firestore | null> => {
   try {
     if (db) {
       return db
@@ -14,6 +14,11 @@ export const initializeFirestore = async (): Promise<admin.firestore.Firestore> 
       process.env.FIRESTORE_EMULATOR_HOST = CONFIG.FIRESTORE_EMULATOR_HOST
       logger.info('Using Firestore Emulator at ' + CONFIG.FIRESTORE_EMULATOR_HOST)
     } else {
+      if (!CONFIG.FIRESTORE_PROJECT_ID || !CONFIG.FIRESTORE_PRIVATE_KEY || !CONFIG.FIRESTORE_CLIENT_EMAIL) {
+        logger.warn('Firestore credentials missing - running without persistence. Set FIREBASE_PROJECT_ID, FIREBASE_PRIVATE_KEY, FIREBASE_CLIENT_EMAIL to enable.')
+        return null
+      }
+
       if (!admin.apps.length) {
         admin.initializeApp({
           credential: admin.credential.cert({
@@ -26,17 +31,13 @@ export const initializeFirestore = async (): Promise<admin.firestore.Firestore> 
     }
 
     db = admin.firestore()
-
-    // Set default settings
-    db.settings({
-      ignoreUndefinedProperties: true
-    })
+    db.settings({ ignoreUndefinedProperties: true })
 
     logger.info('Firestore initialized successfully')
     return db
   } catch (error) {
-    logger.error('Failed to initialize Firestore:', error)
-    throw error
+    logger.error('Failed to initialize Firestore (continuing without persistence):', error)
+    return null
   }
 }
 
