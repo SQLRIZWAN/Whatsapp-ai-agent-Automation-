@@ -29,7 +29,7 @@ export class MessageHandler {
       await messageService.saveMessage(uid, from, uid, content, MESSAGE_TYPE.TEXT, false)
 
       // Generate AI response
-      const aiResponse = await aiService.generateResponse(
+      const { text, model } = await aiService.generateResponse(
         content,
         content,
         config?.systemPrompt
@@ -37,7 +37,7 @@ export class MessageHandler {
 
       // Send response
       const toPhone = from // Send back to the caller
-      const sent = await baileyService.sendMessage(uid, toPhone, aiResponse.text)
+      const sent = await baileyService.sendMessage(uid, toPhone, text)
 
       if (sent) {
         // Save AI response message
@@ -45,13 +45,13 @@ export class MessageHandler {
           uid,
           uid,
           toPhone,
-          aiResponse.text,
+          text,
           MESSAGE_TYPE.TEXT,
           true,
           {
-            text: aiResponse.text,
-            model: 'gemini-pro',
-            tokensUsed: aiResponse.tokensUsed,
+            text,
+            model,
+            tokensUsed: 0,
             processedAt: Date.now()
           }
         )
@@ -101,7 +101,7 @@ export class MessageHandler {
         ? `Analyze this image: ${caption}`
         : 'Analyze this image and describe what you see'
 
-      const aiResponse = await aiService.analyzeImage(
+      const { text, model } = await aiService.analyzeImage(
         imageUrl,
         prompt,
         config?.systemPrompt
@@ -109,20 +109,20 @@ export class MessageHandler {
 
       // Send response
       const toPhone = from
-      const sent = await baileyService.sendMessage(uid, toPhone, aiResponse.text)
+      const sent = await baileyService.sendMessage(uid, toPhone, text)
 
       if (sent) {
         await messageService.saveMessage(
           uid,
           uid,
           toPhone,
-          aiResponse.text,
+          text,
           MESSAGE_TYPE.TEXT,
           true,
           {
-            text: aiResponse.text,
-            model: 'gemini-pro-vision',
-            tokensUsed: aiResponse.tokensUsed,
+            text,
+            model,
+            tokensUsed: 0,
             processedAt: Date.now()
           }
         )

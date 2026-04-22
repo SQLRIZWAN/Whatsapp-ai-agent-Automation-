@@ -25,7 +25,7 @@ export class CallHandler {
 
       // Make AI decision based on system prompt
       const decisionContext = `Incoming ${isVideo ? 'video' : 'voice'} call from ${from}`
-      const decision = await aiService.makeDecision(
+      const { decision, model } = await aiService.makeDecision(
         decisionContext,
         config?.systemPrompt || 'Default behavior: handle calls'
       )
