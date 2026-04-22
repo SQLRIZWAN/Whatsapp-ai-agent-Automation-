@@ -22,7 +22,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     try {
       set({ isLoading: true, error: null })
       const response = await authApi.login(credentials)
-      const { user, token } = response.data
+      const { user, token } = response.data.data
       localStorage.setItem('token', token)
       set({
         user,
@@ -44,7 +44,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     try {
       set({ isLoading: true, error: null })
       const response = await authApi.register(credentials)
-      const { user, token } = response.data
+      const { user, token } = response.data.data
       localStorage.setItem('token', token)
       set({
         user,

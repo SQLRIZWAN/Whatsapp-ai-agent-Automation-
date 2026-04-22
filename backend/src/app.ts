@@ -5,6 +5,9 @@ import { CONFIG } from '@shared/constants/config'
 import { errorHandler, AppError, asyncHandler } from '@shared/utils/errorHandler'
 import { ErrorCode } from '@shared/types/common.types'
 import logger from '@shared/utils/logger'
+import authRoutes from '@modules/auth/routes/authRoutes'
+import whatsappRoutes from '@modules/whatsapp/routes/whatsappRoutes'
+import configRoutes from '@modules/config/routes/configRoutes'
 
 export const createApp = (): Express => {
   const app = express()
@@ -49,8 +52,12 @@ export const createApp = (): Express => {
     })
   }))
 
-  // API routes will be mounted here
-  app.use('/api', express.Router())
+  // API routes
+  const apiRouter = express.Router()
+  apiRouter.use('/auth', authRoutes)
+  apiRouter.use('/whatsapp', whatsappRoutes)
+  apiRouter.use('/config', configRoutes)
+  app.use('/api', apiRouter)
 
   // 404 handler
   app.use((req: Request, res: Response) => {

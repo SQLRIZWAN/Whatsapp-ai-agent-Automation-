@@ -5,6 +5,7 @@ import './styles/globals.css'
 
 // Lazy load pages for code splitting
 const LoginPage = React.lazy(() => import('@pages/LoginPage'))
+const RegisterPage = React.lazy(() => import('@pages/RegisterPage'))
 const DashboardPage = React.lazy(() => import('@pages/DashboardPage'))
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -42,6 +43,14 @@ const App: React.FC = () => {
             element={
               <PublicRoute>
                 <LoginPage />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <PublicRoute>
+                <RegisterPage />
               </PublicRoute>
             }
           />

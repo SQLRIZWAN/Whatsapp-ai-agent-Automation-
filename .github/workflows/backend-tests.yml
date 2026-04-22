@@ -1,0 +1,49 @@
+name: Backend Tests & Lint
+
+on:
+  push:
+    branches: [main, develop, "claude/**"]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-tests.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'backend/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: 'backend/package-lock.json'
+
+      - name: Install dependencies
+        run: cd backend && npm ci
+
+      - name: Lint code
+        run: cd backend && npm run lint --if-present
+
+      - name: Run tests
+        run: cd backend && npm test --if-present
+
+      - name: Build
+        run: cd backend && npm run build
+
+      - name: Upload coverage
+        if: matrix.node-version == '18.x'
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./backend/coverage/coverage-final.json
+          flags: backend

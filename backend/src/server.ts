@@ -4,6 +4,7 @@ import { Express } from 'express'
 import { CONFIG } from '@shared/constants/config'
 import logger from '@shared/utils/logger'
 import { initializeFirestore } from '@modules/database/firestore'
+import SocketManager from '@websocket/socketManager'
 
 export const startServer = async (app: Express): Promise<http.Server> => {
   try {
@@ -21,21 +22,12 @@ export const startServer = async (app: Express): Promise<http.Server> => {
       }
     })
 
-    // Socket.IO connection handling
-    io.on('connection', (socket) => {
-      logger.info(`Client connected: ${socket.id}`)
+    // Initialize Socket Manager
+    const socketManager = new SocketManager(io)
 
-      socket.on('disconnect', () => {
-        logger.info(`Client disconnected: ${socket.id}`)
-      })
-
-      socket.on('error', (error) => {
-        logger.error(`Socket error for ${socket.id}:`, error)
-      })
-    })
-
-    // Store io instance in app for use in routes
+    // Store io and socket manager in app for use in routes
     app.locals.io = io
+    app.locals.socketManager = socketManager
 
     // Start server
     httpServer.listen(CONFIG.PORT, () => {

@@ -1,15 +1,17 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@store/authStore'
-import { LoginCredentials } from '@types/common.types'
+import { RegisterCredentials } from '@types/common.types'
 
-const LoginPage: React.FC = () => {
+const RegisterPage: React.FC = () => {
   const navigate = useNavigate()
-  const { login, isLoading, error, clearError } = useAuthStore()
-  const [credentials, setCredentials] = useState<LoginCredentials>({
+  const { register: registerUser, isLoading, error, clearError } = useAuthStore()
+  const [credentials, setCredentials] = useState<RegisterCredentials>({
     email: '',
-    password: ''
+    password: '',
+    displayName: ''
   })
+  const [confirmPassword, setConfirmPassword] = useState('')
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -23,11 +25,15 @@ const LoginPage: React.FC = () => {
     e.preventDefault()
     clearError()
 
+    if (credentials.password !== confirmPassword) {
+      return
+    }
+
     try {
-      await login(credentials)
+      await registerUser(credentials)
       navigate('/dashboard')
     } catch (err) {
-      console.error('Authentication error:', err)
+      console.error('Registration error:', err)
     }
   }
 
@@ -35,10 +41,23 @@ const LoginPage: React.FC = () => {
     <div style={styles.container}>
       <div style={styles.formContainer}>
         <h1 style={styles.title}>WhatsApp AI Agent</h1>
-        <p style={styles.subtitle}>Powered by Gemini AI</p>
+        <p style={styles.subtitle}>Create Your Account</p>
 
         <form onSubmit={handleSubmit} style={styles.form}>
           {error && <div style={styles.error}>{error}</div>}
+
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Display Name</label>
+            <input
+              type="text"
+              name="displayName"
+              value={credentials.displayName}
+              onChange={handleInputChange}
+              placeholder="Your name"
+              required
+              style={styles.input}
+            />
+          </div>
 
           <div style={styles.formGroup}>
             <label style={styles.label}>Email</label>
@@ -66,23 +85,42 @@ const LoginPage: React.FC = () => {
             />
           </div>
 
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Confirm Password</label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+              style={styles.input}
+            />
+            {credentials.password !== confirmPassword && confirmPassword && (
+              <div style={styles.error}>Passwords do not match</div>
+            )}
+          </div>
+
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || credentials.password !== confirmPassword}
             style={{
               ...styles.button,
-              opacity: isLoading ? 0.6 : 1,
-              cursor: isLoading ? 'not-allowed' : 'pointer'
+              opacity:
+                isLoading || credentials.password !== confirmPassword ? 0.6 : 1,
+              cursor:
+                isLoading || credentials.password !== confirmPassword
+                  ? 'not-allowed'
+                  : 'pointer'
             }}
           >
-            {isLoading ? 'Loading...' : 'Login'}
+            {isLoading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
 
         <p style={styles.toggleText}>
-          Don't have an account?{' '}
-          <a href="/register" style={styles.link}>
-            Register here
+          Already have an account?{' '}
+          <a href="/login" style={styles.link}>
+            Login
           </a>
         </p>
       </div>
@@ -170,4 +208,4 @@ const styles: Record<string, React.CSSProperties> = {
   }
 }
 
-export default LoginPage
+export default RegisterPage
