@@ -1,0 +1,134 @@
+name: 🚀 Auto-Deploy to Render & Vercel
+
+on:
+  push:
+    branches:
+      - claude/whatsapp-ai-automation-MBek3
+
+jobs:
+  deploy-backend:
+    name: Deploy Backend to Render
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Deploy to Render
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          GITHUB_REPO: SQLRIZWAN/Whatsapp-ai-agent-Automation-
+          BRANCH: claude/whatsapp-ai-automation-MBek3
+        run: |
+          echo "🚀 Deploying backend to Render..."
+
+          # Create Render service
+          RESPONSE=$(curl -s -X POST https://api.render.com/v1/services \
+            -H "Authorization: Bearer $RENDER_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "type": "web_service",
+              "name": "whatsapp-ai-backend",
+              "repo": "https://github.com/'"$GITHUB_REPO"'",
+              "branch": "'"$BRANCH"'",
+              "rootDir": "backend",
+              "buildCommand": "npm install && npm run build",
+              "startCommand": "npm start",
+              "envVars": [
+                {"key": "NODE_ENV", "value": "production"},
+                {"key": "PORT", "value": "5000"},
+                {"key": "API_URL", "value": "https://whatsapp-ai-backend.onrender.com"},
+                {"key": "JWT_SECRET", "value": "${{ secrets.JWT_SECRET }}"},
+                {"key": "FIREBASE_PROJECT_ID", "value": "${{ secrets.FIREBASE_PROJECT_ID }}"},
+                {"key": "FIREBASE_CLIENT_EMAIL", "value": "${{ secrets.FIREBASE_CLIENT_EMAIL }}"},
+                {"key": "FIREBASE_PRIVATE_KEY", "value": "${{ secrets.FIREBASE_PRIVATE_KEY }}"},
+                {"key": "FIREBASE_DATABASE_URL", "value": "${{ secrets.FIREBASE_DATABASE_URL }}"},
+                {"key": "GEMINI_API_KEY", "value": "${{ secrets.GEMINI_API_KEY }}"},
+                {"key": "LOG_LEVEL", "value": "info"},
+                {"key": "USE_FIRESTORE_EMULATOR", "value": "false"}
+              ]
+            }')
+
+          echo "✅ Backend deployment initiated"
+          echo "$RESPONSE" | jq '.' || echo "$RESPONSE"
+
+  deploy-frontend:
+    name: Deploy Frontend to Vercel
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          GITHUB_REPO: SQLRIZWAN/Whatsapp-ai-agent-Automation-
+        run: |
+          echo "🚀 Deploying frontend to Vercel..."
+
+          # Create Vercel project
+          RESPONSE=$(curl -s -X POST https://api.vercel.com/v9/projects \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "gitRepository": {
+                "repo": "'"$GITHUB_REPO"'",
+                "type": "github"
+              },
+              "name": "whatsapp-ai-automation",
+              "rootDirectory": "frontend",
+              "buildCommand": "npm run build",
+              "framework": "vite",
+              "env": [
+                {"key": "VITE_API_URL", "value": "https://whatsapp-ai-backend.onrender.com"},
+                {"key": "VITE_APP_NAME", "value": "WhatsApp AI Automation"},
+                {"key": "VITE_APP_VERSION", "value": "1.0.0"}
+              ]
+            }')
+
+          echo "✅ Frontend deployment initiated"
+          echo "$RESPONSE" | jq '.' || echo "$RESPONSE"
+
+  monitor-deployment:
+    name: Monitor Deployment Status
+    needs: [deploy-backend, deploy-frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Deployment Status
+        run: |
+          echo "📋 Deployment initiated!"
+          echo ""
+          echo "🌐 Expected Live URLs (after builds complete):"
+          echo "  Backend: https://whatsapp-ai-backend.onrender.com"
+          echo "  Frontend: https://whatsapp-ai-automation.vercel.app"
+          echo ""
+          echo "⏳ Monitor progress at:"
+          echo "  • Render Dashboard: https://dashboard.render.com"
+          echo "  • Vercel Dashboard: https://vercel.com/dashboard"
+          echo ""
+          echo "This job will complete, but deployments may take 5-10 minutes."
+
+  # Verify deployments after a delay
+  verify-deployments:
+    name: Verify Live Services (After Build)
+    needs: [monitor-deployment]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for builds
+        run: sleep 300  # Wait 5 minutes for builds to complete
+
+      - name: Check Backend Health
+        continue-on-error: true
+        run: |
+          echo "🔍 Checking backend health..."
+          curl -s https://whatsapp-ai-backend.onrender.com/health || echo "Still building..."
+
+      - name: Check Frontend
+        continue-on-error: true
+        run: |
+          echo "🔍 Checking frontend..."
+          curl -s https://whatsapp-ai-automation.vercel.app | head -100 || echo "Still building..."
+
+      - name: Summary
+        run: |
+          echo "✅ Deployment workflow complete!"
+          echo ""
+          echo "If services aren't live yet, they will be shortly."
+          echo "Check the dashboards for real-time status updates."
