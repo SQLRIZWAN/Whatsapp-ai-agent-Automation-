@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@store/authStore'
-import { RegisterCredentials } from '@types/common.types'
+import { RegisterCredentials } from '@type/common.types'
 
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate()

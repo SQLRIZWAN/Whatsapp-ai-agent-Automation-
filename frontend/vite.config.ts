@@ -29,8 +29,8 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
-    minify: 'terser',
+    sourcemap: false,
+    minify: false,
     target: 'ES2020'
   }
 })

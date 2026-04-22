@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { AuthState, User, LoginCredentials, RegisterCredentials } from '@types/common.types'
+import { AuthState, User, LoginCredentials, RegisterCredentials } from '@type/common.types'
 import * as authApi from '@services/api/authApi'
 
 interface AuthStore extends AuthState {
@@ -88,7 +88,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   refreshToken: async () => {
     try {
       const response = await authApi.refreshToken()
-      const { token } = response.data
+      const { token } = response.data.data
       localStorage.setItem('token', token)
       set({ token })
     } catch (error) {

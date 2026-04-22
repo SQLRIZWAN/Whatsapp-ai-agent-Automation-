@@ -1,5 +1,5 @@
 import axiosInstance from './apiClient'
-import { ApiResponse, User, LoginCredentials, RegisterCredentials } from '@types/common.types'
+import { ApiResponse, User, LoginCredentials, RegisterCredentials } from '@type/common.types'
 
 interface LoginResponse {
   user: User
