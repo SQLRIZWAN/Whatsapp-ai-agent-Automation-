@@ -2,4 +2,18 @@ Retrieving project…
 Deploying sqlrizwan/whatsapp-ai-automation
 Uploading [--------------------] (0.0B/3KB)
 Uploading [====================] (3.0KB/3KB)
-Error: Environment Variable "VITE_API_URL" references Secret "vite_api_url", which does not exist.
+Inspect: https://vercel.com/sqlrizwans-projects/whatsapp-ai-automation/Fuudqf1ALvup3czYZFJMhVMyx9Xg [1s]
+Production: https://whatsapp-ai-automation-f40smvdvu-sqlrizwans-projects.vercel.app [1s]
+https://whatsapp-ai-automation-f40smvdvu-sqlrizwans-projects.vercel.appBuilding...
+Building...
+Building: Running build in Washington, D.C., USA (East) – iad1
+Building: Build machine configuration: 2 cores, 8 GB
+Building: Retrieving list of deployment files...
+Building: Previous build caches not available.
+Building: Downloading 9 deployment files...
+[2K[1A[2K[GProduction: https://whatsapp-ai-automation-f40smvdvu-sqlrizwans-projects.vercel.app [7s]
+Completing...
+Aliased: https://whatsapp-ai-automation.vercel.app [7s]
+> Assigning alias whatsapp-ai-automation.vercel.app to deployment whatsapp-ai-automation-f40smvdvu-sqlrizwans-projects.vercel.app
+Creating alias
+> Success! https://whatsapp-ai-automation.vercel.app now points to https://whatsapp-ai-automation-f40smvdvu-sqlrizwans-projects.vercel.app [782ms]
