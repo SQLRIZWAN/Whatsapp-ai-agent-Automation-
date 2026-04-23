@@ -107,19 +107,29 @@ jobs:
 
           echo "Service ID: $SERVICE_ID"
 
-          # PATCH existing service to ensure correct rootDir + commands + envVars
+          # PATCH existing service to ensure correct rootDir + commands + autoDeploy off
           curl -s -X PATCH "https://api.render.com/v1/services/$SERVICE_ID" \
             -H "Authorization: Bearer $RENDER_API_KEY" \
             -H "Content-Type: application/json" \
             -d '{
               "rootDir": "backend",
+              "autoDeploy": "no",
               "serviceDetails": {
                 "envSpecificDetails": {
                   "buildCommand": "npm install && npm run build",
                   "startCommand": "npm start"
                 }
               }
-            }' | jq '{id:.id,rootDir:.rootDir,build:.serviceDetails.envSpecificDetails.buildCommand,start:.serviceDetails.envSpecificDetails.startCommand}'
+            }' | jq '{id:.id,autoDeploy:.autoDeploy,rootDir:.rootDir,build:.serviceDetails.envSpecificDetails.buildCommand,start:.serviceDetails.envSpecificDetails.startCommand}'
+
+          # Cancel any in-flight deploys so our API-triggered one is authoritative
+          for D in $(curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
+            "https://api.render.com/v1/services/$SERVICE_ID/deploys?limit=5" \
+            | jq -r '.[].deploy | select(.status=="created" or .status=="queued" or .status=="build_in_progress" or .status=="update_in_progress") | .id'); do
+            echo "Canceling in-flight deploy $D"
+            curl -s -X POST "https://api.render.com/v1/services/$SERVICE_ID/deploys/$D/cancel" \
+              -H "Authorization: Bearer $RENDER_API_KEY" | jq '.status // .message' || true
+          done
 
           # Upsert env vars
           ENV_PAYLOAD=$(jq -n \
