@@ -1,9 +1,9 @@
 # Render Deploy Diagnostics
 
-Run: 24852952426
+Run: 24852957445
 Commit: e0b32d961d46e6d6f32b7ef89987531d2a3b3db1
 Service ID: srv-d7kkne0sfn5c73b9t5cg
-Deploy ID: dep-d7l6k6dckfvc73fc58f0
+Deploy ID: dep-d7l6kt3eo5us73dd32dg
 
 ## Service details
 ```json
@@ -63,18 +63,18 @@ Deploy ID: dep-d7l6k6dckfvc73fc58f0
 ## Latest deploy
 ```json
 {
-  "id": "dep-d7l6k6dckfvc73fc58f0",
+  "id": "dep-d7l6kt3eo5us73dd32dg",
   "commit": {
-    "id": "e0b32d961d46e6d6f32b7ef89987531d2a3b3db1",
-    "message": "Render: set autoDeploy no + cancel in-flight deploys before triggering new one",
-    "createdAt": "2026-04-23T18:50:51Z"
+    "id": "788541bd6e891856e1843b4e751fec7cce268e94",
+    "message": "urls: run 24852952426",
+    "createdAt": "2026-04-23T18:52:22Z"
   },
   "status": "build_failed",
   "trigger": "api",
-  "createdAt": "2026-04-23T18:51:05.916047Z",
-  "updatedAt": "2026-04-23T18:51:52.088937Z",
-  "startedAt": "2026-04-23T18:51:05.905565Z",
-  "finishedAt": "2026-04-23T18:51:52.088454Z"
+  "createdAt": "2026-04-23T18:52:36.937281Z",
+  "updatedAt": "2026-04-23T18:53:25.026654Z",
+  "startedAt": "2026-04-23T18:52:36.930314Z",
+  "finishedAt": "2026-04-23T18:53:25.024946Z"
 }
 ```
 
@@ -206,6 +206,48 @@ Deploy ID: dep-d7l6k6dckfvc73fc58f0
 2026-04-23T18:51:50.568296161Z   Visit https://aka.ms/ts6 for migration information.
 2026-04-23T18:51:50.639525564Z [31m[1m==> Build failed 😞(B[m
 2026-04-23T18:51:50.639548845Z [34m[1m==>(B[m [1mCommon ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys(B[m
+2026-04-23T18:52:40.581277937Z [34m[1m==>(B[m [1mCloning from https://github.com/SQLRIZWAN/Whatsapp-ai-agent-Automation-(B[m
+2026-04-23T18:52:41.386009249Z [34m[1m==>(B[m [1mChecking out commit 788541bd6e891856e1843b4e751fec7cce268e94 in branch claude/production-deployment-setup-pnyZn(B[m
+2026-04-23T18:52:46.671036967Z [34m[1m==>(B[m [1mUsing Node.js version 24.14.1 (default)(B[m
+2026-04-23T18:52:46.697582127Z [34m[1m==>(B[m [1mDocs on specifying a Node.js version: https://render.com/docs/node-version(B[m
+2026-04-23T18:52:49.333091229Z [34m[1m==>(B[m [1mRunning build command 'npm install && npm run build'...(B[m
+2026-04-23T18:53:19.265646092Z 
+2026-04-23T18:53:19.265677243Z > whatsapp-ai-agent-backend@1.0.0 postinstall
+2026-04-23T18:53:19.265684723Z > npm run build || true
+2026-04-23T18:53:19.265688923Z 
+2026-04-23T18:53:19.379011482Z 
+2026-04-23T18:53:19.379036693Z > whatsapp-ai-agent-backend@1.0.0 build
+2026-04-23T18:53:19.379042413Z > tsc && tsc-alias
+2026-04-23T18:53:19.379046323Z 
+2026-04-23T18:53:20.885636452Z tsconfig.json(16,25): error TS5107: Option 'moduleResolution=node10' is deprecated and will stop functioning in TypeScript 7.0. Specify compilerOption '"ignoreDeprecations": "6.0"' to silence this error.
+2026-04-23T18:53:20.885662053Z   Visit https://aka.ms/ts6 for migration information.
+2026-04-23T18:53:20.885808595Z tsconfig.json(21,5): error TS5101: Option 'baseUrl' is deprecated and will stop functioning in TypeScript 7.0. Specify compilerOption '"ignoreDeprecations": "6.0"' to silence this error.
+2026-04-23T18:53:20.885817556Z   Visit https://aka.ms/ts6 for migration information.
+2026-04-23T18:53:20.943422824Z 
+2026-04-23T18:53:20.943447335Z added 336 packages, and audited 337 packages in 31s
+2026-04-23T18:53:20.943458145Z 
+2026-04-23T18:53:20.943642418Z 48 packages are looking for funding
+2026-04-23T18:53:20.94372238Z   run `npm fund` for details
+2026-04-23T18:53:20.951772127Z 
+2026-04-23T18:53:20.951803158Z 12 vulnerabilities (2 low, 8 moderate, 2 critical)
+2026-04-23T18:53:20.951809648Z 
+2026-04-23T18:53:20.951813778Z To address issues that do not require attention, run:
+2026-04-23T18:53:20.951817759Z   npm audit fix
+2026-04-23T18:53:20.951821499Z 
+2026-04-23T18:53:20.951825369Z To address all issues (including breaking changes), run:
+2026-04-23T18:53:20.951829789Z   npm audit fix --force
+2026-04-23T18:53:20.951833439Z 
+2026-04-23T18:53:20.951838119Z Run `npm audit` for details.
+2026-04-23T18:53:21.13109787Z 
+2026-04-23T18:53:21.13112354Z > whatsapp-ai-agent-backend@1.0.0 build
+2026-04-23T18:53:21.131129111Z > tsc && tsc-alias
+2026-04-23T18:53:21.131132991Z 
+2026-04-23T18:53:22.567179058Z tsconfig.json(16,25): error TS5107: Option 'moduleResolution=node10' is deprecated and will stop functioning in TypeScript 7.0. Specify compilerOption '"ignoreDeprecations": "6.0"' to silence this error.
+2026-04-23T18:53:22.567199838Z   Visit https://aka.ms/ts6 for migration information.
+2026-04-23T18:53:22.567342791Z tsconfig.json(21,5): error TS5101: Option 'baseUrl' is deprecated and will stop functioning in TypeScript 7.0. Specify compilerOption '"ignoreDeprecations": "6.0"' to silence this error.
+2026-04-23T18:53:22.567385132Z   Visit https://aka.ms/ts6 for migration information.
+2026-04-23T18:53:22.642296719Z [31m[1m==> Build failed 😞(B[m
+2026-04-23T18:53:22.64231555Z [34m[1m==>(B[m [1mCommon ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys(B[m
 ```
 
 ## App logs (last 4h)
