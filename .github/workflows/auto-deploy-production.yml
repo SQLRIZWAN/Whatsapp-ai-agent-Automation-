@@ -5,7 +5,14 @@ on:
     branches:
       - claude/production-deployment-setup-pnyZn
       - main
+    paths-ignore:
+      - 'diagnostics/**'
+      - 'URLS.md'
+      - '*.md'
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 concurrency:
   group: production-deployment
@@ -17,10 +24,12 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       service_url: ${{ steps.resolve.outputs.service_url }}
+      service_id: ${{ steps.resolve.outputs.service_id }}
+      deploy_id: ${{ steps.resolve.outputs.deploy_id }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Resolve or create Render service
+      - name: Resolve or create Render service and trigger deploy
         id: resolve
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
@@ -35,20 +44,16 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           set -e
-          echo "Looking for existing Render service named $SERVICE_NAME..."
-
-          # Fetch owner id
           OWNER_ID=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
             "https://api.render.com/v1/owners?limit=1" | jq -r '.[0].owner.id')
           echo "Owner: $OWNER_ID"
 
-          # Search for existing service
           EXISTING=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
-            "https://api.render.com/v1/services?name=$SERVICE_NAME&limit=20" \
-            | jq -r --arg n "$SERVICE_NAME" '[.[] | select(.service.name==$n)] | .[0].service.id // empty')
+            "https://api.render.com/v1/services?name=$SERVICE_NAME&limit=20")
+          SERVICE_ID=$(echo "$EXISTING" | jq -r --arg n "$SERVICE_NAME" '[.[] | select(.service.name==$n)] | .[0].service.id // empty')
 
-          if [ -z "$EXISTING" ]; then
-            echo "Creating new Render service..."
+          if [ -z "$SERVICE_ID" ]; then
+            echo "Creating new service..."
             CREATE_PAYLOAD=$(jq -n \
               --arg owner "$OWNER_ID" \
               --arg name "$SERVICE_NAME" \
@@ -66,7 +71,8 @@ jobs:
                 ownerId: $owner,
                 repo: $repo,
                 branch: $branch,
-                autoDeploy: "yes",
+                rootDir: "backend",
+                autoDeploy: "no",
                 serviceDetails: {
                   env: "node",
                   region: "oregon",
@@ -74,14 +80,13 @@ jobs:
                   runtime: "node",
                   healthCheckPath: "/health",
                   envSpecificDetails: {
-                    buildCommand: "cd backend && npm install && npm run build",
-                    startCommand: "cd backend && npm start"
+                    buildCommand: "npm install && npm run build",
+                    startCommand: "npm start"
                   },
                   numInstances: 1
                 },
                 envVars: [
                   {key: "NODE_ENV", value: "production"},
-                  {key: "PORT", value: "10000"},
                   {key: "JWT_SECRET", value: $jwt},
                   {key: "FRONTEND_URL", value: $frontend},
                   {key: "FIREBASE_PROJECT_ID", value: $fpid},
@@ -96,29 +101,169 @@ jobs:
               -H "Authorization: Bearer $RENDER_API_KEY" \
               -H "Content-Type: application/json" \
               -d "$CREATE_PAYLOAD")
-            echo "Create response:"
             echo "$RESP" | jq '.'
-            SERVICE_ID=$(echo "$RESP" | jq -r '.service.id // .id // empty')
-            SERVICE_URL=$(echo "$RESP" | jq -r '.service.serviceDetails.url // .serviceDetails.url // empty')
-          else
-            SERVICE_ID="$EXISTING"
-            echo "Found existing service: $SERVICE_ID"
-            # Trigger a deploy
-            curl -s -X POST "https://api.render.com/v1/services/$SERVICE_ID/deploys" \
-              -H "Authorization: Bearer $RENDER_API_KEY" \
-              -H "Content-Type: application/json" \
-              -d '{"clearCache":"do_not_clear"}' | jq '.'
-            DETAILS=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
-              "https://api.render.com/v1/services/$SERVICE_ID")
-            SERVICE_URL=$(echo "$DETAILS" | jq -r '.serviceDetails.url // empty')
+            SERVICE_ID=$(echo "$RESP" | jq -r '.service.id // empty')
           fi
 
-          if [ -z "$SERVICE_URL" ] || [ "$SERVICE_URL" = "null" ]; then
-            SERVICE_URL="https://${SERVICE_NAME}.onrender.com"
-          fi
-          echo "Service URL: $SERVICE_URL"
+          echo "Service ID: $SERVICE_ID"
+
+          # PATCH existing service to ensure correct rootDir + commands + envVars
+          curl -s -X PATCH "https://api.render.com/v1/services/$SERVICE_ID" \
+            -H "Authorization: Bearer $RENDER_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "rootDir": "backend",
+              "serviceDetails": {
+                "envSpecificDetails": {
+                  "buildCommand": "npm install && npm run build",
+                  "startCommand": "npm start"
+                }
+              }
+            }' | jq '{id:.id,rootDir:.rootDir,build:.serviceDetails.envSpecificDetails.buildCommand,start:.serviceDetails.envSpecificDetails.startCommand}'
+
+          # Upsert env vars
+          ENV_PAYLOAD=$(jq -n \
+            --arg jwt "$JWT_SECRET" \
+            --arg frontend "$FRONTEND_URL" \
+            --arg fpid "$FIREBASE_PROJECT_ID" \
+            --arg fem "$FIREBASE_CLIENT_EMAIL" \
+            --arg fpk "$FIREBASE_PRIVATE_KEY" \
+            --arg gem "$GEMINI_API_KEY" \
+            '[
+              {key:"NODE_ENV", value:"production"},
+              {key:"JWT_SECRET", value:$jwt},
+              {key:"FRONTEND_URL", value:$frontend},
+              {key:"FIREBASE_PROJECT_ID", value:$fpid},
+              {key:"FIREBASE_CLIENT_EMAIL", value:$fem},
+              {key:"FIREBASE_PRIVATE_KEY", value:$fpk},
+              {key:"GEMINI_API_KEY", value:$gem},
+              {key:"LOG_LEVEL", value:"info"}
+            ]')
+          curl -s -X PUT "https://api.render.com/v1/services/$SERVICE_ID/env-vars" \
+            -H "Authorization: Bearer $RENDER_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$ENV_PAYLOAD" | jq 'length'
+
+          # Trigger a new deploy with cache clear
+          DEPLOY=$(curl -s -X POST "https://api.render.com/v1/services/$SERVICE_ID/deploys" \
+            -H "Authorization: Bearer $RENDER_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{"clearCache":"clear"}')
+          echo "$DEPLOY" | jq '.'
+          DEPLOY_ID=$(echo "$DEPLOY" | jq -r '.id // empty')
+
+          DETAILS=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
+            "https://api.render.com/v1/services/$SERVICE_ID")
+          SERVICE_URL=$(echo "$DETAILS" | jq -r '.serviceDetails.url // empty')
+          [ -z "$SERVICE_URL" ] && SERVICE_URL="https://${SERVICE_NAME}.onrender.com"
+
           echo "service_url=$SERVICE_URL" >> "$GITHUB_OUTPUT"
           echo "service_id=$SERVICE_ID" >> "$GITHUB_OUTPUT"
+          echo "deploy_id=$DEPLOY_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for Render deploy to finish
+        id: wait
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          SERVICE_ID: ${{ steps.resolve.outputs.service_id }}
+          DEPLOY_ID: ${{ steps.resolve.outputs.deploy_id }}
+        run: |
+          set -e
+          for i in $(seq 1 90); do
+            STATUS=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
+              "https://api.render.com/v1/services/$SERVICE_ID/deploys/$DEPLOY_ID" \
+              | jq -r '.status // "unknown"')
+            echo "attempt $i: deploy status = $STATUS"
+            case "$STATUS" in
+              live) echo "conclusion=live" >> "$GITHUB_OUTPUT"; exit 0 ;;
+              build_failed|update_failed|pre_deploy_failed|canceled|deactivated) echo "conclusion=$STATUS" >> "$GITHUB_OUTPUT"; exit 1 ;;
+            esac
+            sleep 20
+          done
+          echo "conclusion=timeout" >> "$GITHUB_OUTPUT"
+          exit 1
+
+      - name: Capture Render deploy logs to repo (always)
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          SERVICE_ID: ${{ steps.resolve.outputs.service_id }}
+          DEPLOY_ID: ${{ steps.resolve.outputs.deploy_id }}
+        run: |
+          set +e
+          OWNER_ID=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
+            "https://api.render.com/v1/services/$SERVICE_ID" | jq -r '.ownerId')
+
+          mkdir -p diagnostics
+          {
+            echo "# Render Deploy Diagnostics"
+            echo ""
+            echo "Run: ${{ github.run_id }}"
+            echo "Commit: ${{ github.sha }}"
+            echo "Service ID: $SERVICE_ID"
+            echo "Deploy ID: $DEPLOY_ID"
+            echo ""
+            echo "## Service details"
+            echo '```json'
+            curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
+              "https://api.render.com/v1/services/$SERVICE_ID" | jq '.' || true
+            echo '```'
+            echo ""
+            echo "## Latest deploy"
+            echo '```json'
+            curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
+              "https://api.render.com/v1/services/$SERVICE_ID/deploys/$DEPLOY_ID" | jq '.' || true
+            echo '```'
+            echo ""
+            echo "## Build logs (last 4h)"
+            NOW=$(date -u +%Y-%m-%dT%H:%M:%S.000Z)
+            AGO=$(date -u -d '4 hours ago' +%Y-%m-%dT%H:%M:%S.000Z)
+            echo '```'
+            curl -s -G -H "Authorization: Bearer $RENDER_API_KEY" \
+              "https://api.render.com/v1/logs" \
+              --data-urlencode "ownerId=$OWNER_ID" \
+              --data-urlencode "resource=$SERVICE_ID" \
+              --data-urlencode "type=build" \
+              --data-urlencode "startTime=$AGO" \
+              --data-urlencode "endTime=$NOW" \
+              --data-urlencode "limit=1000" \
+              | jq -r '.logs[]? | "\(.timestamp) \(.message)"' || true
+            echo '```'
+            echo ""
+            echo "## App logs (last 4h)"
+            echo '```'
+            curl -s -G -H "Authorization: Bearer $RENDER_API_KEY" \
+              "https://api.render.com/v1/logs" \
+              --data-urlencode "ownerId=$OWNER_ID" \
+              --data-urlencode "resource=$SERVICE_ID" \
+              --data-urlencode "type=app" \
+              --data-urlencode "startTime=$AGO" \
+              --data-urlencode "endTime=$NOW" \
+              --data-urlencode "limit=500" \
+              | jq -r '.logs[]? | "\(.timestamp) \(.message)"' || true
+            echo '```'
+          } > diagnostics/render.md 2>&1
+
+          # Commit via contents API
+          B64=$(base64 -w0 diagnostics/render.md)
+          CUR=$(curl -s -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/contents/diagnostics/render.md?ref=${{ github.ref_name }}")
+          SHA=$(echo "$CUR" | jq -r '.sha // empty')
+          PAYLOAD=$(jq -n --arg msg "diagnostics: render run ${{ github.run_id }}" \
+                         --arg content "$B64" \
+                         --arg branch "${{ github.ref_name }}" \
+                         --arg sha "$SHA" \
+                         'if $sha == "" then
+                            {message:$msg, content:$content, branch:$branch}
+                          else
+                            {message:$msg, content:$content, branch:$branch, sha:$sha}
+                          end')
+          curl -s -X PUT \
+            -H "Authorization: token $GH_TOKEN" \
+            -H "Content-Type: application/json" \
+            "https://api.github.com/repos/${{ github.repository }}/contents/diagnostics/render.md" \
+            -d "$PAYLOAD" | jq '.commit.sha // .message'
 
   deploy-frontend:
     name: Deploy Frontend to Vercel
@@ -136,14 +281,13 @@ jobs:
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 
-      - name: Resolve Vercel scope (user/team id)
+      - name: Resolve Vercel scope
         id: scope
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           set -e
           U=$(curl -s -H "Authorization: Bearer $VERCEL_TOKEN" https://api.vercel.com/v2/user)
-          echo "$U" | jq '{user:.user.username,email:.user.email,id:.user.id}'
           USER_ID=$(echo "$U" | jq -r '.user.id')
           echo "user_id=$USER_ID" >> "$GITHUB_OUTPUT"
 
@@ -153,11 +297,9 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           PROJECT_NAME: whatsapp-ai-automation
           BACKEND_URL: ${{ needs.deploy-backend.outputs.service_url }}
-          USER_ID: ${{ steps.scope.outputs.user_id }}
         run: |
           set -e
           PN="$PROJECT_NAME"
-          # Check if project exists
           CHECK=$(curl -s -o /tmp/proj.json -w "%{http_code}" \
             -H "Authorization: Bearer $VERCEL_TOKEN" \
             "https://api.vercel.com/v9/projects/$PN")
@@ -177,20 +319,15 @@ jobs:
                   {key:"VITE_API_URL", value:$api, type:"plain", target:["production","preview","development"]}
                 ]
               }')"
-            cat /tmp/proj.json | jq '{id,name,framework}'
           else
-            echo "Project $PN already exists."
-            cat /tmp/proj.json | jq '{id,name,framework,rootDirectory}'
-            # Upsert VITE_API_URL env
             curl -s -X POST "https://api.vercel.com/v10/projects/$PN/env?upsert=true" \
               -H "Authorization: Bearer $VERCEL_TOKEN" \
               -H "Content-Type: application/json" \
-              -d "$(jq -n --arg api "$BACKEND_URL" '{key:"VITE_API_URL", value:$api, type:"plain", target:["production","preview","development"]}')" | jq '.key // .error'
+              -d "$(jq -n --arg api "$BACKEND_URL" '{key:"VITE_API_URL", value:$api, type:"plain", target:["production","preview","development"]}')" >/dev/null
           fi
-
+          jq '{id,name,framework,rootDirectory}' /tmp/proj.json || cat /tmp/proj.json
           PROJECT_ID=$(jq -r '.id' /tmp/proj.json)
           echo "project_id=$PROJECT_ID" >> "$GITHUB_OUTPUT"
-          echo "Project ID: $PROJECT_ID"
 
       - name: Deploy to Vercel (production)
         id: vercel
@@ -202,98 +339,113 @@ jobs:
           VERCEL_ORG_ID: ${{ steps.scope.outputs.user_id }}
           PROJECT_NAME: whatsapp-ai-automation
         run: |
-          set -e
+          set +e
           mkdir -p .vercel
           cat > .vercel/project.json <<EOF
           {"projectId":"$VERCEL_PROJECT_ID","orgId":"$VERCEL_ORG_ID"}
           EOF
           echo "VITE_API_URL=$BACKEND_URL" > .env.production
 
-          set +e
-          vercel pull --yes --environment=production --token "$VERCEL_TOKEN" 2>&1 | tee /tmp/vercel-pull.log
-          vercel build --prod --token "$VERCEL_TOKEN" 2>&1 | tee /tmp/vercel-build.log
-          BUILD_EC=${PIPESTATUS[0]}
+          mkdir -p ../diagnostics/vercel
+          vercel pull --yes --environment=production --token "$VERCEL_TOKEN" > ../diagnostics/vercel/pull.log 2>&1
+          PULL_EC=$?
+          echo "pull exit: $PULL_EC"
+
+          vercel build --prod --token "$VERCEL_TOKEN" > ../diagnostics/vercel/build.log 2>&1
+          BUILD_EC=$?
+          echo "build exit: $BUILD_EC"
+          tail -n 40 ../diagnostics/vercel/build.log
+
           if [ "$BUILD_EC" != "0" ]; then
-            echo "::error::vercel build failed (exit $BUILD_EC)"
-            tail -n 200 /tmp/vercel-build.log
-            mkdir -p ../out && cp /tmp/vercel-*.log ../out/ || true
+            echo "::error::vercel build failed"
+            set -e
             exit 1
           fi
 
-          DEPLOY_OUT=$(vercel deploy --prebuilt --prod --token "$VERCEL_TOKEN" 2>&1 | tee /tmp/vercel-deploy.log)
-          DEPLOY_EC=${PIPESTATUS[0]}
-          DEPLOY_URL=$(echo "$DEPLOY_OUT" | grep -Eo 'https://[a-zA-Z0-9.-]+\.vercel\.app' | tail -n1)
-          set -e
-
-          mkdir -p ../out && cp /tmp/vercel-*.log ../out/ || true
+          vercel deploy --prebuilt --prod --token "$VERCEL_TOKEN" > ../diagnostics/vercel/deploy.log 2>&1
+          DEPLOY_EC=$?
+          echo "deploy exit: $DEPLOY_EC"
+          cat ../diagnostics/vercel/deploy.log
+          DEPLOY_URL=$(grep -Eo 'https://[a-zA-Z0-9.-]+\.vercel\.app' ../diagnostics/vercel/deploy.log | tail -n1)
 
           if [ "$DEPLOY_EC" != "0" ] || [ -z "$DEPLOY_URL" ]; then
-            echo "::error::vercel deploy failed (exit $DEPLOY_EC)"
-            tail -n 200 /tmp/vercel-deploy.log
+            echo "::error::vercel deploy failed"
             exit 1
           fi
 
-          echo "Deployed: $DEPLOY_URL"
-
-          # Alias to canonical project domain
           ALIAS="${PROJECT_NAME}.vercel.app"
-          vercel alias set "$DEPLOY_URL" "$ALIAS" --token "$VERCEL_TOKEN" || true
+          vercel alias set "$DEPLOY_URL" "$ALIAS" --token "$VERCEL_TOKEN" >> ../diagnostics/vercel/deploy.log 2>&1 || true
           FINAL_URL="https://$ALIAS"
           echo "FINAL URL: $FINAL_URL"
           echo "url=$FINAL_URL" >> "$GITHUB_OUTPUT"
           echo "deploy_url=$DEPLOY_URL" >> "$GITHUB_OUTPUT"
 
-      - name: Upload Vercel logs (always)
+      - name: Commit Vercel diagnostics to repo
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: vercel-logs
-          path: out/
-          if-no-files-found: ignore
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set +e
+          [ -d diagnostics/vercel ] || exit 0
+          for f in diagnostics/vercel/*.log; do
+            [ -f "$f" ] || continue
+            B64=$(base64 -w0 "$f")
+            PATH_IN_REPO="diagnostics/vercel/$(basename "$f").md"
+            CUR=$(curl -s -H "Authorization: token $GH_TOKEN" \
+              "https://api.github.com/repos/${{ github.repository }}/contents/$PATH_IN_REPO?ref=${{ github.ref_name }}")
+            SHA=$(echo "$CUR" | jq -r '.sha // empty')
+            PAYLOAD=$(jq -n --arg msg "diagnostics: vercel $(basename $f) run ${{ github.run_id }}" \
+                           --arg content "$B64" \
+                           --arg branch "${{ github.ref_name }}" \
+                           --arg sha "$SHA" \
+                           'if $sha == "" then
+                              {message:$msg, content:$content, branch:$branch}
+                            else
+                              {message:$msg, content:$content, branch:$branch, sha:$sha}
+                            end')
+            curl -s -X PUT \
+              -H "Authorization: token $GH_TOKEN" \
+              -H "Content-Type: application/json" \
+              "https://api.github.com/repos/${{ github.repository }}/contents/$PATH_IN_REPO" \
+              -d "$PAYLOAD" | jq '.commit.sha // .message'
+          done
 
   verify:
-    name: Verify Live Services
+    name: Verify and publish URLs
     runs-on: ubuntu-latest
     needs: [deploy-backend, deploy-frontend]
+    if: always()
     steps:
-      - name: Write URLs file for artifact
+      - name: Write URLs.md to repo
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BACKEND_URL: ${{ needs.deploy-backend.outputs.service_url }}
+          FRONTEND_URL: ${{ needs.deploy-frontend.outputs.url }}
+          BACKEND_CONCLUSION: ${{ needs.deploy-backend.result }}
+          FRONTEND_CONCLUSION: ${{ needs.deploy-frontend.result }}
         run: |
-          mkdir -p out
-          cat > out/urls.json <<EOF
-          {
-            "backend": "${{ needs.deploy-backend.outputs.service_url }}",
-            "frontend": "${{ needs.deploy-frontend.outputs.url }}"
-          }
+          cat > URLS.md <<EOF
+          # Live URLs (run ${{ github.run_id }})
+
+          Backend:  $BACKEND_URL  ($BACKEND_CONCLUSION)
+          Frontend: $FRONTEND_URL  ($FRONTEND_CONCLUSION)
           EOF
-          cat out/urls.json
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: deployment-urls
-          path: out/urls.json
-
-      - name: Print URLs
-        run: |
-          echo "=================================="
-          echo "Backend:  ${{ needs.deploy-backend.outputs.service_url }}"
-          echo "Frontend: ${{ needs.deploy-frontend.outputs.url }}"
-          echo "=================================="
-
-      - name: Wait for backend build (up to 10 min)
-        run: |
-          URL="${{ needs.deploy-backend.outputs.service_url }}/health"
-          for i in $(seq 1 60); do
-            CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL" || echo 000)
-            echo "attempt $i: $CODE $URL"
-            if [ "$CODE" = "200" ]; then
-              echo "Backend is live."
-              break
-            fi
-            sleep 10
-          done
-          curl -sS "$URL" || true
-
-      - name: Check frontend
-        run: |
-          URL="${{ needs.deploy-frontend.outputs.url }}"
-          curl -s -o /dev/null -w "Frontend HTTP: %{http_code}\n" "$URL" || true
+          cat URLS.md
+          B64=$(base64 -w0 URLS.md)
+          CUR=$(curl -s -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/contents/URLS.md?ref=${{ github.ref_name }}")
+          SHA=$(echo "$CUR" | jq -r '.sha // empty')
+          PAYLOAD=$(jq -n --arg msg "urls: run ${{ github.run_id }}" \
+                         --arg content "$B64" \
+                         --arg branch "${{ github.ref_name }}" \
+                         --arg sha "$SHA" \
+                         'if $sha == "" then
+                            {message:$msg, content:$content, branch:$branch}
+                          else
+                            {message:$msg, content:$content, branch:$branch, sha:$sha}
+                          end')
+          curl -s -X PUT \
+            -H "Authorization: token $GH_TOKEN" \
+            -H "Content-Type: application/json" \
+            "https://api.github.com/repos/${{ github.repository }}/contents/URLS.md" \
+            -d "$PAYLOAD" | jq '.commit.sha // .message'
