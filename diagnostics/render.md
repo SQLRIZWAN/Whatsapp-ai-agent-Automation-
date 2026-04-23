@@ -1,9 +1,9 @@
 # Render Deploy Diagnostics
 
-Run: 24853113690
-Commit: 4a0bcefbb6f7e4109cd49f9567fde37e4d1d6123
+Run: 24853233501
+Commit: 0f6363311bfd22b5ed04d5f0d026d71155b3b823
 Service ID: srv-d7kkne0sfn5c73b9t5cg
-Deploy ID: dep-d7l6lu7aqgkc73cig5g0
+Deploy ID: dep-d7l6n34m0tmc73b2rf8g
 
 ## Service details
 ```json
@@ -26,7 +26,7 @@ Deploy ID: dep-d7l6lu7aqgkc73cig5g0
     },
     "env": "node",
     "envSpecificDetails": {
-      "buildCommand": "npm install && npm run build",
+      "buildCommand": "npm install --include=dev && npm run build",
       "startCommand": "npm start"
     },
     "healthCheckPath": "/health",
@@ -56,25 +56,25 @@ Deploy ID: dep-d7l6lu7aqgkc73cig5g0
   "suspended": "not_suspended",
   "suspenders": [],
   "type": "web_service",
-  "updatedAt": "2026-04-23T18:54:45.436802Z"
+  "updatedAt": "2026-04-23T18:57:13.33204Z"
 }
 ```
 
 ## Latest deploy
 ```json
 {
-  "id": "dep-d7l6lu7aqgkc73cig5g0",
+  "id": "dep-d7l6n34m0tmc73b2rf8g",
   "commit": {
-    "id": "4a0bcefbb6f7e4109cd49f9567fde37e4d1d6123",
-    "message": "Workflow: PATCH Render branch to current ref, deploy by commit SHA",
-    "createdAt": "2026-04-23T18:54:19Z"
+    "id": "0f6363311bfd22b5ed04d5f0d026d71155b3b823",
+    "message": "Render build: install dev deps so tsc/tsc-alias are available",
+    "createdAt": "2026-04-23T18:57:00Z"
   },
   "status": "build_failed",
   "trigger": "api",
-  "createdAt": "2026-04-23T18:54:48.5272Z",
-  "updatedAt": "2026-04-23T18:55:34.302005Z",
-  "startedAt": "2026-04-23T18:54:48.522029Z",
-  "finishedAt": "2026-04-23T18:55:34.301217Z"
+  "createdAt": "2026-04-23T18:57:16.439114Z",
+  "updatedAt": "2026-04-23T18:58:47.277851Z",
+  "startedAt": "2026-04-23T18:57:16.432851Z",
+  "finishedAt": "2026-04-23T18:58:47.277134Z"
 }
 ```
 
@@ -275,6 +275,33 @@ Deploy ID: dep-d7l6lu7aqgkc73cig5g0
 2026-04-23T18:55:27.802595401Z sh: 1: tsc-alias: not found
 2026-04-23T18:55:27.840784117Z [31m[1m==> Build failed 😞(B[m
 2026-04-23T18:55:27.840803017Z [34m[1m==>(B[m [1mCommon ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys(B[m
+2026-04-23T18:57:19.630340627Z [34m[1m==>(B[m [1mCloning from https://github.com/SQLRIZWAN/Whatsapp-ai-agent-Automation-(B[m
+2026-04-23T18:57:20.372437783Z [34m[1m==>(B[m [1mChecking out commit 0f6363311bfd22b5ed04d5f0d026d71155b3b823 in branch main(B[m
+2026-04-23T18:57:21.577057064Z [34m[1m==>(B[m [1mUsing Node.js version 24.14.1 (default)(B[m
+2026-04-23T18:57:21.601059314Z [34m[1m==>(B[m [1mDocs on specifying a Node.js version: https://render.com/docs/node-version(B[m
+2026-04-23T18:57:23.531075489Z [34m[1m==>(B[m [1mRunning build command 'npm install --include=dev && npm run build'...(B[m
+2026-04-23T18:58:44.04282706Z 
+2026-04-23T18:58:44.042855101Z added 564 packages, and audited 565 packages in 1m
+2026-04-23T18:58:44.042866121Z 
+2026-04-23T18:58:44.042925703Z 110 packages are looking for funding
+2026-04-23T18:58:44.042977164Z   run `npm fund` for details
+2026-04-23T18:58:44.195258634Z 
+2026-04-23T18:58:44.195305095Z 22 vulnerabilities (2 low, 12 moderate, 6 high, 2 critical)
+2026-04-23T18:58:44.195314185Z 
+2026-04-23T18:58:44.195320775Z To address issues that do not require attention, run:
+2026-04-23T18:58:44.195325836Z   npm audit fix
+2026-04-23T18:58:44.195329646Z 
+2026-04-23T18:58:44.195333786Z To address all issues (including breaking changes), run:
+2026-04-23T18:58:44.195338216Z   npm audit fix --force
+2026-04-23T18:58:44.195341986Z 
+2026-04-23T18:58:44.195346426Z Run `npm audit` for details.
+2026-04-23T18:58:44.405261797Z 
+2026-04-23T18:58:44.405297898Z > whatsapp-ai-agent-backend@1.0.0 build
+2026-04-23T18:58:44.405303298Z > tsc && tsc-alias
+2026-04-23T18:58:44.405307888Z 
+2026-04-23T18:58:45.963967579Z tsconfig.json(3,27): error TS5103: Invalid value for '--ignoreDeprecations'.
+2026-04-23T18:58:46.041028269Z [31m[1m==> Build failed 😞(B[m
+2026-04-23T18:58:46.04104704Z [34m[1m==>(B[m [1mCommon ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys(B[m
 ```
 
 ## App logs (last 4h)
