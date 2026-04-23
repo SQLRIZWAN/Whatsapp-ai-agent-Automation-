@@ -1,4 +1,4 @@
-# Live URLs (run 24853398121)
+# Live URLs (run 24853642773)
 
 Backend:  https://whatsapp-ai-backend-8ylf.onrender.com  (success)
-Frontend:   (failure)
+Frontend: https://whatsapp-ai-automation.vercel.app  (success)
