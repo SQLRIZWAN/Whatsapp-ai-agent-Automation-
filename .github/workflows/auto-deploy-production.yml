@@ -80,7 +80,7 @@ jobs:
                   runtime: "node",
                   healthCheckPath: "/health",
                   envSpecificDetails: {
-                    buildCommand: "npm install && npm run build",
+                    buildCommand: "npm install --include=dev && npm run build",
                     startCommand: "npm start"
                   },
                   numInstances: 1
@@ -114,7 +114,7 @@ jobs:
             autoDeploy: "no",
             serviceDetails: {
               envSpecificDetails: {
-                buildCommand: "npm install && npm run build",
+                buildCommand: "npm install --include=dev && npm run build",
                 startCommand: "npm start"
               }
             }
