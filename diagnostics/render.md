@@ -1,9 +1,9 @@
 # Render Deploy Diagnostics
 
-Run: 24853233501
-Commit: 0f6363311bfd22b5ed04d5f0d026d71155b3b823
+Run: 24853398121
+Commit: 6f70e156651e0c4e8b181d2daf1797aa0607f3ac
 Service ID: srv-d7kkne0sfn5c73b9t5cg
-Deploy ID: dep-d7l6n34m0tmc73b2rf8g
+Deploy ID: dep-d7l6orq8qa3s73cmb1h0
 
 ## Service details
 ```json
@@ -56,25 +56,25 @@ Deploy ID: dep-d7l6n34m0tmc73b2rf8g
   "suspended": "not_suspended",
   "suspenders": [],
   "type": "web_service",
-  "updatedAt": "2026-04-23T18:57:13.33204Z"
+  "updatedAt": "2026-04-23T19:03:06.526179Z"
 }
 ```
 
 ## Latest deploy
 ```json
 {
-  "id": "dep-d7l6n34m0tmc73b2rf8g",
+  "id": "dep-d7l6orq8qa3s73cmb1h0",
   "commit": {
-    "id": "0f6363311bfd22b5ed04d5f0d026d71155b3b823",
-    "message": "Render build: install dev deps so tsc/tsc-alias are available",
-    "createdAt": "2026-04-23T18:57:00Z"
+    "id": "6f70e156651e0c4e8b181d2daf1797aa0607f3ac",
+    "message": "tsconfig: use ignoreDeprecations=5.0 (valid for TS 5.x)",
+    "createdAt": "2026-04-23T19:00:39Z"
   },
-  "status": "build_failed",
+  "status": "live",
   "trigger": "api",
-  "createdAt": "2026-04-23T18:57:16.439114Z",
-  "updatedAt": "2026-04-23T18:58:47.277851Z",
-  "startedAt": "2026-04-23T18:57:16.432851Z",
-  "finishedAt": "2026-04-23T18:58:47.277134Z"
+  "createdAt": "2026-04-23T19:01:04.076409Z",
+  "updatedAt": "2026-04-23T19:03:06.524236Z",
+  "startedAt": "2026-04-23T19:01:04.060665Z",
+  "finishedAt": "2026-04-23T19:03:06.524019Z"
 }
 ```
 
@@ -302,8 +302,49 @@ Deploy ID: dep-d7l6n34m0tmc73b2rf8g
 2026-04-23T18:58:45.963967579Z tsconfig.json(3,27): error TS5103: Invalid value for '--ignoreDeprecations'.
 2026-04-23T18:58:46.041028269Z [31m[1m==> Build failed 😞(B[m
 2026-04-23T18:58:46.04104704Z [34m[1m==>(B[m [1mCommon ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys(B[m
+2026-04-23T19:01:08.039656826Z [34m[1m==>(B[m [1mCloning from https://github.com/SQLRIZWAN/Whatsapp-ai-agent-Automation-(B[m
+2026-04-23T19:01:08.822418473Z [34m[1m==>(B[m [1mChecking out commit 6f70e156651e0c4e8b181d2daf1797aa0607f3ac in branch main(B[m
+2026-04-23T19:01:10.07954755Z [34m[1m==>(B[m [1mUsing Node.js version 24.14.1 (default)(B[m
+2026-04-23T19:01:10.103558678Z [34m[1m==>(B[m [1mDocs on specifying a Node.js version: https://render.com/docs/node-version(B[m
+2026-04-23T19:01:12.080954753Z [34m[1m==>(B[m [1mRunning build command 'npm install --include=dev && npm run build'...(B[m
+2026-04-23T19:02:34.446058042Z 
+2026-04-23T19:02:34.446086842Z added 564 packages, and audited 565 packages in 1m
+2026-04-23T19:02:34.446103783Z 
+2026-04-23T19:02:34.446202346Z 110 packages are looking for funding
+2026-04-23T19:02:34.446284008Z   run `npm fund` for details
+2026-04-23T19:02:34.595731158Z 
+2026-04-23T19:02:34.595765159Z 22 vulnerabilities (2 low, 12 moderate, 6 high, 2 critical)
+2026-04-23T19:02:34.595769669Z 
+2026-04-23T19:02:34.59577388Z To address issues that do not require attention, run:
+2026-04-23T19:02:34.595778029Z   npm audit fix
+2026-04-23T19:02:34.59578186Z 
+2026-04-23T19:02:34.59578589Z To address all issues (including breaking changes), run:
+2026-04-23T19:02:34.5957903Z   npm audit fix --force
+2026-04-23T19:02:34.59579405Z 
+2026-04-23T19:02:34.59579856Z Run `npm audit` for details.
+2026-04-23T19:02:34.807864193Z 
+2026-04-23T19:02:34.807890844Z > whatsapp-ai-agent-backend@1.0.0 build
+2026-04-23T19:02:34.807896214Z > tsc && tsc-alias
+2026-04-23T19:02:34.807900294Z 
+2026-04-23T19:02:37.302654764Z [34;1m==>[0;22m [1mUploading build...[22m
+2026-04-23T19:02:42.311825155Z [34;1m==>[0;22m [1mUploaded in 2.6s. Compression took 2.4s[22m
+2026-04-23T19:02:42.34600769Z [32;1m==>[0;22m [1mBuild successful 🎉[22m
 ```
 
 ## App logs (last 4h)
 ```
+2026-04-23T19:02:45.157735752Z [0;34m[1m==> [0m[1mDeploying...[0m
+2026-04-23T19:02:45.234013025Z [0;34m[1m==> [0m[1mSetting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance[0m
+2026-04-23T19:02:58.666738464Z [32m[1m==>(B[m [1mRunning 'npm start'(B[m
+2026-04-23T19:02:59.863188856Z 
+2026-04-23T19:02:59.863221047Z > whatsapp-ai-agent-backend@1.0.0 start
+2026-04-23T19:02:59.863226067Z > node dist/index.js
+2026-04-23T19:02:59.863228237Z 
+2026-04-23T19:03:06.771673699Z [0;32m[1m==> [0m[1mYour service is live 🎉[0m
+2026-04-23T19:03:06.862491854Z [0;32m[1m==> [0m[1m[0m
+2026-04-23T19:03:06.864713334Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
+2026-04-23T19:03:06.866572656Z [0;32m[1m==> [0m[1m[0m
+2026-04-23T19:03:06.868551771Z [0;32m[1m==> [0m[1mAvailable at your primary URL https://whatsapp-ai-backend-8ylf.onrender.com[0m
+2026-04-23T19:03:06.870589347Z [0;32m[1m==> [0m[1m[0m
+2026-04-23T19:03:06.872667594Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
 ```
