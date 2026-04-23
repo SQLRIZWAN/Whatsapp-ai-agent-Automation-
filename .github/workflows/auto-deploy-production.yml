@@ -107,20 +107,22 @@ jobs:
 
           echo "Service ID: $SERVICE_ID"
 
-          # PATCH existing service to ensure correct rootDir + commands + autoDeploy off
+          # PATCH existing service to ensure correct branch + rootDir + commands + autoDeploy off
+          PATCH_PAYLOAD=$(jq -n --arg branch "$BRANCH_NAME" '{
+            branch: $branch,
+            rootDir: "backend",
+            autoDeploy: "no",
+            serviceDetails: {
+              envSpecificDetails: {
+                buildCommand: "npm install && npm run build",
+                startCommand: "npm start"
+              }
+            }
+          }')
           curl -s -X PATCH "https://api.render.com/v1/services/$SERVICE_ID" \
             -H "Authorization: Bearer $RENDER_API_KEY" \
             -H "Content-Type: application/json" \
-            -d '{
-              "rootDir": "backend",
-              "autoDeploy": "no",
-              "serviceDetails": {
-                "envSpecificDetails": {
-                  "buildCommand": "npm install && npm run build",
-                  "startCommand": "npm start"
-                }
-              }
-            }' | jq '{id:.id,autoDeploy:.autoDeploy,rootDir:.rootDir,build:.serviceDetails.envSpecificDetails.buildCommand,start:.serviceDetails.envSpecificDetails.startCommand}'
+            -d "$PATCH_PAYLOAD" | jq '{id:.id,branch:.branch,autoDeploy:.autoDeploy,rootDir:.rootDir,build:.serviceDetails.envSpecificDetails.buildCommand,start:.serviceDetails.envSpecificDetails.startCommand}'
 
           # Cancel any in-flight deploys so our API-triggered one is authoritative
           for D in $(curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
@@ -154,11 +156,11 @@ jobs:
             -H "Content-Type: application/json" \
             -d "$ENV_PAYLOAD" | jq 'length'
 
-          # Trigger a new deploy with cache clear
+          # Trigger a new deploy with cache clear on the current commit
           DEPLOY=$(curl -s -X POST "https://api.render.com/v1/services/$SERVICE_ID/deploys" \
             -H "Authorization: Bearer $RENDER_API_KEY" \
             -H "Content-Type: application/json" \
-            -d '{"clearCache":"clear"}')
+            -d "$(jq -n --arg sha '${{ github.sha }}' '{clearCache:"clear", commitId:$sha}')")
           echo "$DEPLOY" | jq '.'
           DEPLOY_ID=$(echo "$DEPLOY" | jq -r '.id // empty')
 
