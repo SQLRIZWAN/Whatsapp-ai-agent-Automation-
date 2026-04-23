@@ -1,0 +1,114 @@
+name: Frontend Diagnose (Playwright)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - claude/production-deployment-setup-pnyZn
+    paths:
+      - '.github/workflows/frontend-diagnose.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Playwright chromium
+        run: |
+          npm init -y >/dev/null
+          npm install --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+
+      - name: Probe live frontend
+        id: probe
+        env:
+          TARGET_URL: https://whatsapp-ai-automation.vercel.app
+        run: |
+          cat > probe.js <<'EOF'
+          const { chromium } = require('playwright');
+          (async () => {
+            const url = process.env.TARGET_URL;
+            const browser = await chromium.launch();
+            const context = await browser.newContext();
+            const page = await context.newPage();
+            const consoleMsgs = [];
+            const errors = [];
+            const failed = [];
+            page.on('console', m => consoleMsgs.push(`[${m.type()}] ${m.text()}`));
+            page.on('pageerror', e => errors.push(`PAGEERROR: ${e.message}\n${e.stack}`));
+            page.on('requestfailed', r => failed.push(`REQFAIL: ${r.url()} ${r.failure()?.errorText}`));
+            page.on('response', r => {
+              if (r.status() >= 400) failed.push(`HTTP ${r.status()} ${r.url()}`);
+            });
+            const resp = await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+            await page.waitForTimeout(3000);
+            const html = await page.content();
+            const title = await page.title();
+            const bodyText = await page.evaluate(() => document.body.innerText || '');
+            await page.screenshot({ path: 'screenshot.png', fullPage: true });
+
+            const out = {
+              url,
+              httpStatus: resp?.status(),
+              title,
+              bodyText: bodyText.slice(0,1000),
+              consoleMsgs,
+              errors,
+              failed,
+              html: html.slice(0, 4000),
+            };
+            require('fs').writeFileSync('probe-result.json', JSON.stringify(out, null, 2));
+            console.log(JSON.stringify(out, null, 2));
+            await browser.close();
+          })();
+          EOF
+          node probe.js
+
+      - name: Commit findings to repo
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set +e
+          mkdir -p diagnostics
+          {
+            echo "# Frontend probe (run ${{ github.run_id }})"
+            echo ""
+            echo "Generated at: $(date -u +%FT%TZ)"
+            echo ""
+            echo "## Result JSON"
+            echo '```json'
+            cat probe-result.json 2>/dev/null || echo '{}'
+            echo '```'
+          } > diagnostics/frontend.md
+
+          for f in diagnostics/frontend.md screenshot.png; do
+            [ -f "$f" ] || continue
+            B64=$(base64 -w0 "$f")
+            P="diagnostics/$(basename $f)"
+            CUR=$(curl -s -H "Authorization: token $GH_TOKEN" \
+              "https://api.github.com/repos/${{ github.repository }}/contents/$P?ref=${{ github.ref_name }}")
+            SHA=$(echo "$CUR" | jq -r '.sha // empty')
+            PAYLOAD=$(jq -n --arg msg "frontend probe run ${{ github.run_id }}" \
+                           --arg content "$B64" \
+                           --arg branch "${{ github.ref_name }}" \
+                           --arg sha "$SHA" \
+                           'if $sha == "" then
+                              {message:$msg, content:$content, branch:$branch}
+                            else
+                              {message:$msg, content:$content, branch:$branch, sha:$sha}
+                            end')
+            curl -s -X PUT \
+              -H "Authorization: token $GH_TOKEN" \
+              -H "Content-Type: application/json" \
+              "https://api.github.com/repos/${{ github.repository }}/contents/$P" \
+              -d "$PAYLOAD" | jq '.commit.sha // .message'
+          done
