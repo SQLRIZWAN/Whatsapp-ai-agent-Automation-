@@ -1,0 +1,85 @@
+name: Backend smoke test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Probe backend endpoints
+        env:
+          BACKEND_URL: https://whatsapp-ai-backend-8ylf.onrender.com
+        id: probe
+        run: |
+          set +e
+          mkdir -p diagnostics
+
+          echo "== /health ==" | tee /tmp/probe.log
+          curl -sS -w "\nHTTP: %{http_code}\n" "$BACKEND_URL/health" | tee -a /tmp/probe.log
+
+          echo "" >> /tmp/probe.log
+          echo "== POST /api/auth/register (test flow) ==" | tee -a /tmp/probe.log
+          EMAIL="probe_$(date +%s)@example.com"
+          BODY=$(jq -n --arg e "$EMAIL" --arg p "TestPass123!" --arg n "Probe User" '{email:$e,password:$p,displayName:$n}')
+          echo "Request: $BODY" | tee -a /tmp/probe.log
+          curl -sS -w "\nHTTP: %{http_code}\n" \
+            -X POST "$BACKEND_URL/api/auth/register" \
+            -H "Content-Type: application/json" \
+            -d "$BODY" | tee -a /tmp/probe.log
+
+          echo "" >> /tmp/probe.log
+          echo "== Render app logs (last 30 min) ==" | tee -a /tmp/probe.log
+
+      - name: Fetch Render app logs
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        run: |
+          SVC=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
+            "https://api.render.com/v1/services?name=whatsapp-ai-backend&limit=5")
+          SID=$(echo "$SVC" | jq -r '.[0].service.id')
+          OWNER_ID=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
+            "https://api.render.com/v1/services/$SID" | jq -r '.ownerId')
+          NOW=$(date -u +%Y-%m-%dT%H:%M:%S.000Z)
+          AGO=$(date -u -d '30 minutes ago' +%Y-%m-%dT%H:%M:%S.000Z)
+          echo '```' >> /tmp/probe.log
+          curl -s -G -H "Authorization: Bearer $RENDER_API_KEY" \
+            "https://api.render.com/v1/logs" \
+            --data-urlencode "ownerId=$OWNER_ID" \
+            --data-urlencode "resource=$SID" \
+            --data-urlencode "type=app" \
+            --data-urlencode "startTime=$AGO" \
+            --data-urlencode "endTime=$NOW" \
+            --data-urlencode "limit=500" \
+            | jq -r '.logs[]? | "\(.timestamp) \(.message)"' >> /tmp/probe.log
+          echo '```' >> /tmp/probe.log
+          cat /tmp/probe.log
+
+      - name: Commit probe log
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          B64=$(base64 -w0 /tmp/probe.log)
+          CUR=$(curl -s -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/contents/diagnostics/backend-probe.md?ref=${{ github.ref_name }}")
+          SHA=$(echo "$CUR" | jq -r '.sha // empty')
+          PAYLOAD=$(jq -n --arg msg "backend probe run ${{ github.run_id }}" \
+                         --arg content "$B64" \
+                         --arg branch "${{ github.ref_name }}" \
+                         --arg sha "$SHA" \
+                         'if $sha == "" then
+                            {message:$msg, content:$content, branch:$branch}
+                          else
+                            {message:$msg, content:$content, branch:$branch, sha:$sha}
+                          end')
+          curl -s -X PUT \
+            -H "Authorization: token $GH_TOKEN" \
+            -H "Content-Type: application/json" \
+            "https://api.github.com/repos/${{ github.repository }}/contents/diagnostics/backend-probe.md" \
+            -d "$PAYLOAD" | jq '.commit.sha // .message'
