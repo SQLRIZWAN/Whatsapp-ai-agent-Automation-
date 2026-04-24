@@ -1,9 +1,9 @@
 # Render Deploy Diagnostics
 
-Run: 24879772535
-Commit: bd7801a57a4002f9294825891d4d8cbc276cbbbf
+Run: 24880938178
+Commit: 57550b5f3eabc27f629daea686fb8d4fd161b3d9
 Service ID: srv-d7kkne0sfn5c73b9t5cg
-Deploy ID: dep-d7ligbgg4nts73d0c0og
+Deploy ID: dep-d7liu08g4nts73d0lkp0
 
 ## Service details
 ```json
@@ -56,25 +56,25 @@ Deploy ID: dep-d7ligbgg4nts73d0c0og
   "suspended": "not_suspended",
   "suspenders": [],
   "type": "web_service",
-  "updatedAt": "2026-04-24T08:24:07.53878Z"
+  "updatedAt": "2026-04-24T08:53:18.788534Z"
 }
 ```
 
 ## Latest deploy
 ```json
 {
-  "id": "dep-d7ligbgg4nts73d0c0og",
+  "id": "dep-d7liu08g4nts73d0lkp0",
   "commit": {
-    "id": "bd7801a57a4002f9294825891d4d8cbc276cbbbf",
-    "message": "backend probe run 24879603557",
-    "createdAt": "2026-04-24T08:18:21Z"
+    "id": "57550b5f3eabc27f629daea686fb8d4fd161b3d9",
+    "message": "frontend: use /api prefix for auth endpoints to match backend routing",
+    "createdAt": "2026-04-24T08:50:58Z"
   },
   "status": "live",
   "trigger": "api",
-  "createdAt": "2026-04-24T08:22:06.235917Z",
-  "updatedAt": "2026-04-24T08:24:07.537312Z",
-  "startedAt": "2026-04-24T08:22:06.188811Z",
-  "finishedAt": "2026-04-24T08:24:07.53716Z"
+  "createdAt": "2026-04-24T08:51:13.808208Z",
+  "updatedAt": "2026-04-24T08:53:18.785553Z",
+  "startedAt": "2026-04-24T08:51:13.767075Z",
+  "finishedAt": "2026-04-24T08:53:18.785343Z"
 }
 ```
 
@@ -215,295 +215,535 @@ Deploy ID: dep-d7ligbgg4nts73d0c0og
 2026-04-24T08:23:38.438279542Z [34;1m==>[0;22m [1mUploading build...[22m
 2026-04-24T08:23:44.195501571Z [34;1m==>[0;22m [1mUploaded in 2.9s. Compression took 2.8s[22m
 2026-04-24T08:23:44.220185354Z [32;1m==>[0;22m [1mBuild successful 🎉[22m
+2026-04-24T08:51:16.777208861Z [34m[1m==>(B[m [1mCloning from https://github.com/SQLRIZWAN/Whatsapp-ai-agent-Automation-(B[m
+2026-04-24T08:51:17.46514937Z [34m[1m==>(B[m [1mChecking out commit 57550b5f3eabc27f629daea686fb8d4fd161b3d9 in branch main(B[m
+2026-04-24T08:51:18.837955536Z [34m[1m==>(B[m [1mUsing Node.js version 24.14.1 (default)(B[m
+2026-04-24T08:51:18.861442922Z [34m[1m==>(B[m [1mDocs on specifying a Node.js version: https://render.com/docs/node-version(B[m
+2026-04-24T08:51:20.744948108Z [34m[1m==>(B[m [1mRunning build command 'npm install --include=dev && npm run build'...(B[m
+2026-04-24T08:52:40.282809708Z 
+2026-04-24T08:52:40.282839199Z added 564 packages, and audited 565 packages in 1m
+2026-04-24T08:52:40.28288207Z 
+2026-04-24T08:52:40.283006374Z 110 packages are looking for funding
+2026-04-24T08:52:40.283102296Z   run `npm fund` for details
+2026-04-24T08:52:40.442678381Z 
+2026-04-24T08:52:40.442710482Z 22 vulnerabilities (2 low, 12 moderate, 6 high, 2 critical)
+2026-04-24T08:52:40.442714852Z 
+2026-04-24T08:52:40.442719022Z To address issues that do not require attention, run:
+2026-04-24T08:52:40.442723083Z   npm audit fix
+2026-04-24T08:52:40.442726873Z 
+2026-04-24T08:52:40.442731063Z To address all issues (including breaking changes), run:
+2026-04-24T08:52:40.442735753Z   npm audit fix --force
+2026-04-24T08:52:40.442739483Z 
+2026-04-24T08:52:40.442744203Z Run `npm audit` for details.
+2026-04-24T08:52:40.654810984Z 
+2026-04-24T08:52:40.654836064Z > whatsapp-ai-agent-backend@1.0.0 build
+2026-04-24T08:52:40.654840594Z > tsc && tsc-alias
+2026-04-24T08:52:40.654843925Z 
+2026-04-24T08:52:48.084980598Z [34;1m==>[0;22m [1mUploading build...[22m
+2026-04-24T08:52:53.804876864Z [34;1m==>[0;22m [1mUploaded in 3.1s. Compression took 2.7s[22m
+2026-04-24T08:52:53.829950125Z [32;1m==>[0;22m [1mBuild successful 🎉[22m
 ```
 
 ## App logs (last 4h)
 ```
-2026-04-24T08:01:32.505451647Z [0;34m[1m==> [0m[1mDeploying...[0m
-2026-04-24T08:01:32.636976528Z [0;34m[1m==> [0m[1mSetting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance[0m
-2026-04-24T08:01:45.048489308Z [32m[1m==>(B[m [1mRunning 'npm start'(B[m
-2026-04-24T08:01:46.253945398Z 
-2026-04-24T08:01:46.25397862Z > whatsapp-ai-agent-backend@1.0.0 start
-2026-04-24T08:01:46.25398602Z > node dist/index.js
-2026-04-24T08:01:46.25398986Z 
-2026-04-24T08:01:54.161274421Z [0;32m[1m==> [0m[1mYour service is live 🎉[0m
-2026-04-24T08:01:54.400511317Z [0;32m[1m==> [0m[1m[0m
-2026-04-24T08:01:54.403084275Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
-2026-04-24T08:01:54.410039723Z [0;32m[1m==> [0m[1m[0m
-2026-04-24T08:01:54.412044808Z [0;32m[1m==> [0m[1mAvailable at your primary URL https://whatsapp-ai-backend-8ylf.onrender.com[0m
-2026-04-24T08:01:54.414249559Z [0;32m[1m==> [0m[1m[0m
-2026-04-24T08:01:54.416167842Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
-2026-04-24T08:06:43.570226717Z [0;34m[1m==> [0m[1mDeploying...[0m
-2026-04-24T08:06:43.643505607Z [0;34m[1m==> [0m[1mSetting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance[0m
-2026-04-24T08:06:58.62985498Z [32m[1m==>(B[m [1mRunning 'npm start'(B[m
-2026-04-24T08:07:00.04265232Z 
-2026-04-24T08:07:00.042689511Z > whatsapp-ai-agent-backend@1.0.0 start
-2026-04-24T08:07:00.042698611Z > node dist/index.js
-2026-04-24T08:07:00.042704011Z 
-2026-04-24T08:07:04.986591745Z [0;32m[1m==> [0m[1mYour service is live 🎉[0m
-2026-04-24T08:07:05.097722728Z [0;32m[1m==> [0m[1m[0m
-2026-04-24T08:07:05.100048831Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
-2026-04-24T08:07:05.102539087Z [0;32m[1m==> [0m[1m[0m
-2026-04-24T08:07:05.105904594Z [0;32m[1m==> [0m[1mAvailable at your primary URL https://whatsapp-ai-backend-8ylf.onrender.com[0m
-2026-04-24T08:07:05.107848118Z [0;32m[1m==> [0m[1m[0m
-2026-04-24T08:07:05.109767252Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
-2026-04-24T08:11:10.837639221Z [0;34m[1m==> [0m[1mDeploying...[0m
-2026-04-24T08:11:10.924986003Z [0;34m[1m==> [0m[1mSetting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance[0m
-2026-04-24T08:11:26.404322152Z [32m[1m==>(B[m [1mRunning 'npm start'(B[m
-2026-04-24T08:11:27.516537605Z 
-2026-04-24T08:11:27.516564606Z > whatsapp-ai-agent-backend@1.0.0 start
-2026-04-24T08:11:27.516569346Z > node dist/index.js
-2026-04-24T08:11:27.516571826Z 
-2026-04-24T08:11:32.282582975Z [0;32m[1m==> [0m[1mYour service is live 🎉[0m
-2026-04-24T08:11:32.42495291Z [0;32m[1m==> [0m[1m[0m
-2026-04-24T08:11:32.428259556Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
-2026-04-24T08:11:32.429933356Z [0;32m[1m==> [0m[1m[0m
-2026-04-24T08:11:32.432695447Z [0;32m[1m==> [0m[1mAvailable at your primary URL https://whatsapp-ai-backend-8ylf.onrender.com[0m
-2026-04-24T08:11:32.434828017Z [0;32m[1m==> [0m[1m[0m
-2026-04-24T08:11:32.436739302Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
-2026-04-24T08:15:15.30683113Z [0;34m[1m==> [0m[1mDeploying...[0m
-2026-04-24T08:15:15.435322827Z [0;34m[1m==> [0m[1mSetting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance[0m
-2026-04-24T08:15:31.016428408Z [32m[1m==>(B[m [1mRunning 'npm start'(B[m
-2026-04-24T08:15:32.535234711Z 
-2026-04-24T08:15:32.535263531Z > whatsapp-ai-agent-backend@1.0.0 start
-2026-04-24T08:15:32.535268032Z > node dist/index.js
-2026-04-24T08:15:32.535270302Z 
-2026-04-24T08:15:35.213156904Z 2026-04-24 08:15:35 [error] Failed to initialize Firestore (continuing without persistence): Failed to parse private key: Error: Unparsed DER bytes remain after ASN.1 parsing.
-2026-04-24T08:15:35.213178355Z Error: Failed to parse private key: Error: Unparsed DER bytes remain after ASN.1 parsing.
-2026-04-24T08:15:35.213181975Z     at new ServiceAccount (/opt/render/project/src/backend/node_modules/firebase-admin/lib/app/credential-internal.js:153:19)
-2026-04-24T08:15:35.213184655Z     at new ServiceAccountCredential (/opt/render/project/src/backend/node_modules/firebase-admin/lib/app/credential-internal.js:70:15)
-2026-04-24T08:15:35.213186975Z     at Object.cert (/opt/render/project/src/backend/node_modules/firebase-admin/lib/app/credential-factory.js:103:54)
-2026-04-24T08:15:35.213190085Z     at initializeFirestore (/opt/render/project/src/backend/dist/modules/database/firestore.js:27:69)
-2026-04-24T08:15:35.213193195Z     at startServer (/opt/render/project/src/backend/dist/server.js:16:51)
-2026-04-24T08:15:35.213195385Z     at main (/opt/render/project/src/backend/dist/index.js:13:40)
-2026-04-24T08:15:35.213197585Z     at Object.<anonymous> (/opt/render/project/src/backend/dist/index.js:20:1)
-2026-04-24T08:15:35.213199815Z     at Module._compile (node:internal/modules/cjs/loader:1812:14)
-2026-04-24T08:15:35.213202765Z     at Object..js (node:internal/modules/cjs/loader:1943:10)
-2026-04-24T08:15:35.213204955Z     at Module.load (node:internal/modules/cjs/loader:1533:32)
-2026-04-24T08:15:35.219622278Z 2026-04-24 08:15:35 [info] ✅ Server running on http://localhost:10000
-2026-04-24T08:15:35.219851113Z 2026-04-24 08:15:35 [info] Environment: production
-2026-04-24T08:15:35.220106819Z 2026-04-24 08:15:35 [info] API URL: http://localhost:5000
-2026-04-24T08:15:35.220436967Z 2026-04-24 08:15:35 [info] Frontend URL: https://whatsapp-ai-automation.vercel.app
-2026-04-24T08:15:35.585514898Z 2026-04-24 08:15:35 [error] Route / not found
-2026-04-24T08:15:35.585538699Z Error: Route / not found
-2026-04-24T08:15:35.585543699Z     at /opt/render/project/src/backend/dist/app.js:62:15
-2026-04-24T08:15:35.585548269Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-24T08:15:35.585553209Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-24T08:15:35.585558349Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-24T08:15:35.585562199Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
-2026-04-24T08:15:35.585565919Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
-2026-04-24T08:15:35.585569789Z     at /opt/render/project/src/backend/dist/app.js:44:9
-2026-04-24T08:15:35.585573999Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-24T08:15:35.585577659Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-24T08:15:35.58558148Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-24T08:15:35.589933503Z 2026-04-24 08:15:35 [info] {"method":"HEAD","path":"/","status":404,"duration":"5ms","ip":"::1"}
-2026-04-24T08:15:39.384281482Z 2026-04-24 08:15:39 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:15:39.386008894Z 2026-04-24 08:15:39 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:15:40.259096429Z [0;32m[1m==> [0m[1mYour service is live 🎉[0m
-2026-04-24T08:15:40.36813786Z 2026-04-24 08:15:40 [error] Route / not found
-2026-04-24T08:15:40.368160481Z Error: Route / not found
-2026-04-24T08:15:40.368164751Z     at /opt/render/project/src/backend/dist/app.js:62:15
-2026-04-24T08:15:40.368168281Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-24T08:15:40.368171361Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-24T08:15:40.368174751Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-24T08:15:40.368177211Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
-2026-04-24T08:15:40.368180001Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
-2026-04-24T08:15:40.368182641Z     at /opt/render/project/src/backend/dist/app.js:44:9
-2026-04-24T08:15:40.368185431Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-24T08:15:40.368188111Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-24T08:15:40.368190771Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-24T08:15:40.36894786Z 2026-04-24 08:15:40 [info] {"method":"GET","path":"/","status":404,"duration":"1ms","ip":"::1"}
-2026-04-24T08:15:40.372982763Z [0;32m[1m==> [0m[1m[0m
-2026-04-24T08:15:40.375468116Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
-2026-04-24T08:15:40.377719084Z [0;32m[1m==> [0m[1m[0m
-2026-04-24T08:15:40.382003614Z [0;32m[1m==> [0m[1mAvailable at your primary URL https://whatsapp-ai-backend-8ylf.onrender.com[0m
-2026-04-24T08:15:40.385388156Z [0;32m[1m==> [0m[1m[0m
-2026-04-24T08:15:40.387507125Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
-2026-04-24T08:15:44.383729485Z 2026-04-24 08:15:44 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:15:49.383076875Z 2026-04-24 08:15:49 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:15:49.383990696Z 2026-04-24 08:15:49 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:15:54.384813081Z 2026-04-24 08:15:54 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:15:59.383809704Z 2026-04-24 08:15:59 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:16:04.384821933Z 2026-04-24 08:16:04 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:16:09.383538889Z 2026-04-24 08:16:09 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:16:14.382881399Z 2026-04-24 08:16:14 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:16:19.382717311Z 2026-04-24 08:16:19 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:16:19.38350772Z 2026-04-24 08:16:19 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:16:24.382551804Z 2026-04-24 08:16:24 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:16:29.383513403Z 2026-04-24 08:16:29 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:16:34.382742722Z 2026-04-24 08:16:34 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:16:39.383020205Z 2026-04-24 08:16:39 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:16:44.382464149Z 2026-04-24 08:16:44 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:16:49.382904316Z 2026-04-24 08:16:49 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:16:49.383774557Z 2026-04-24 08:16:49 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:16:54.382796891Z 2026-04-24 08:16:54 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:16:59.383538856Z 2026-04-24 08:16:59 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:17:04.382859267Z 2026-04-24 08:17:04 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:17:09.383297845Z 2026-04-24 08:17:09 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:17:14.382407711Z 2026-04-24 08:17:14 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:17:19.386493137Z 2026-04-24 08:17:19 [info] {"method":"GET","path":"/health","status":200,"duration":"5ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:17:19.387560342Z 2026-04-24 08:17:19 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:17:24.383754619Z 2026-04-24 08:17:24 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:17:29.38261092Z 2026-04-24 08:17:29 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:17:34.382888795Z 2026-04-24 08:17:34 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:17:35.130325258Z 2026-04-24 08:17:35 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::1"}
-2026-04-24T08:17:35.317898603Z 2026-04-24 08:17:35 [error] Registration error: Firestore not initialized. Call initializeFirestore first.
-2026-04-24T08:17:35.317919454Z Error: Firestore not initialized. Call initializeFirestore first.
-2026-04-24T08:17:35.317924764Z     at getFirestore (/opt/render/project/src/backend/dist/modules/database/firestore.js:48:15)
-2026-04-24T08:17:35.317929614Z     at UserRepository.getUserByEmail (/opt/render/project/src/backend/dist/modules/database/repositories/userRepository.js:26:49)
-2026-04-24T08:17:35.317933754Z     at AuthService.register (/opt/render/project/src/backend/dist/modules/auth/services/authService.js:24:65)
-2026-04-24T08:17:35.317937764Z     at /opt/render/project/src/backend/dist/modules/auth/controllers/authController.js:12:48
-2026-04-24T08:17:35.317941964Z     at /opt/render/project/src/backend/dist/shared/utils/errorHandler.js:43:25
-2026-04-24T08:17:35.317946284Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-24T08:17:35.317950514Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/route.js:149:13)
-2026-04-24T08:17:35.317954344Z     at Route.dispatch (/opt/render/project/src/backend/node_modules/express/lib/router/route.js:119:3)
-2026-04-24T08:17:35.317958135Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-24T08:17:35.317961875Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:284:15
-2026-04-24T08:17:35.3181961Z 2026-04-24 08:17:35 [error] Registration failed
-2026-04-24T08:17:35.318210741Z Error: Registration failed
-2026-04-24T08:17:35.318215521Z     at AuthService.register (/opt/render/project/src/backend/dist/modules/auth/services/authService.js:59:19)
-2026-04-24T08:17:35.318229551Z     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
-2026-04-24T08:17:35.318231961Z     at async /opt/render/project/src/backend/dist/modules/auth/controllers/authController.js:12:20
-2026-04-24T08:17:35.318882686Z 2026-04-24 08:17:35 [info] {"method":"POST","path":"/api/auth/register","status":500,"duration":"1ms","ip":"::1"}
-2026-04-24T08:17:39.383355715Z 2026-04-24 08:17:39 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:17:44.383067876Z 2026-04-24 08:17:44 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:17:49.382766547Z 2026-04-24 08:17:49 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:17:49.383600377Z 2026-04-24 08:17:49 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:17:54.383290289Z 2026-04-24 08:17:54 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:17:59.383170974Z 2026-04-24 08:17:59 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:18:04.382356655Z 2026-04-24 08:18:04 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:18:09.383494281Z 2026-04-24 08:18:09 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:18:14.383247975Z 2026-04-24 08:18:14 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:18:19.383414098Z 2026-04-24 08:18:19 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:18:19.384830792Z 2026-04-24 08:18:19 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:18:24.382398164Z 2026-04-24 08:18:24 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:18:29.382208339Z 2026-04-24 08:18:29 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:18:34.382894135Z 2026-04-24 08:18:34 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:18:39.383226572Z 2026-04-24 08:18:39 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:18:44.382227579Z 2026-04-24 08:18:44 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:18:49.382801783Z 2026-04-24 08:18:49 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:18:49.383479429Z 2026-04-24 08:18:49 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:18:54.382390764Z 2026-04-24 08:18:54 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:18:59.38307977Z 2026-04-24 08:18:59 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:19:04.383265515Z 2026-04-24 08:19:04 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:19:09.383325187Z 2026-04-24 08:19:09 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:19:14.382397076Z 2026-04-24 08:19:14 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:19:19.382717084Z 2026-04-24 08:19:19 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:19:19.38337604Z 2026-04-24 08:19:19 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:19:24.382684324Z 2026-04-24 08:19:24 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:19:29.382371309Z 2026-04-24 08:19:29 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:19:34.38238493Z 2026-04-24 08:19:34 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:19:39.383239532Z 2026-04-24 08:19:39 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:19:44.3822453Z 2026-04-24 08:19:44 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:19:49.382501837Z 2026-04-24 08:19:49 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:19:49.383158273Z 2026-04-24 08:19:49 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:19:54.382750385Z 2026-04-24 08:19:54 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:19:59.384682323Z 2026-04-24 08:19:59 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:20:04.382832871Z 2026-04-24 08:20:04 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:20:09.382464784Z 2026-04-24 08:20:09 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:20:14.3833909Z 2026-04-24 08:20:14 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:20:19.383247709Z 2026-04-24 08:20:19 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:20:19.383992027Z 2026-04-24 08:20:19 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:20:24.383388704Z 2026-04-24 08:20:24 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:20:29.382549387Z 2026-04-24 08:20:29 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:20:34.382628932Z 2026-04-24 08:20:34 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:20:39.382988013Z 2026-04-24 08:20:39 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:20:40.340750837Z [0;32m[1m==> [0m[1mDetected service running on port 10000[0m
-2026-04-24T08:20:40.423233225Z [0;32m[1m==> [0m[1mDocs on specifying a port: https://render.com/docs/web-services#port-binding[0m
-2026-04-24T08:20:44.382605657Z 2026-04-24 08:20:44 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:20:49.383150673Z 2026-04-24 08:20:49 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:20:49.38386648Z 2026-04-24 08:20:49 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:20:54.383149597Z 2026-04-24 08:20:54 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:20:59.382442123Z 2026-04-24 08:20:59 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:21:04.383155554Z 2026-04-24 08:21:04 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:21:09.383337752Z 2026-04-24 08:21:09 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:21:14.382725691Z 2026-04-24 08:21:14 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:21:19.383153385Z 2026-04-24 08:21:19 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:21:19.383914543Z 2026-04-24 08:21:19 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:21:24.382461822Z 2026-04-24 08:21:24 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:21:29.38260434Z 2026-04-24 08:21:29 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:21:34.382560633Z 2026-04-24 08:21:34 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:21:39.383165157Z 2026-04-24 08:21:39 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:21:44.382247299Z 2026-04-24 08:21:44 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:21:49.383753728Z 2026-04-24 08:21:49 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:21:49.384647309Z 2026-04-24 08:21:49 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:21:54.38242207Z 2026-04-24 08:21:54 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:21:59.382393834Z 2026-04-24 08:21:59 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:22:04.38373264Z 2026-04-24 08:22:04 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:22:09.383053508Z 2026-04-24 08:22:09 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:22:14.382694794Z 2026-04-24 08:22:14 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:22:19.382264239Z 2026-04-24 08:22:19 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:22:19.382894654Z 2026-04-24 08:22:19 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:22:24.382890449Z 2026-04-24 08:22:24 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:22:29.383283784Z 2026-04-24 08:22:29 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:22:34.388871692Z 2026-04-24 08:22:34 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:22:39.382289782Z 2026-04-24 08:22:39 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:22:44.382860202Z 2026-04-24 08:22:44 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:22:49.382434938Z 2026-04-24 08:22:49 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:22:49.383235987Z 2026-04-24 08:22:49 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:22:54.384167555Z 2026-04-24 08:22:54 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:22:59.382235786Z 2026-04-24 08:22:59 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:23:04.386858993Z 2026-04-24 08:23:04 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:23:09.383173523Z 2026-04-24 08:23:09 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:23:14.382593566Z 2026-04-24 08:23:14 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:23:19.382623805Z 2026-04-24 08:23:19 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:23:19.383931456Z 2026-04-24 08:23:19 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:23:24.383173856Z 2026-04-24 08:23:24 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:23:29.383303167Z 2026-04-24 08:23:29 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:23:34.382261981Z 2026-04-24 08:23:34 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:23:39.382427083Z 2026-04-24 08:23:39 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:23:44.383134508Z 2026-04-24 08:23:44 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:23:46.31348493Z [0;34m[1m==> [0m[1mDeploying...[0m
-2026-04-24T08:23:46.399489058Z [0;34m[1m==> [0m[1mSetting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance[0m
-2026-04-24T08:23:49.382559344Z 2026-04-24 08:23:49 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:23:49.3832547Z 2026-04-24 08:23:49 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:23:54.382569713Z 2026-04-24 08:23:54 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:23:58.590622244Z [32m[1m==>(B[m [1mRunning 'npm start'(B[m
-2026-04-24T08:23:59.383007913Z 2026-04-24 08:23:59 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:23:59.704697591Z 
-2026-04-24T08:23:59.704719142Z > whatsapp-ai-agent-backend@1.0.0 start
-2026-04-24T08:23:59.704724082Z > node dist/index.js
-2026-04-24T08:23:59.704726412Z 
-2026-04-24T08:24:02.694375457Z 2026-04-24 08:24:02 [info] Firestore initialized successfully
-2026-04-24T08:24:02.699394602Z 2026-04-24 08:24:02 [info] ✅ Server running on http://localhost:10000
-2026-04-24T08:24:02.699505965Z 2026-04-24 08:24:02 [info] Environment: production
-2026-04-24T08:24:02.699739812Z 2026-04-24 08:24:02 [info] API URL: http://localhost:5000
-2026-04-24T08:24:02.699938687Z 2026-04-24 08:24:02 [info] Frontend URL: https://whatsapp-ai-automation.vercel.app
-2026-04-24T08:24:02.795054191Z 2026-04-24 08:24:02 [error] Route / not found
-2026-04-24T08:24:02.795070302Z Error: Route / not found
-2026-04-24T08:24:02.795073732Z     at /opt/render/project/src/backend/dist/app.js:62:15
-2026-04-24T08:24:02.795077932Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-24T08:24:02.795082752Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-24T08:24:02.795086282Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-24T08:24:02.795088752Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
-2026-04-24T08:24:02.795091412Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
-2026-04-24T08:24:02.795094072Z     at /opt/render/project/src/backend/dist/app.js:44:9
-2026-04-24T08:24:02.795097183Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-24T08:24:02.795100513Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-24T08:24:02.795102263Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-24T08:24:02.798885295Z 2026-04-24 08:24:02 [info] {"method":"HEAD","path":"/","status":404,"duration":"4ms","ip":"::1"}
-2026-04-24T08:24:04.382800778Z 2026-04-24 08:24:04 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
-2026-04-24T08:24:06.735881052Z 2026-04-24 08:24:06 [info] {"method":"GET","path":"/health","status":200,"duration":"2ms","ip":"::ffff:10.203.26.185"}
-2026-04-24T08:24:06.738247345Z 2026-04-24 08:24:06 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
-2026-04-24T08:24:07.717468596Z [0;32m[1m==> [0m[1mYour service is live 🎉[0m
-2026-04-24T08:24:07.834563255Z [0;32m[1m==> [0m[1m[0m
-2026-04-24T08:24:07.836366366Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
-2026-04-24T08:24:07.83832595Z [0;32m[1m==> [0m[1m[0m
-2026-04-24T08:24:07.840175902Z [0;32m[1m==> [0m[1mAvailable at your primary URL https://whatsapp-ai-backend-8ylf.onrender.com[0m
-2026-04-24T08:24:07.84186264Z [0;32m[1m==> [0m[1m[0m
-2026-04-24T08:24:07.844209323Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
-2026-04-24T08:24:07.935392382Z 2026-04-24 08:24:07 [error] Route / not found
-2026-04-24T08:24:07.935409592Z Error: Route / not found
-2026-04-24T08:24:07.935415033Z     at /opt/render/project/src/backend/dist/app.js:62:15
-2026-04-24T08:24:07.935421273Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-24T08:24:07.935426953Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-24T08:24:07.935430773Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-24T08:24:07.935434313Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
-2026-04-24T08:24:07.935438363Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
-2026-04-24T08:24:07.935442023Z     at /opt/render/project/src/backend/dist/app.js:44:9
-2026-04-24T08:24:07.935445783Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-24T08:24:07.935449234Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-24T08:24:07.935466154Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-24T08:24:07.936127032Z 2026-04-24 08:24:07 [info] {"method":"GET","path":"/","status":404,"duration":"1ms","ip":"::1"}
-2026-04-24T08:24:09.383181897Z 2026-04-24 08:24:09 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.242"}
+2026-04-24T08:35:56.734245275Z 2026-04-24 08:35:56 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:36:01.734200145Z 2026-04-24 08:36:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:36:06.734197825Z 2026-04-24 08:36:06 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:36:11.73438802Z 2026-04-24 08:36:11 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:36:16.733680921Z 2026-04-24 08:36:16 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:36:16.734348999Z 2026-04-24 08:36:16 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:36:21.734081231Z 2026-04-24 08:36:21 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:36:26.734597543Z 2026-04-24 08:36:26 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:36:31.734091247Z 2026-04-24 08:36:31 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:36:36.733332445Z 2026-04-24 08:36:36 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:36:41.733807064Z 2026-04-24 08:36:41 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:36:46.733864313Z 2026-04-24 08:36:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:36:46.734668985Z 2026-04-24 08:36:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:36:51.734408334Z 2026-04-24 08:36:51 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:36:56.735438307Z 2026-04-24 08:36:56 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:37:01.734143997Z 2026-04-24 08:37:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:37:06.734106071Z 2026-04-24 08:37:06 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:37:11.733861789Z 2026-04-24 08:37:11 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:37:16.734218592Z 2026-04-24 08:37:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:37:16.734712555Z 2026-04-24 08:37:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:37:21.734148573Z 2026-04-24 08:37:21 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:37:26.734295959Z 2026-04-24 08:37:26 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:37:31.733797218Z 2026-04-24 08:37:31 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:37:36.733389589Z 2026-04-24 08:37:36 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:37:41.734014357Z 2026-04-24 08:37:41 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:37:46.733449123Z 2026-04-24 08:37:46 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:37:46.734405629Z 2026-04-24 08:37:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:37:51.733891455Z 2026-04-24 08:37:51 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:37:56.734320976Z 2026-04-24 08:37:56 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:38:01.734379997Z 2026-04-24 08:38:01 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:38:06.733642096Z 2026-04-24 08:38:06 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:38:11.733581983Z 2026-04-24 08:38:11 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:38:16.734395873Z 2026-04-24 08:38:16 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:38:16.735057701Z 2026-04-24 08:38:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:38:21.733453575Z 2026-04-24 08:38:21 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:38:26.734165581Z 2026-04-24 08:38:26 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:38:31.734093926Z 2026-04-24 08:38:31 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:38:36.73364095Z 2026-04-24 08:38:36 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:38:41.736214985Z 2026-04-24 08:38:41 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:38:46.734176505Z 2026-04-24 08:38:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:38:46.734877484Z 2026-04-24 08:38:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:38:51.733895603Z 2026-04-24 08:38:51 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:38:56.734069391Z 2026-04-24 08:38:56 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:39:01.733929541Z 2026-04-24 08:39:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:39:06.734329296Z 2026-04-24 08:39:06 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:39:11.733933388Z 2026-04-24 08:39:11 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:39:16.733566411Z 2026-04-24 08:39:16 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:39:16.734174927Z 2026-04-24 08:39:16 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:39:21.734362035Z 2026-04-24 08:39:21 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:39:26.733536194Z 2026-04-24 08:39:26 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:39:31.738070407Z 2026-04-24 08:39:31 [info] {"method":"GET","path":"/health","status":200,"duration":"4ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:39:36.734122251Z 2026-04-24 08:39:36 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:39:41.734295796Z 2026-04-24 08:39:41 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:39:42.506214333Z 2026-04-24 08:39:42 [error] Route / not found
+2026-04-24T08:39:42.506237123Z Error: Route / not found
+2026-04-24T08:39:42.506243803Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-24T08:39:42.506249704Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:39:42.506254784Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:39:42.506259474Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:39:42.506263334Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-24T08:39:42.506267854Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-24T08:39:42.506272104Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-24T08:39:42.506276335Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:39:42.506280855Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:39:42.506285665Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:39:42.507100647Z 2026-04-24 08:39:42 [info] {"method":"GET","path":"/","status":404,"duration":"1ms","ip":"::1"}
+2026-04-24T08:39:42.96599693Z 2026-04-24 08:39:42 [error] Route /favicon.ico not found
+2026-04-24T08:39:42.966043391Z Error: Route /favicon.ico not found
+2026-04-24T08:39:42.966046512Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-24T08:39:42.966053282Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:39:42.966056132Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:39:42.966058862Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:39:42.966060942Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-24T08:39:42.966063142Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-24T08:39:42.966065292Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-24T08:39:42.966067392Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:39:42.966069462Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:39:42.966071692Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:39:42.966651788Z 2026-04-24 08:39:42 [info] {"method":"GET","path":"/favicon.ico","status":404,"duration":"1ms","ip":"::1"}
+2026-04-24T08:39:44.767583779Z 2026-04-24 08:39:44 [error] Route / not found
+2026-04-24T08:39:44.767601139Z Error: Route / not found
+2026-04-24T08:39:44.767604479Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-24T08:39:44.767607199Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:39:44.767610259Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:39:44.767612969Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:39:44.767615119Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-24T08:39:44.76761724Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-24T08:39:44.767619329Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-24T08:39:44.76762142Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:39:44.76762363Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:39:44.76762924Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:39:44.768035661Z 2026-04-24 08:39:44 [info] {"method":"GET","path":"/","status":404,"duration":"0ms","ip":"::1"}
+2026-04-24T08:39:45.190194514Z 2026-04-24 08:39:45 [error] Route / not found
+2026-04-24T08:39:45.190213545Z Error: Route / not found
+2026-04-24T08:39:45.190217525Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-24T08:39:45.190220885Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:39:45.190224435Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:39:45.190227886Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:39:45.190230626Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-24T08:39:45.190247666Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-24T08:39:45.190250596Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-24T08:39:45.190253076Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:39:45.190255736Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:39:45.190258396Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:39:45.190737059Z 2026-04-24 08:39:45 [info] {"method":"GET","path":"/","status":404,"duration":"1ms","ip":"::1"}
+2026-04-24T08:39:45.201756596Z 2026-04-24 08:39:45 [error] Route / not found
+2026-04-24T08:39:45.201767366Z Error: Route / not found
+2026-04-24T08:39:45.201770646Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-24T08:39:45.201774617Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:39:45.201778237Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:39:45.201781947Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:39:45.201784657Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-24T08:39:45.201787387Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-24T08:39:45.201790307Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-24T08:39:45.201793067Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:39:45.201795167Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:39:45.201797037Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:39:45.202082745Z 2026-04-24 08:39:45 [info] {"method":"GET","path":"/","status":404,"duration":"0ms","ip":"::1"}
+2026-04-24T08:39:46.733920065Z 2026-04-24 08:39:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:39:46.734325086Z 2026-04-24 08:39:46 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:39:47.085778905Z 2026-04-24 08:39:47 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::1"}
+2026-04-24T08:39:51.733531513Z 2026-04-24 08:39:51 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:39:56.734059306Z 2026-04-24 08:39:56 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:40:01.733484338Z 2026-04-24 08:40:01 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:40:06.734095173Z 2026-04-24 08:40:06 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:40:11.734395918Z 2026-04-24 08:40:11 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:40:16.733775879Z 2026-04-24 08:40:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:40:16.734335034Z 2026-04-24 08:40:16 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:40:21.734587477Z 2026-04-24 08:40:21 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:40:26.73595199Z 2026-04-24 08:40:26 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:40:31.73391201Z 2026-04-24 08:40:31 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:40:36.733283818Z 2026-04-24 08:40:36 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:40:41.733442517Z 2026-04-24 08:40:41 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:40:46.733879963Z 2026-04-24 08:40:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:40:46.734621223Z 2026-04-24 08:40:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:40:51.73434543Z 2026-04-24 08:40:51 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:40:56.734352583Z 2026-04-24 08:40:56 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:40:56.873082011Z 2026-04-24 08:40:56 [error] Route /auth/register not found
+2026-04-24T08:40:56.873098711Z Error: Route /auth/register not found
+2026-04-24T08:40:56.873103511Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-24T08:40:56.873108501Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:40:56.873113971Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:40:56.873130282Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:40:56.873135372Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-24T08:40:56.873139842Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-24T08:40:56.873143522Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-24T08:40:56.873146982Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:40:56.873150622Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:40:56.873154232Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:40:56.873409969Z 2026-04-24 08:40:56 [info] {"method":"POST","path":"/auth/register","status":404,"duration":"1ms","ip":"::1"}
+2026-04-24T08:41:01.733834672Z 2026-04-24 08:41:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:41:06.735350265Z 2026-04-24 08:41:06 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:41:11.735610874Z 2026-04-24 08:41:11 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:41:16.737897337Z 2026-04-24 08:41:16 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:41:16.742355417Z 2026-04-24 08:41:16 [info] {"method":"GET","path":"/health","status":200,"duration":"2ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:41:21.733942381Z 2026-04-24 08:41:21 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:41:26.733800978Z 2026-04-24 08:41:26 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:41:31.733537721Z 2026-04-24 08:41:31 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:41:36.734127837Z 2026-04-24 08:41:36 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:41:41.734092676Z 2026-04-24 08:41:41 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:41:46.733335874Z 2026-04-24 08:41:46 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:41:46.734043853Z 2026-04-24 08:41:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:41:51.734219376Z 2026-04-24 08:41:51 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:41:56.733972888Z 2026-04-24 08:41:56 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:42:01.733925773Z 2026-04-24 08:42:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:42:06.737394884Z 2026-04-24 08:42:06 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:42:11.73477631Z 2026-04-24 08:42:11 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:42:16.734593661Z 2026-04-24 08:42:16 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:42:16.735264249Z 2026-04-24 08:42:16 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:42:21.73434477Z 2026-04-24 08:42:21 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:42:26.733811651Z 2026-04-24 08:42:26 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:42:31.733880327Z 2026-04-24 08:42:31 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:42:36.7342Z 2026-04-24 08:42:36 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:42:41.733372652Z 2026-04-24 08:42:41 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:42:46.73319247Z 2026-04-24 08:42:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:42:46.733883779Z 2026-04-24 08:42:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:42:51.733370198Z 2026-04-24 08:42:51 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:42:56.733929045Z 2026-04-24 08:42:56 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:43:01.73519149Z 2026-04-24 08:43:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:43:06.733929438Z 2026-04-24 08:43:06 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:43:11.734261528Z 2026-04-24 08:43:11 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:43:16.733686933Z 2026-04-24 08:43:16 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:43:16.734386292Z 2026-04-24 08:43:16 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:43:21.733246282Z 2026-04-24 08:43:21 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:43:26.73392015Z 2026-04-24 08:43:26 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:43:31.733362185Z 2026-04-24 08:43:31 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:43:36.734436513Z 2026-04-24 08:43:36 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:43:41.73325682Z 2026-04-24 08:43:41 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:43:46.733657789Z 2026-04-24 08:43:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:43:46.734184823Z 2026-04-24 08:43:46 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:43:51.733585385Z 2026-04-24 08:43:51 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:43:56.733571062Z 2026-04-24 08:43:56 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:44:01.73324396Z 2026-04-24 08:44:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:44:06.73411747Z 2026-04-24 08:44:06 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:44:11.734407374Z 2026-04-24 08:44:11 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:44:16.733870373Z 2026-04-24 08:44:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:44:16.734420088Z 2026-04-24 08:44:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:44:21.734323955Z 2026-04-24 08:44:21 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:44:26.733998474Z 2026-04-24 08:44:26 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:44:31.73399175Z 2026-04-24 08:44:31 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:44:36.73421331Z 2026-04-24 08:44:36 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:44:41.7344871Z 2026-04-24 08:44:41 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:44:46.738707695Z 2026-04-24 08:44:46 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:44:46.73964179Z 2026-04-24 08:44:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:44:51.733713337Z 2026-04-24 08:44:51 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:44:56.73430621Z 2026-04-24 08:44:56 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:45:01.733988426Z 2026-04-24 08:45:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:45:06.734259036Z 2026-04-24 08:45:06 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:45:11.733424635Z 2026-04-24 08:45:11 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:45:16.733885176Z 2026-04-24 08:45:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:45:16.734598725Z 2026-04-24 08:45:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:45:21.733570335Z 2026-04-24 08:45:21 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:45:26.735183284Z 2026-04-24 08:45:26 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:45:31.733381259Z 2026-04-24 08:45:31 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:45:36.733911385Z 2026-04-24 08:45:36 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:45:41.733679448Z 2026-04-24 08:45:41 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:45:46.733773619Z 2026-04-24 08:45:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:45:46.734390135Z 2026-04-24 08:45:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:45:51.733468436Z 2026-04-24 08:45:51 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:45:56.733675176Z 2026-04-24 08:45:56 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:46:01.73371727Z 2026-04-24 08:46:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:46:06.733895675Z 2026-04-24 08:46:06 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:46:11.733821662Z 2026-04-24 08:46:11 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:46:16.733213452Z 2026-04-24 08:46:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:46:16.733750177Z 2026-04-24 08:46:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:46:21.734084801Z 2026-04-24 08:46:21 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:46:26.733219811Z 2026-04-24 08:46:26 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:46:31.73536223Z 2026-04-24 08:46:31 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:46:36.733298343Z 2026-04-24 08:46:36 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:46:41.733663411Z 2026-04-24 08:46:41 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:46:46.73341871Z 2026-04-24 08:46:46 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:46:46.734046607Z 2026-04-24 08:46:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:46:51.733315081Z 2026-04-24 08:46:51 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:46:56.733448747Z 2026-04-24 08:46:56 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:47:01.733733575Z 2026-04-24 08:47:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:47:06.734363221Z 2026-04-24 08:47:06 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:47:11.733620997Z 2026-04-24 08:47:11 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:47:11.78634513Z 2026-04-24 08:47:11 [error] Route /auth/register not found
+2026-04-24T08:47:11.78635968Z Error: Route /auth/register not found
+2026-04-24T08:47:11.78636222Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-24T08:47:11.78636495Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:47:11.78636795Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:47:11.786370561Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:47:11.786372701Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-24T08:47:11.786374851Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-24T08:47:11.786377021Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-24T08:47:11.786379161Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:47:11.786381241Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:47:11.786383441Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:47:11.786787202Z 2026-04-24 08:47:11 [info] {"method":"POST","path":"/auth/register","status":404,"duration":"1ms","ip":"::1"}
+2026-04-24T08:47:14.041124949Z 2026-04-24 08:47:14 [error] Route /auth/register not found
+2026-04-24T08:47:14.041138039Z Error: Route /auth/register not found
+2026-04-24T08:47:14.04114077Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-24T08:47:14.04114383Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:47:14.04115519Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:47:14.04115816Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:47:14.04116031Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-24T08:47:14.04116526Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-24T08:47:14.04116755Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-24T08:47:14.0411697Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:47:14.041171931Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:47:14.041174031Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:47:14.041176131Z 2026-04-24 08:47:14 [info] {"method":"POST","path":"/auth/register","status":404,"duration":"0ms","ip":"::1"}
+2026-04-24T08:47:16.733291643Z 2026-04-24 08:47:16 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:47:16.73391819Z 2026-04-24 08:47:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:47:21.734437107Z 2026-04-24 08:47:21 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:47:26.734064158Z 2026-04-24 08:47:26 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:47:31.734241713Z 2026-04-24 08:47:31 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:47:36.734035715Z 2026-04-24 08:47:36 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:47:38.865853709Z 2026-04-24 08:47:38 [error] Route /auth/register not found
+2026-04-24T08:47:38.86587369Z Error: Route /auth/register not found
+2026-04-24T08:47:38.86588116Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-24T08:47:38.86588633Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:47:38.865942091Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:47:38.865948172Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:47:38.865952042Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-24T08:47:38.865955852Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-24T08:47:38.865959522Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-24T08:47:38.865963302Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:47:38.865967032Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:47:38.865970832Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:47:38.866589529Z 2026-04-24 08:47:38 [info] {"method":"POST","path":"/auth/register","status":404,"duration":"1ms","ip":"::1"}
+2026-04-24T08:47:41.733870006Z 2026-04-24 08:47:41 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:47:46.733339205Z 2026-04-24 08:47:46 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:47:46.734015554Z 2026-04-24 08:47:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:47:51.734298274Z 2026-04-24 08:47:51 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:47:55.585467011Z 2026-04-24 08:47:55 [error] Route /auth/register not found
+2026-04-24T08:47:55.585485801Z Error: Route /auth/register not found
+2026-04-24T08:47:55.585489411Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-24T08:47:55.585492891Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:47:55.585496501Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:47:55.585500021Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:47:55.585502961Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-24T08:47:55.585505821Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-24T08:47:55.585508822Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-24T08:47:55.585511672Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:47:55.585523402Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:47:55.585526082Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:47:55.585782589Z 2026-04-24 08:47:55 [info] {"method":"POST","path":"/auth/register","status":404,"duration":"0ms","ip":"::1"}
+2026-04-24T08:47:56.733588245Z 2026-04-24 08:47:56 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:48:01.733240014Z 2026-04-24 08:48:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:48:06.734354731Z 2026-04-24 08:48:06 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:48:11.734398137Z 2026-04-24 08:48:11 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:48:16.734258987Z 2026-04-24 08:48:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:48:16.734971226Z 2026-04-24 08:48:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:48:21.733387105Z 2026-04-24 08:48:21 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:48:26.734844544Z 2026-04-24 08:48:26 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:48:31.733752562Z 2026-04-24 08:48:31 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:48:36.733352877Z 2026-04-24 08:48:36 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:48:41.742602903Z 2026-04-24 08:48:41 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:48:46.73431194Z 2026-04-24 08:48:46 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:48:46.735021469Z 2026-04-24 08:48:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:48:51.733715565Z 2026-04-24 08:48:51 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:48:56.733799086Z 2026-04-24 08:48:56 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:48:59.23860674Z 2026-04-24 08:48:59 [error] Route /auth/register not found
+2026-04-24T08:48:59.238626021Z Error: Route /auth/register not found
+2026-04-24T08:48:59.238630451Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-24T08:48:59.238638441Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:48:59.238643171Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:48:59.238648161Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:48:59.238652321Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-24T08:48:59.238656451Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-24T08:48:59.238660862Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-24T08:48:59.238664862Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:48:59.238679262Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:48:59.238682392Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:48:59.238685232Z 2026-04-24 08:48:59 [info] {"method":"POST","path":"/auth/register","status":404,"duration":"1ms","ip":"::1"}
+2026-04-24T08:49:01.733892385Z 2026-04-24 08:49:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:49:06.735107063Z 2026-04-24 08:49:06 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:49:11.703762296Z 2026-04-24 08:49:11 [error] Route /auth/login not found
+2026-04-24T08:49:11.703784556Z Error: Route /auth/login not found
+2026-04-24T08:49:11.703788966Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-24T08:49:11.703793526Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:49:11.703797717Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:49:11.703802717Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:49:11.703806367Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-24T08:49:11.703810037Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-24T08:49:11.703816637Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-24T08:49:11.703820337Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:49:11.703823847Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:49:11.703827407Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:49:11.704069544Z 2026-04-24 08:49:11 [info] {"method":"POST","path":"/auth/login","status":404,"duration":"0ms","ip":"::1"}
+2026-04-24T08:49:11.733600906Z 2026-04-24 08:49:11 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:49:16.733997969Z 2026-04-24 08:49:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:49:16.734737489Z 2026-04-24 08:49:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:49:21.733801563Z 2026-04-24 08:49:21 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:49:26.734273025Z 2026-04-24 08:49:26 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:49:31.734010304Z 2026-04-24 08:49:31 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:49:36.733221818Z 2026-04-24 08:49:36 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:49:41.733638122Z 2026-04-24 08:49:41 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:49:46.734027584Z 2026-04-24 08:49:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:49:46.734662891Z 2026-04-24 08:49:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:49:51.733835898Z 2026-04-24 08:49:51 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:49:56.733789465Z 2026-04-24 08:49:56 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:50:01.734524141Z 2026-04-24 08:50:01 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:50:06.733677202Z 2026-04-24 08:50:06 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:50:11.733654464Z 2026-04-24 08:50:11 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:50:16.734102396Z 2026-04-24 08:50:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:50:16.734631101Z 2026-04-24 08:50:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:50:21.734102246Z 2026-04-24 08:50:21 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:50:26.73362302Z 2026-04-24 08:50:26 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:50:31.733969445Z 2026-04-24 08:50:31 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:50:35.586114275Z 2026-04-24 08:50:35 [error] Route /auth/login not found
+2026-04-24T08:50:35.586137525Z Error: Route /auth/login not found
+2026-04-24T08:50:35.586143196Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-24T08:50:35.586149046Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:50:35.586155336Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:50:35.586161396Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:50:35.586167046Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-24T08:50:35.586172346Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-24T08:50:35.586177917Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-24T08:50:35.586183527Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:50:35.586188597Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:50:35.586193707Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:50:35.586523916Z 2026-04-24 08:50:35 [info] {"method":"POST","path":"/auth/login","status":404,"duration":"1ms","ip":"::1"}
+2026-04-24T08:50:36.597460342Z 2026-04-24 08:50:36 [error] Route /auth/login not found
+2026-04-24T08:50:36.597502823Z Error: Route /auth/login not found
+2026-04-24T08:50:36.597508623Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-24T08:50:36.597513433Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:50:36.597517483Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:50:36.597521813Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:50:36.597529064Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-24T08:50:36.597532974Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-24T08:50:36.597566514Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-24T08:50:36.597572315Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:50:36.597574545Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:50:36.597576715Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:50:36.597900594Z 2026-04-24 08:50:36 [info] {"method":"POST","path":"/auth/login","status":404,"duration":"1ms","ip":"::1"}
+2026-04-24T08:50:36.733676781Z 2026-04-24 08:50:36 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:50:37.542717634Z 2026-04-24 08:50:37 [error] Route /auth/login not found
+2026-04-24T08:50:37.542745934Z Error: Route /auth/login not found
+2026-04-24T08:50:37.542749944Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-24T08:50:37.542753835Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:50:37.542757455Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:50:37.542761165Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:50:37.542764085Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-24T08:50:37.542766865Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-24T08:50:37.542769745Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-24T08:50:37.542772285Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:50:37.542773965Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:50:37.542775745Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:50:37.543105904Z 2026-04-24 08:50:37 [info] {"method":"POST","path":"/auth/login","status":404,"duration":"0ms","ip":"::1"}
+2026-04-24T08:50:41.285472051Z 2026-04-24 08:50:41 [error] Route /auth/login not found
+2026-04-24T08:50:41.285500012Z Error: Route /auth/login not found
+2026-04-24T08:50:41.285510002Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-24T08:50:41.285516522Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:50:41.285522082Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:50:41.285528123Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:50:41.285533272Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-24T08:50:41.285568864Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-24T08:50:41.285578104Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-24T08:50:41.285583024Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:50:41.285587924Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:50:41.285593094Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:50:41.285912503Z 2026-04-24 08:50:41 [info] {"method":"POST","path":"/auth/login","status":404,"duration":"1ms","ip":"::1"}
+2026-04-24T08:50:41.73392307Z 2026-04-24 08:50:41 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:50:46.733455818Z 2026-04-24 08:50:46 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:50:46.734030463Z 2026-04-24 08:50:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:50:51.733822087Z 2026-04-24 08:50:51 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:50:56.733982718Z 2026-04-24 08:50:56 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:51:01.734177129Z 2026-04-24 08:51:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:51:06.733607007Z 2026-04-24 08:51:06 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:51:11.733239629Z 2026-04-24 08:51:11 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:51:16.735849871Z 2026-04-24 08:51:16 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:51:16.736770405Z 2026-04-24 08:51:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:51:21.7340253Z 2026-04-24 08:51:21 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:51:26.73343549Z 2026-04-24 08:51:26 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:51:31.73510487Z 2026-04-24 08:51:31 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:51:36.733995894Z 2026-04-24 08:51:36 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:51:41.734062837Z 2026-04-24 08:51:41 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:51:46.733392189Z 2026-04-24 08:51:46 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:51:46.733958444Z 2026-04-24 08:51:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:51:51.733594523Z 2026-04-24 08:51:51 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:51:56.733951349Z 2026-04-24 08:51:56 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:52:01.733674416Z 2026-04-24 08:52:01 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:52:06.733871625Z 2026-04-24 08:52:06 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:52:11.734689407Z 2026-04-24 08:52:11 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:52:16.734098001Z 2026-04-24 08:52:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:52:16.734838931Z 2026-04-24 08:52:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:52:21.733518134Z 2026-04-24 08:52:21 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:52:26.733246732Z 2026-04-24 08:52:26 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:52:31.734043149Z 2026-04-24 08:52:31 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:52:36.734173796Z 2026-04-24 08:52:36 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:52:41.733764046Z 2026-04-24 08:52:41 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:52:46.733282922Z 2026-04-24 08:52:46 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:52:46.73393683Z 2026-04-24 08:52:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:52:51.733741023Z 2026-04-24 08:52:51 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:52:56.734460579Z 2026-04-24 08:52:56 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:52:57.334483683Z [0;34m[1m==> [0m[1mDeploying...[0m
+2026-04-24T08:52:57.418897416Z [0;34m[1m==> [0m[1mSetting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance[0m
+2026-04-24T08:53:01.733830806Z 2026-04-24 08:53:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:53:06.733741617Z 2026-04-24 08:53:06 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:53:08.701148424Z [32m[1m==>(B[m [1mRunning 'npm start'(B[m
+2026-04-24T08:53:09.707348319Z 
+2026-04-24T08:53:09.707381721Z > whatsapp-ai-agent-backend@1.0.0 start
+2026-04-24T08:53:09.707388881Z > node dist/index.js
+2026-04-24T08:53:09.707392241Z 
+2026-04-24T08:53:11.733577714Z 2026-04-24 08:53:11 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:53:12.724484603Z 2026-04-24 08:53:12 [info] Firestore initialized successfully
+2026-04-24T08:53:12.806331015Z 2026-04-24 08:53:12 [info] ✅ Server running on http://localhost:10000
+2026-04-24T08:53:12.807046984Z 2026-04-24 08:53:12 [info] Environment: production
+2026-04-24T08:53:12.807462047Z 2026-04-24 08:53:12 [info] API URL: http://localhost:5000
+2026-04-24T08:53:12.807818826Z 2026-04-24 08:53:12 [info] Frontend URL: https://whatsapp-ai-automation.vercel.app
+2026-04-24T08:53:13.388374004Z 2026-04-24 08:53:13 [error] Route / not found
+2026-04-24T08:53:13.388389845Z Error: Route / not found
+2026-04-24T08:53:13.388393255Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-24T08:53:13.388395825Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:53:13.388399845Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:53:13.388402365Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:53:13.388404716Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-24T08:53:13.388406866Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-24T08:53:13.388409166Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-24T08:53:13.388411256Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:53:13.388413406Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:53:13.388415536Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:53:13.397995472Z 2026-04-24 08:53:13 [info] {"method":"HEAD","path":"/","status":404,"duration":"10ms","ip":"::1"}
+2026-04-24T08:53:16.738418465Z 2026-04-24 08:53:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:53:16.738443196Z 2026-04-24 08:53:16 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.185"}
+2026-04-24T08:53:17.834736155Z 2026-04-24 08:53:17 [info] {"method":"GET","path":"/health","status":200,"duration":"2ms","ip":"::ffff:10.203.26.60"}
+2026-04-24T08:53:17.841259036Z 2026-04-24 08:53:17 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.60"}
+2026-04-24T08:53:18.981813034Z [0;32m[1m==> [0m[1mYour service is live 🎉[0m
+2026-04-24T08:53:19.120162928Z 2026-04-24 08:53:19 [error] Route / not found
+2026-04-24T08:53:19.120181389Z Error: Route / not found
+2026-04-24T08:53:19.120185899Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-24T08:53:19.120189839Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:53:19.120193999Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:53:19.120196889Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:53:19.120199139Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-24T08:53:19.120201359Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-24T08:53:19.12020357Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-24T08:53:19.12020573Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-24T08:53:19.12020824Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-24T08:53:19.120269043Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-24T08:53:19.120912248Z 2026-04-24 08:53:19 [info] {"method":"GET","path":"/","status":404,"duration":"1ms","ip":"::1"}
+2026-04-24T08:53:19.251540071Z [0;32m[1m==> [0m[1m[0m
+2026-04-24T08:53:19.253886405Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
+2026-04-24T08:53:19.257107596Z [0;32m[1m==> [0m[1m[0m
+2026-04-24T08:53:19.259422678Z [0;32m[1m==> [0m[1mAvailable at your primary URL https://whatsapp-ai-backend-8ylf.onrender.com[0m
+2026-04-24T08:53:19.261516136Z [0;32m[1m==> [0m[1m[0m
+2026-04-24T08:53:19.263879341Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
 ```
