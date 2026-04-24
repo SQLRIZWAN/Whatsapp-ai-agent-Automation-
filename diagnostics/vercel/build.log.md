@@ -7,7 +7,7 @@ npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schem
 npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
 npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
 
-added 292 packages in 19s
+added 292 packages in 20s
 
 70 packages are looking for funding
   run `npm fund` for details
@@ -22,9 +22,9 @@ rendering chunks...
 computing gzip size...
 [2mdist/[22m[32mindex.html                        [39m[1m[2m  0.56 kB[22m[1m[22m[2m │ gzip:  0.34 kB[22m
 [2mdist/[22m[2massets/[22m[35mindex-BM_Qrh1B.css         [39m[1m[2m  2.42 kB[22m[1m[22m[2m │ gzip:  0.92 kB[22m
-[2mdist/[22m[2massets/[22m[36mDashboardPage-DlUKy6II.js  [39m[1m[2m  3.52 kB[22m[1m[22m[2m │ gzip:  0.99 kB[22m
-[2mdist/[22m[2massets/[22m[36mLoginPage-Cm_24LuQ.js      [39m[1m[2m  4.64 kB[22m[1m[22m[2m │ gzip:  1.37 kB[22m
-[2mdist/[22m[2massets/[22m[36mRegisterPage-CQKFBS8v.js   [39m[1m[2m  6.25 kB[22m[1m[22m[2m │ gzip:  1.53 kB[22m
-[2mdist/[22m[2massets/[22m[36mindex-8z4k8SST.js          [39m[1m[2m359.90 kB[22m[1m[22m[2m │ gzip: 90.90 kB[22m
-[32m✓ built in 1.59s[39m
-Build Completed in .vercel/output [24s]
+[2mdist/[22m[2massets/[22m[36mDashboardPage-BytLJ8Jl.js  [39m[1m[2m  3.52 kB[22m[1m[22m[2m │ gzip:  0.99 kB[22m
+[2mdist/[22m[2massets/[22m[36mLoginPage-Bw_tKd5-.js      [39m[1m[2m  4.64 kB[22m[1m[22m[2m │ gzip:  1.37 kB[22m
+[2mdist/[22m[2massets/[22m[36mRegisterPage-B60wvosd.js   [39m[1m[2m  6.25 kB[22m[1m[22m[2m │ gzip:  1.53 kB[22m
+[2mdist/[22m[2massets/[22m[36mindex-BQRGIg6Q.js          [39m[1m[2m359.92 kB[22m[1m[22m[2m │ gzip: 90.90 kB[22m
+[32m✓ built in 1.54s[39m
+Build Completed in .vercel/output [25s]
