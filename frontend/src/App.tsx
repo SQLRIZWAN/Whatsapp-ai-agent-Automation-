@@ -7,6 +7,7 @@ import './styles/globals.css'
 const LoginPage = React.lazy(() => import('@pages/LoginPage'))
 const RegisterPage = React.lazy(() => import('@pages/RegisterPage'))
 const DashboardPage = React.lazy(() => import('@pages/DashboardPage'))
+const SettingsPage = React.lazy(() => import('@pages/SettingsPage'))
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuthStore()
@@ -59,6 +60,14 @@ const App: React.FC = () => {
             element={
               <PrivateRoute>
                 <DashboardPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <PrivateRoute>
+                <SettingsPage />
               </PrivateRoute>
             }
           />

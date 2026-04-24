@@ -21,16 +21,28 @@ const GEMINI_VISION_MODELS = [
 ]
 
 export class AIService {
-  private genAI: GoogleGenerativeAI
+  private genAI: GoogleGenerativeAI | null = null
   private primaryModel: string = GEMINI_MODELS[0]
   private visionModel: string = GEMINI_VISION_MODELS[0]
 
   constructor() {
-    if (!CONFIG.GEMINI_API_KEY) {
-      throw new Error('GEMINI_API_KEY not configured')
+    if (CONFIG.GEMINI_API_KEY) {
+      this.genAI = new GoogleGenerativeAI(CONFIG.GEMINI_API_KEY)
+      logger.info(`AI Service initialized with primary model: ${this.primaryModel}`)
+    } else {
+      logger.warn('GEMINI_API_KEY not configured — AI calls will fail until it is set')
     }
-    this.genAI = new GoogleGenerativeAI(CONFIG.GEMINI_API_KEY)
-    logger.info(`AI Service initialized with primary model: ${this.primaryModel}`)
+  }
+
+  private client(): GoogleGenerativeAI {
+    if (!this.genAI) {
+      throw new AppError(
+        ErrorCode.INTERNAL_ERROR,
+        'GEMINI_API_KEY not configured',
+        500
+      )
+    }
+    return this.genAI
   }
 
   async generateResponse(
@@ -44,7 +56,7 @@ export class AIService {
 
     for (const model of GEMINI_MODELS) {
       try {
-        const genModel = this.genAI.getGenerativeModel({ model })
+        const genModel = this.client().getGenerativeModel({ model })
         const result = await genModel.generateContent(fullPrompt)
         const response = result.response
         const text = response.text()
@@ -86,7 +98,7 @@ export class AIService {
 
     for (const model of GEMINI_VISION_MODELS) {
       try {
-        const modelWithVision = this.genAI.getGenerativeModel({ model })
+        const modelWithVision = this.client().getGenerativeModel({ model })
 
         const result = await modelWithVision.generateContent([
           {
@@ -129,6 +141,52 @@ export class AIService {
     )
   }
 
+  /**
+   * Accepts an inline base64 audio blob and asks Gemini to reply in persona.
+   * Uses multimodal models which handle audio inlineData directly.
+   */
+  async generateFromAudio(
+    audioBase64: string,
+    mimeType: string,
+    systemPrompt: string
+  ): Promise<{ text: string; model: string }> {
+    const instruction =
+      systemPrompt +
+      '\n\nThe user just sent this voice message. Transcribe it internally, understand it, ' +
+      'and reply conversationally in short natural Hinglish (Hindi in Roman script). ' +
+      'Do NOT prefix your reply with transcription or labels — just give the reply a human would speak.'
+
+    for (const model of GEMINI_VISION_MODELS) {
+      try {
+        const genModel = this.client().getGenerativeModel({ model })
+        const result = await genModel.generateContent([
+          { inlineData: { data: audioBase64, mimeType } },
+          instruction,
+        ])
+        const text = result.response.text().trim()
+        logger.info(`Audio handled with model: ${model}`)
+        return { text, model }
+      } catch (error) {
+        logger.warn(`Audio model ${model} failed, trying next fallback...`)
+        if (model === GEMINI_VISION_MODELS[GEMINI_VISION_MODELS.length - 1]) {
+          logger.error('All audio-capable models failed:', error)
+          throw new AppError(
+            ErrorCode.INTERNAL_ERROR,
+            'Failed to process audio with AI',
+            500
+          )
+        }
+        continue
+      }
+    }
+
+    throw new AppError(
+      ErrorCode.INTERNAL_ERROR,
+      'Failed to process audio with AI',
+      500
+    )
+  }
+
   async makeDecision(
     context: string,
     systemPrompt: string
@@ -137,7 +195,7 @@ export class AIService {
 
     for (const model of GEMINI_MODELS) {
       try {
-        const genModel = this.genAI.getGenerativeModel({ model })
+        const genModel = this.client().getGenerativeModel({ model })
         const result = await genModel.generateContent(prompt)
         const response = result.response
         const decision = response.text()

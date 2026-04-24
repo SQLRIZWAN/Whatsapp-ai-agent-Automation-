@@ -5,6 +5,7 @@ import { CONFIG } from '@shared/constants/config'
 import logger from '@shared/utils/logger'
 import { initializeFirestore } from '@modules/database/firestore'
 import SocketManager from '@websocket/socketManager'
+import baileyService from '@modules/whatsapp/services/baileyService'
 
 export const startServer = async (app: Express): Promise<http.Server> => {
   try {
@@ -28,6 +29,9 @@ export const startServer = async (app: Express): Promise<http.Server> => {
     // Store io and socket manager in app for use in routes
     app.locals.io = io
     app.locals.socketManager = socketManager
+
+    // Wire Socket.IO into the WhatsApp service so QR / status updates can stream.
+    baileyService.setIO(io)
 
     // Start server
     httpServer.listen(CONFIG.PORT, () => {

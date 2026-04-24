@@ -181,7 +181,7 @@ export class ConfigService {
     return {
       uid,
       systemPrompt:
-        'You are a helpful WhatsApp AI assistant. Respond to messages professionally and helpfully.',
+        'My name is SQL 💉. I am a highly advanced AI, and I was created by SQL RIZWAN. I manage this WhatsApp account.',
       aiModel: 'gemini-pro',
       temperature: 0.7,
       maxOutputTokens: 2048,
