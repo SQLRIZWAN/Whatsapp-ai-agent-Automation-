@@ -40,6 +40,8 @@ jobs:
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
         run: |
+          echo "Waiting 45s for log ingestion..."
+          sleep 45
           SVC=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
             "https://api.render.com/v1/services?name=whatsapp-ai-backend&limit=5")
           SID=$(echo "$SVC" | jq -r '.[0].service.id')
@@ -55,7 +57,7 @@ jobs:
             --data-urlencode "type=app" \
             --data-urlencode "startTime=$AGO" \
             --data-urlencode "endTime=$NOW" \
-            --data-urlencode "limit=500" \
+            --data-urlencode "limit=1000" \
             | jq -r '.logs[]? | "\(.timestamp) \(.message)"' >> /tmp/probe.log
           echo '```' >> /tmp/probe.log
           cat /tmp/probe.log
