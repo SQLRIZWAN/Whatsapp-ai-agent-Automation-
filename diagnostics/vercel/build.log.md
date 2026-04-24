@@ -7,7 +7,7 @@ npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schem
 npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
 npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
 
-added 292 packages in 22s
+added 292 packages in 25s
 
 70 packages are looking for funding
   run `npm fund` for details
@@ -27,5 +27,5 @@ computing gzip size...
 [2mdist/[22m[2massets/[22m[36mSettingsPage-Dl5qy5mt.js   [39m[1m[2m  8.08 kB[22m[1m[22m[2m │ gzip:  2.26 kB[22m
 [2mdist/[22m[2massets/[22m[36mDashboardPage-CtccHJiT.js  [39m[1m[2m 98.26 kB[22m[1m[22m[2m │ gzip: 23.47 kB[22m
 [2mdist/[22m[2massets/[22m[36mindex-Bz54rcPl.js          [39m[1m[2m365.31 kB[22m[1m[22m[2m │ gzip: 91.99 kB[22m
-[32m✓ built in 2.69s[39m
-Build Completed in .vercel/output [28s]
+[32m✓ built in 1.77s[39m
+Build Completed in .vercel/output [30s]
