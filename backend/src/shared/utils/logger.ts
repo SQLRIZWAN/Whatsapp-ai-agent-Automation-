@@ -32,15 +32,21 @@ const logger = winston.createLogger({
   ]
 })
 
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(new winston.transports.Console({
-    format: winston.format.combine(
-      winston.format.colorize(),
-      winston.format.printf(({ level, message, timestamp }) => {
-        return `${timestamp} [${level}]: ${message}`
-      })
-    )
-  }))
-}
+// Always log to stdout so platform log collectors (Render, etc.) can see them
+logger.add(new winston.transports.Console({
+  format: process.env.NODE_ENV === 'production'
+    ? winston.format.combine(
+        winston.format.printf(({ level, message, timestamp, stack }) => {
+          const msg = typeof message === 'object' ? JSON.stringify(message) : message
+          return `${timestamp} [${level}] ${msg}${stack ? '\n' + stack : ''}`
+        })
+      )
+    : winston.format.combine(
+        winston.format.colorize(),
+        winston.format.printf(({ level, message, timestamp }) => {
+          return `${timestamp} [${level}]: ${message}`
+        })
+      )
+}))
 
 export default logger
