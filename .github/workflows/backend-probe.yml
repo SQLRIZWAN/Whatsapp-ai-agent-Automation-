@@ -28,10 +28,26 @@ jobs:
           EMAIL="probe_$(date +%s)@example.com"
           BODY=$(jq -n --arg e "$EMAIL" --arg p "TestPass123!" --arg n "Probe User" '{email:$e,password:$p,displayName:$n}')
           echo "Request: $BODY" | tee -a /tmp/probe.log
-          curl -sS -w "\nHTTP: %{http_code}\n" \
+          RESP=$(curl -sS -w "\nHTTP: %{http_code}\n" \
             -X POST "$BACKEND_URL/api/auth/register" \
             -H "Content-Type: application/json" \
-            -d "$BODY" | tee -a /tmp/probe.log
+            -d "$BODY")
+          echo "$RESP" | tee -a /tmp/probe.log
+
+          echo "" >> /tmp/probe.log
+          echo "== GET /api/whatsapp/status (auth'd — creates Baileys runtime, kicks QR) ==" | tee -a /tmp/probe.log
+          TOKEN=$(echo "$RESP" | grep -o '"token":"[^"]*"' | head -n1 | sed 's/"token":"\(.*\)"/\1/')
+          echo "token length: ${#TOKEN}" | tee -a /tmp/probe.log
+          curl -sS -w "\nHTTP: %{http_code}\n" \
+            -H "Authorization: Bearer $TOKEN" \
+            "$BACKEND_URL/api/whatsapp/status" | head -c 3000 | tee -a /tmp/probe.log
+
+          echo "" >> /tmp/probe.log
+          echo "== Sleep 10s, then GET /api/whatsapp/status again (QR should be present) ==" | tee -a /tmp/probe.log
+          sleep 10
+          curl -sS -w "\nHTTP: %{http_code}\n" \
+            -H "Authorization: Bearer $TOKEN" \
+            "$BACKEND_URL/api/whatsapp/status" | head -c 3000 | tee -a /tmp/probe.log
 
           echo "" >> /tmp/probe.log
           echo "== Render app logs (last 30 min) ==" | tee -a /tmp/probe.log
