@@ -5,7 +5,7 @@
 Retrieving project…
 > Downloading `production` Environment Variables for sqlrizwan/whatsapp-ai-automation
 Downloading
-Created .vercel/.env.production.local file  [122ms]
+Created .vercel/.env.production.local file  [73ms]
 
 > Downloading project settings
-Downloaded project settings to ~/work/Whatsapp-ai-agent-Automation-/Whatsapp-ai-agent-Automation-/frontend/.vercel/project.json [0ms]
+Downloaded project settings to ~/work/Whatsapp-ai-agent-Automation-/Whatsapp-ai-agent-Automation-/frontend/.vercel/project.json [1ms]
