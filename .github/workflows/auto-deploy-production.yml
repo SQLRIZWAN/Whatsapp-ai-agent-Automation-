@@ -354,34 +354,30 @@ jobs:
         run: |
           set +e
           mkdir -p .vercel ../diagnostics/vercel
+
+          # Write project.json (no rootDirectory — we deploy from frontend/ directly)
+          jq -n --arg pid "$VERCEL_PROJECT_ID" --arg oid "$VERCEL_ORG_ID" \
+            '{"projectId":$pid,"orgId":$oid}' > .vercel/project.json
+
+          # Bake backend URL into build
           echo "VITE_API_URL=$BACKEND_URL" > .env.production
 
-          # Pull first — this downloads project settings (which has rootDirectory:"frontend")
-          vercel pull --yes --environment=production --token "$VERCEL_TOKEN" > ../diagnostics/vercel/pull.log 2>&1
-          PULL_EC=$?
-          echo "pull exit: $PULL_EC"
-          echo "--- project.json after pull ---"
-          cat .vercel/project.json || true
-
-          # Override AFTER pull so rootDirectory:null takes effect for build
-          jq -n --arg pid "$VERCEL_PROJECT_ID" --arg oid "$VERCEL_ORG_ID" \
-            '{"projectId":$pid,"orgId":$oid,"settings":{"rootDirectory":null,"outputDirectory":"dist"}}' \
-            > .vercel/project.json
-          echo "--- project.json after override ---"
-          cat .vercel/project.json
-
-          vercel build --prod --token "$VERCEL_TOKEN" > ../diagnostics/vercel/build.log 2>&1
+          # Build locally
+          npm ci --prefer-offline >> ../diagnostics/vercel/build.log 2>&1
+          npm run build >> ../diagnostics/vercel/build.log 2>&1
           BUILD_EC=$?
           echo "build exit: $BUILD_EC"
-          tail -n 40 ../diagnostics/vercel/build.log
+          tail -n 20 ../diagnostics/vercel/build.log
+          ls -lh dist/ || true
 
           if [ "$BUILD_EC" != "0" ]; then
-            echo "::error::vercel build failed"
-            set -e
+            echo "::error::npm build failed"
             exit 1
           fi
 
-          vercel deploy --prebuilt --prod --token "$VERCEL_TOKEN" > ../diagnostics/vercel/deploy.log 2>&1
+          # Deploy the prebuilt dist/ directory directly to Vercel
+          vercel deploy dist/ --prod --yes --token "$VERCEL_TOKEN" \
+            > ../diagnostics/vercel/deploy.log 2>&1
           DEPLOY_EC=$?
           echo "deploy exit: $DEPLOY_EC"
           cat ../diagnostics/vercel/deploy.log
