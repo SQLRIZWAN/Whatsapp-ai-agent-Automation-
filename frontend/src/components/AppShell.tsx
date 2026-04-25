@@ -1,6 +1,11 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { io, Socket } from 'socket.io-client'
 import { useAuthStore } from '@store/authStore'
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+
+type ConnStatus = 'connected' | 'qr' | 'connecting' | 'disconnected'
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: '📡' },
@@ -11,12 +16,39 @@ const navItems = [
 
 const AppShell: React.FC = () => {
   const navigate = useNavigate()
-  const { user, logout } = useAuthStore()
+  const { user, token, logout } = useAuthStore()
+  const [connStatus, setConnStatus] = useState<ConnStatus>('disconnected')
+  const socketRef = useRef<Socket | null>(null)
+
+  useEffect(() => {
+    if (!token) return
+    const s = io(API_URL, { transports: ['websocket', 'polling'], reconnection: true })
+    socketRef.current = s
+    s.on('connect', () => s.emit('authenticate', token))
+    s.on('whatsapp:status', (payload: { status: ConnStatus }) => {
+      setConnStatus(payload.status)
+    })
+    return () => { s.close(); socketRef.current = null }
+  }, [token])
 
   const handleSignOut = async () => {
     await logout()
     navigate('/login')
   }
+
+  const statusDotColor = {
+    connected: '#25d366',
+    qr: '#f59e0b',
+    connecting: '#6b7280',
+    disconnected: '#ef4444',
+  }[connStatus]
+
+  const statusLabel = {
+    connected: 'Online',
+    qr: 'Scan QR',
+    connecting: 'Connecting',
+    disconnected: 'Offline',
+  }[connStatus]
 
   return (
     <div className="app-shell">
@@ -24,6 +56,15 @@ const AppShell: React.FC = () => {
         <div className="brand">
           <div className="brand-logo">SQL 💉</div>
           <div className="brand-sub">WhatsApp AI Agent</div>
+        </div>
+
+        {/* Live status indicator */}
+        <div className="conn-status-bar" style={{ borderColor: `${statusDotColor}44` }}>
+          <span className={`status-dot ${connStatus === 'connected' ? 'dot-pulse' : ''}`}
+                style={{ background: statusDotColor }} />
+          <span style={{ fontSize: 12, color: statusDotColor, fontWeight: 600 }}>
+            {statusLabel}
+          </span>
         </div>
 
         <nav className="app-nav">
@@ -73,12 +114,29 @@ const appShellCss = `
     padding: 22px;
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 14px;
     flex-shrink: 0;
   }
   .brand { padding-bottom: 8px; border-bottom: 1px solid #14534b; }
   .brand-logo { font-size: 26px; font-weight: 700; color: white; }
   .brand-sub { font-size: 12px; color: #9bd3c7; margin-top: 4px; }
+
+  .conn-status-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border: 1px solid #25d36644;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.05);
+  }
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
   .app-nav { display: flex; flex-direction: column; gap: 4px; }
   .app-nav-link {
     display: flex; align-items: center; padding: 10px 12px;
@@ -99,12 +157,21 @@ const appShellCss = `
     border: 1px solid #ff8b8b; border-radius: 4px; cursor: pointer; font-weight: 500;
   }
   .app-main { flex: 1; padding: 28px; overflow: auto; }
+
+  @keyframes pulse-ring {
+    0%   { box-shadow: 0 0 0 0 rgba(37,211,102,0.6); }
+    70%  { box-shadow: 0 0 0 6px rgba(37,211,102,0); }
+    100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); }
+  }
+  .dot-pulse { animation: pulse-ring 1.5s infinite; }
+
   @media (max-width: 720px) {
     .app-shell { flex-direction: column; }
     .app-sidebar {
       width: auto; min-height: auto; padding: 12px;
       flex-direction: row; flex-wrap: wrap; gap: 8px;
     }
+    .conn-status-bar { display: none; }
     .app-nav { flex-direction: row; flex-wrap: wrap; gap: 6px; flex: 1 1 100%; }
     .user-box {
       flex: 1 1 100%; margin-top: 8px; padding-top: 8px;

@@ -15,13 +15,16 @@ import logger from '@shared/utils/logger'
 import { getFirestore } from '../../database/firestore'
 import { COLLECTIONS, SESSION_STATUS } from '@shared/constants/config'
 import { useFirestoreAuthState } from './authState'
-import { synthesizeVoiceNote } from './ttsService'
+import { synthesizeVoiceNote, convertToMp3 } from './ttsService'
 import aiService from './aiService'
 import configService from '../../config/services/configService'
 import messageService from './messageService'
 import callService from './callService'
 
 type Status = 'disconnected' | 'connecting' | 'qr' | 'connected'
+
+// After this many consecutive failures we give up and wait for manual restart.
+const MAX_RECONNECT_ATTEMPTS = 25
 
 interface SessionRuntime {
   sock: WASocket
@@ -31,6 +34,7 @@ interface SessionRuntime {
   reconnecting: boolean
   attempts: number
   lastError: string | null
+  connectedAt: number | null
 }
 
 class BaileyService {
@@ -55,6 +59,7 @@ class BaileyService {
         phone: r.phone,
         attempts: r.attempts,
         lastError: r.lastError,
+        connectedAt: r.connectedAt,
       })
     }
   }
@@ -67,6 +72,7 @@ class BaileyService {
       phone: r?.phone || null,
       attempts: r?.attempts || 0,
       lastError: r?.lastError || null,
+      connectedAt: r?.connectedAt || null,
     }
   }
 
@@ -164,6 +170,7 @@ class BaileyService {
       reconnecting: false,
       attempts: prevAttempts + 1,
       lastError: null,
+      connectedAt: null,
     }
     this.runtimes.set(uid, runtime)
 
@@ -188,6 +195,9 @@ class BaileyService {
         runtime.status = 'connected'
         runtime.qrDataUrl = null
         runtime.phone = sock.user?.id?.split(':')[0] || null
+        runtime.connectedAt = Date.now()
+        // Reset attempt counter so future disconnects get a fresh slate.
+        runtime.attempts = 0
         logger.info(`[wa] connected as ${runtime.phone} for ${uid}`)
         this.emitStatus(uid)
         await this.persistSessionStatus(uid, SESSION_STATUS.CONNECTED, runtime.phone)
@@ -199,6 +209,7 @@ class BaileyService {
         const loggedOut = code === DisconnectReason.loggedOut
         runtime.status = 'disconnected'
         runtime.lastError = errMsg
+        runtime.connectedAt = null
         this.emitStatus(uid)
         logger.warn(`[wa] connection closed for ${uid} (code=${code}, msg=${errMsg})`)
         this.runtimes.delete(uid)
@@ -215,8 +226,7 @@ class BaileyService {
           return
         }
 
-        // Hard cap reconnect attempts to avoid Render CPU storm.
-        if (runtime.attempts >= 8) {
+        if (runtime.attempts >= MAX_RECONNECT_ATTEMPTS) {
           logger.error(`[wa] giving up after ${runtime.attempts} attempts for ${uid}`)
           await this.persistSessionStatus(uid, SESSION_STATUS.DISCONNECTED, null)
           return
@@ -235,7 +245,8 @@ class BaileyService {
 
         if (!runtime.reconnecting) {
           runtime.reconnecting = true
-          const delay = Math.min(1000 * 2 ** runtime.attempts, 30_000)
+          const delay = Math.min(1000 * 2 ** Math.min(runtime.attempts, 6), 60_000)
+          logger.info(`[wa] reconnecting in ${delay}ms (attempt ${runtime.attempts + 1})`)
           setTimeout(() => {
             this.spawn(uid, runtime.attempts).catch((e) =>
               logger.error('[wa] respawn failed', e)
@@ -280,9 +291,11 @@ class BaileyService {
     }
 
     let forwardNumber = ''
+    let systemPrompt = ''
     try {
       const cfg = await configService.getConfiguration(uid)
       forwardNumber = cfg?.callForwarding?.phoneNumber || ''
+      systemPrompt = cfg?.systemPrompt || ''
     } catch {
       // ignore
     }
@@ -307,10 +320,25 @@ class BaileyService {
     }
 
     setTimeout(async () => {
+      const callType = call.isVideo ? 'video' : 'voice'
+      const forwardHint = forwardNumber
+        ? `Agar bahut urgent hai to ${forwardNumber} pe call kar sakte ho.`
+        : ''
+
+      // Try AI-generated call rejection message.
+      let spoken: string
       try {
-        const spoken =
-          'Main SQL 💉 hoon. Rizwan bhai abhi busy hain. Main live calls support nahi karta. ' +
-          'Please apna message yahaan voice note ya text mein bhej dein, main turant reply karunga.'
+        const prompt = buildPromptWithForwarding(systemPrompt, forwardNumber)
+        const context = `The user just made a ${callType} call. Reject it politely, explain you can't answer live calls, ask them to send a voice note or text. Keep it under 40 words in Hinglish. ${forwardHint}`
+        const { text } = await aiService.generateResponse(context, context, prompt)
+        spoken = text
+      } catch {
+        spoken =
+          `Main SQL 💉 hoon. Rizwan bhai abhi busy hain. Main live calls support nahi karta. ` +
+          `Please apna message yahaan voice note ya text mein bhej dein, main turant reply karunga. ${forwardHint}`.trim()
+      }
+
+      try {
         const { ogg, durationSec } = await synthesizeVoiceNote(spoken, { lang: 'hi' })
         await r.sock.sendMessage(call.from, {
           audio: ogg,
@@ -328,7 +356,7 @@ class BaileyService {
         logger.error('[wa] failed to send post-call voice note', e as Error)
         try {
           await r.sock.sendMessage(call.from, {
-            text: 'Main SQL 💉 hoon, live calls support nahi. Apna message yahin bhejiye.',
+            text: spoken,
           })
         } catch {
           // ignore
@@ -366,13 +394,14 @@ class BaileyService {
       content.videoMessage?.caption ||
       ''
 
-    // Audio → voice reply via Gemini
+    // ── Audio → convert OGG→MP3, then Gemini audio reply ──────────────────
     if (content.audioMessage) {
       try {
+        await r.sock.sendPresenceUpdate('composing', jid)
         const buf = (await downloadMediaMessage(msg, 'buffer', {})) as Buffer
-        const base64 = buf.toString('base64')
-        const mime = content.audioMessage.mimetype || 'audio/ogg'
-        const { text: replyText } = await aiService.generateFromAudio(base64, mime, prompt)
+        const mp3Buf = await convertToMp3(buf, 'ogg')
+        const base64 = mp3Buf.toString('base64')
+        const { text: replyText } = await aiService.generateFromAudio(base64, prompt)
         await this.sendVoiceReply(uid, jid, replyText)
         await messageService.saveMessage(uid, jid, uid, '[voice message]', 'audio', false)
         await messageService.saveMessage(uid, uid, jid, replyText, 'audio', true, {
@@ -385,21 +414,24 @@ class BaileyService {
       } catch (e) {
         logger.error('[wa] audio handling error', e as Error)
         await r.sock.sendMessage(jid, {
-          text: 'Voice message process nahi ho saki, please thoda der mein dubara bhej dein.',
+          text: 'Voice message sun li — lekin process mein thodi gadbad aayi. Kya aap dobara bhej sakte hain ya text mein likh sakte hain?',
         })
         return
       }
     }
 
-    // Image → vision text reply
+    // ── Image → vision reply ───────────────────────────────────────────────
     if (content.imageMessage) {
       try {
+        await r.sock.sendPresenceUpdate('composing', jid)
         const buf = (await downloadMediaMessage(msg, 'buffer', {})) as Buffer
         const base64 = buf.toString('base64')
+        const imageMime = content.imageMessage.mimetype || 'image/jpeg'
         const { text: replyText } = await aiService.analyzeImage(
           base64,
           text || 'Is image ko dekho aur friendly reply do.',
-          prompt
+          prompt,
+          imageMime
         )
         await r.sock.sendMessage(jid, { text: replyText })
         await messageService.saveMessage(uid, jid, uid, text || '[image]', 'image', false)
@@ -412,12 +444,55 @@ class BaileyService {
         return
       } catch (e) {
         logger.error('[wa] image handling error', e as Error)
+        await r.sock.sendMessage(jid, {
+          text: 'Aapki image dekh li — lekin process mein kuch gadbad aayi. Thodi der baad try karein ya kuch aur bataein.',
+        })
+        return
       }
     }
 
-    // Text
+    // ── Video → vision reply ───────────────────────────────────────────────
+    if (content.videoMessage) {
+      try {
+        await r.sock.sendPresenceUpdate('composing', jid)
+        const buf = (await downloadMediaMessage(msg, 'buffer', {})) as Buffer
+        // Only send to Gemini if size is reasonable (< 15 MB to stay in free tier).
+        if (buf.byteLength > 15 * 1024 * 1024) {
+          await r.sock.sendMessage(jid, {
+            text: 'Video thodi badi hai, is baar analyze nahi kar paya. Chota clip bhejein ya kuch aur bataein — main reply karunga!',
+          })
+          return
+        }
+        const base64 = buf.toString('base64')
+        const videoMime = content.videoMessage.mimetype || 'video/mp4'
+        const { text: replyText } = await aiService.analyzeVideo(
+          base64,
+          text || '',
+          prompt,
+          videoMime
+        )
+        await r.sock.sendMessage(jid, { text: replyText })
+        await messageService.saveMessage(uid, jid, uid, text || '[video]', 'video', false)
+        await messageService.saveMessage(uid, uid, jid, replyText, 'text', true, {
+          text: replyText,
+          model: 'gemini-vision',
+          tokensUsed: 0,
+          processedAt: Date.now(),
+        })
+        return
+      } catch (e) {
+        logger.error('[wa] video handling error', e as Error)
+        await r.sock.sendMessage(jid, {
+          text: 'Video dekh li — lekin process mein kuch gadbad aayi. Thodi der baad try karein.',
+        })
+        return
+      }
+    }
+
+    // ── Text ───────────────────────────────────────────────────────────────
     if (!text.trim()) return
     try {
+      await r.sock.sendPresenceUpdate('composing', jid)
       const { text: replyText } = await aiService.generateResponse(text, text, prompt)
       await r.sock.sendMessage(jid, { text: replyText })
       await messageService.saveMessage(uid, jid, uid, text, 'text', false)
@@ -429,6 +504,13 @@ class BaileyService {
       })
     } catch (e) {
       logger.error('[wa] text reply error', e as Error)
+      try {
+        await r.sock.sendMessage(jid, {
+          text: 'Message mila — reply mein thodi der ho sakti hai. Kripya dobara bhejein ya thodi der intezaar karein.',
+        })
+      } catch {
+        // ignore secondary failure
+      }
     }
   }
 
