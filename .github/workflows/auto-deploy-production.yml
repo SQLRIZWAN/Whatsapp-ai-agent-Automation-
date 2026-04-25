@@ -353,16 +353,23 @@ jobs:
           PROJECT_NAME: whatsapp-ai-automation
         run: |
           set +e
-          mkdir -p .vercel
-          cat > .vercel/project.json <<EOF
-          {"projectId":"$VERCEL_PROJECT_ID","orgId":"$VERCEL_ORG_ID","settings":{"rootDirectory":null,"outputDirectory":"dist"}}
-          EOF
+          mkdir -p .vercel ../diagnostics/vercel
           echo "VITE_API_URL=$BACKEND_URL" > .env.production
 
-          mkdir -p ../diagnostics/vercel
+          # Pull first — this downloads project settings (which has rootDirectory:"frontend")
           vercel pull --yes --environment=production --token "$VERCEL_TOKEN" > ../diagnostics/vercel/pull.log 2>&1
           PULL_EC=$?
           echo "pull exit: $PULL_EC"
+          echo "--- project.json after pull ---"
+          cat .vercel/project.json || true
+
+          # Override AFTER pull so rootDirectory:null takes effect for build
+          # (vercel pull would overwrite this if written before)
+          cat > .vercel/project.json <<EOF
+{"projectId":"$VERCEL_PROJECT_ID","orgId":"$VERCEL_ORG_ID","settings":{"rootDirectory":null,"outputDirectory":"dist"}}
+EOF
+          echo "--- project.json after override ---"
+          cat .vercel/project.json
 
           vercel build --prod --token "$VERCEL_TOKEN" > ../diagnostics/vercel/build.log 2>&1
           BUILD_EC=$?
