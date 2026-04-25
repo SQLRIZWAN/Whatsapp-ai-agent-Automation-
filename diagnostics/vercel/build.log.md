@@ -7,12 +7,12 @@ npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schem
 npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
 npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
 
-added 329 packages in 27s
+added 329 packages in 24s
 
 78 packages are looking for funding
   run `npm fund` for details
 
-> whatsapp-ai-agent-frontend@1.0.0 build
+> whatsapp-ai-agent-frontend@1.0.1 build
 > tsc && vite build
 
 [36mvite v5.4.21 [32mbuilding for production...[36m[39m
@@ -32,4 +32,4 @@ computing gzip size...
 [2mdist/[22m[2massets/[22m[36mindex-BtypAtrY.js          [39m[1m[2m 89.66 kB[22m[1m[22m[2m │ gzip: 21.09 kB[22m
 [2mdist/[22m[2massets/[22m[36mindex-x3b3nVbM.js          [39m[1m[2m370.54 kB[22m[1m[22m[2m │ gzip: 93.08 kB[22m
 [32m✓ built in 1.92s[39m
-Build Completed in .vercel/output [33s]
+Build Completed in .vercel/output [30s]
