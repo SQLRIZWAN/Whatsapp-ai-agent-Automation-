@@ -7,7 +7,7 @@ npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schem
 npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
 npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
 
-added 292 packages in 25s
+added 292 packages in 21s
 
 70 packages are looking for funding
   run `npm fund` for details
@@ -17,15 +17,18 @@ added 292 packages in 25s
 
 [36mvite v5.4.21 [32mbuilding for production...[36m[39m
 transforming...
-[32m✓[39m 136 modules transformed.
+[32m✓[39m 139 modules transformed.
 rendering chunks...
 computing gzip size...
 [2mdist/[22m[32mindex.html                        [39m[1m[2m  0.56 kB[22m[1m[22m[2m │ gzip:  0.34 kB[22m
 [2mdist/[22m[2massets/[22m[35mindex-BM_Qrh1B.css         [39m[1m[2m  2.42 kB[22m[1m[22m[2m │ gzip:  0.92 kB[22m
-[2mdist/[22m[2massets/[22m[36mLoginPage-BDRKYc4r.js      [39m[1m[2m  4.64 kB[22m[1m[22m[2m │ gzip:  1.37 kB[22m
-[2mdist/[22m[2massets/[22m[36mRegisterPage-j70oKWhk.js   [39m[1m[2m  6.25 kB[22m[1m[22m[2m │ gzip:  1.53 kB[22m
-[2mdist/[22m[2massets/[22m[36mSettingsPage-Dl5qy5mt.js   [39m[1m[2m  8.08 kB[22m[1m[22m[2m │ gzip:  2.26 kB[22m
-[2mdist/[22m[2massets/[22m[36mDashboardPage-CtccHJiT.js  [39m[1m[2m 98.26 kB[22m[1m[22m[2m │ gzip: 23.47 kB[22m
-[2mdist/[22m[2massets/[22m[36mindex-Bz54rcPl.js          [39m[1m[2m365.31 kB[22m[1m[22m[2m │ gzip: 91.99 kB[22m
-[32m✓ built in 1.77s[39m
-Build Completed in .vercel/output [30s]
+[2mdist/[22m[2massets/[22m[36mCallsPage-CY9qR1wN.js      [39m[1m[2m  4.33 kB[22m[1m[22m[2m │ gzip:  1.33 kB[22m
+[2mdist/[22m[2massets/[22m[36mAppShell-DJ8YaRmI.js       [39m[1m[2m  4.37 kB[22m[1m[22m[2m │ gzip:  1.41 kB[22m
+[2mdist/[22m[2massets/[22m[36mMessagesPage-BgKlF8yR.js   [39m[1m[2m  4.51 kB[22m[1m[22m[2m │ gzip:  1.51 kB[22m
+[2mdist/[22m[2massets/[22m[36mLoginPage-sGVBcWJ8.js      [39m[1m[2m  4.64 kB[22m[1m[22m[2m │ gzip:  1.37 kB[22m
+[2mdist/[22m[2massets/[22m[36mRegisterPage-BgRZK7CI.js   [39m[1m[2m  6.25 kB[22m[1m[22m[2m │ gzip:  1.53 kB[22m
+[2mdist/[22m[2massets/[22m[36mSettingsPage-CCxBSSYZ.js   [39m[1m[2m  6.75 kB[22m[1m[22m[2m │ gzip:  1.99 kB[22m
+[2mdist/[22m[2massets/[22m[36mDashboardPage-CoPRVZV2.js  [39m[1m[2m 98.75 kB[22m[1m[22m[2m │ gzip: 23.58 kB[22m
+[2mdist/[22m[2massets/[22m[36mindex-ClpUfhNV.js          [39m[1m[2m370.28 kB[22m[1m[22m[2m │ gzip: 92.93 kB[22m
+[32m✓ built in 1.89s[39m
+Build Completed in .vercel/output [27s]
