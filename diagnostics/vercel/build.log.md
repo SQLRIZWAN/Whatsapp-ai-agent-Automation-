@@ -7,7 +7,7 @@ npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schem
 npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
 npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
 
-added 292 packages in 22s
+added 292 packages in 20s
 
 70 packages are looking for funding
   run `npm fund` for details
