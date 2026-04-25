@@ -322,42 +322,24 @@ class BaileyService {
         ? `Agar bahut urgent hai to ${forwardNumber} pe call kar sakte ho.`
         : ''
 
-      // Try AI-generated call rejection message.
-      let spoken: string
+      // AI-generated call rejection — no fallback, silence if AI fails
       try {
         const prompt = buildPromptWithForwarding(systemPrompt, forwardNumber)
         const context = `The user just made a ${callType} call. Reject it politely, explain you can't answer live calls, ask them to send a voice note or text. Keep it under 40 words in Hinglish. ${forwardHint}`
-        const { text } = await aiService.generateResponse(context, context, prompt)
-        spoken = text
-      } catch {
-        spoken =
-          `Main SQL 💉 hoon. Rizwan bhai abhi busy hain. Main live calls support nahi karta. ` +
-          `Please apna message yahaan voice note ya text mein bhej dein, main turant reply karunga. ${forwardHint}`.trim()
-      }
-
-      try {
-        const { ogg, durationSec } = await synthesizeVoiceNote(spoken, { lang: 'hi' })
-        await r.sock.sendMessage(call.from, {
-          audio: ogg,
-          ptt: true,
-          mimetype: 'audio/ogg; codecs=opus',
-          seconds: durationSec,
-        })
-
-        const textLine = forwardNumber
-          ? `Main SQL 💉 — live calls off hain. Urgent ho to ${forwardNumber} par call kar lein, ya yahin message bhej dein — main reply karunga.`
-          : 'Main SQL 💉 — live calls off hain. Apna message yahin bhej dein, main reply karunga.'
-
-        await r.sock.sendMessage(call.from, { text: textLine })
-      } catch (e) {
-        logger.error('[wa] failed to send post-call voice note', e as Error)
+        const { text: spoken } = await aiService.generateResponse(context, context, prompt)
         try {
+          const { ogg, durationSec } = await synthesizeVoiceNote(spoken, { lang: 'hi' })
           await r.sock.sendMessage(call.from, {
-            text: spoken,
+            audio: ogg,
+            ptt: true,
+            mimetype: 'audio/ogg; codecs=opus',
+            seconds: durationSec,
           })
         } catch {
-          // ignore
+          await r.sock.sendMessage(call.from, { text: spoken }).catch(() => undefined)
         }
+      } catch (e) {
+        logger.error('[wa] post-call AI reply failed', e as Error)
       }
     }, 1500)
   }
@@ -379,7 +361,7 @@ class BaileyService {
       m.viewOnceMessageV2Extension?.message ||
       m
 
-    const cfg = await configService.getConfiguration(uid)
+    const cfg = await configService.getConfiguration(uid).catch(() => null)
     const systemPrompt: string = cfg?.systemPrompt || ''
     const forwardingNumber: string = cfg?.callForwarding?.phoneNumber || ''
     const prompt = buildPromptWithForwarding(systemPrompt, forwardingNumber)
@@ -409,7 +391,7 @@ class BaileyService {
         })
         return
       } catch (e) {
-        logger.error('[wa] audio handling error', e as Error)
+        logger.error('[wa] audio handling error:', (e as Error)?.message || e)
         return
       }
     }
@@ -437,7 +419,7 @@ class BaileyService {
         })
         return
       } catch (e) {
-        logger.error('[wa] image handling error', e as Error)
+        logger.error('[wa] image handling error:', (e as Error)?.message || e)
         return
       }
     }
@@ -469,7 +451,7 @@ class BaileyService {
         })
         return
       } catch (e) {
-        logger.error('[wa] video handling error', e as Error)
+        logger.error('[wa] video handling error:', (e as Error)?.message || e)
         return
       }
     }
@@ -478,7 +460,9 @@ class BaileyService {
     if (!text.trim()) return
     try {
       await r.sock.sendPresenceUpdate('composing', jid)
-      const { text: replyText } = await aiService.generateResponse(text, text, prompt)
+      logger.info(`[wa] text message from ${jid}: "${text.substring(0, 50)}"`)
+      const { text: replyText, model } = await aiService.generateResponse(text, text, prompt)
+      logger.info(`[wa] AI reply via ${model}: "${replyText.substring(0, 50)}"`)
       await r.sock.sendMessage(jid, { text: replyText })
       await messageService.saveMessage(uid, jid, uid, text, 'text', false)
       await messageService.saveMessage(uid, uid, jid, replyText, 'text', true, {
@@ -488,7 +472,7 @@ class BaileyService {
         processedAt: Date.now(),
       })
     } catch (e) {
-      logger.error('[wa] text reply error', e as Error)
+      logger.error('[wa] text reply error:', (e as Error)?.message || e)
     }
   }
 
