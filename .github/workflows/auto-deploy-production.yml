@@ -355,28 +355,22 @@ jobs:
           set +e
           mkdir -p .vercel ../diagnostics/vercel
 
-          # Write project.json (no rootDirectory — we deploy from frontend/ directly)
+          # Patch Vercel project: clear rootDirectory so Vercel builds from uploaded root
+          curl -s -X PATCH "https://api.vercel.com/v9/projects/$PROJECT_NAME" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{"rootDirectory":null,"buildCommand":"npm run build","outputDirectory":"dist","framework":"vite"}' \
+            | jq '{id,name,rootDirectory,framework}' || true
+
+          # Write project.json for CLI auth only
           jq -n --arg pid "$VERCEL_PROJECT_ID" --arg oid "$VERCEL_ORG_ID" \
             '{"projectId":$pid,"orgId":$oid}' > .vercel/project.json
 
           # Bake backend URL into build
           echo "VITE_API_URL=$BACKEND_URL" > .env.production
 
-          # Build locally
-          npm install >> ../diagnostics/vercel/build.log 2>&1
-          npm run build >> ../diagnostics/vercel/build.log 2>&1
-          BUILD_EC=$?
-          echo "build exit: $BUILD_EC"
-          tail -n 20 ../diagnostics/vercel/build.log
-          ls -lh dist/ || true
-
-          if [ "$BUILD_EC" != "0" ]; then
-            echo "::error::npm build failed"
-            exit 1
-          fi
-
-          # Deploy the prebuilt dist/ directory directly to Vercel
-          vercel deploy dist/ --prod --yes --token "$VERCEL_TOKEN" \
+          # Source deploy — Vercel builds on their servers from frontend/ directory
+          vercel --prod --yes --token "$VERCEL_TOKEN" \
             > ../diagnostics/vercel/deploy.log 2>&1
           DEPLOY_EC=$?
           echo "deploy exit: $DEPLOY_EC"
