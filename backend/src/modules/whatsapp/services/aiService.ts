@@ -92,9 +92,16 @@ export class AIService {
   async analyzeImage(
     imageData: string,
     prompt: string,
-    systemPrompt?: string
+    systemPrompt?: string,
+    mimeType: string = 'image/jpeg'
   ): Promise<{ text: string; tokensUsed: number; model: string }> {
     const fullPrompt = systemPrompt ? `${systemPrompt}\n\n${prompt}` : prompt
+    // Normalise MIME: strip parameters (e.g. "image/webp; codecs=...") and
+    // map unknown types to jpeg so Gemini doesn't reject the request.
+    const baseMime = (mimeType.split(';')[0].trim() || 'image/jpeg') as string
+    const safeMime = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(baseMime)
+      ? baseMime
+      : 'image/jpeg'
 
     for (const model of GEMINI_VISION_MODELS) {
       try {
@@ -104,7 +111,7 @@ export class AIService {
           {
             inlineData: {
               data: imageData,
-              mimeType: 'image/jpeg'
+              mimeType: safeMime
             }
           },
           fullPrompt
@@ -113,7 +120,7 @@ export class AIService {
         const response = result.response
         const text = response.text()
 
-        logger.info(`Image analyzed with model: ${model}`)
+        logger.info(`Image analyzed with model: ${model}, mime: ${safeMime}`)
 
         return {
           text,
@@ -141,18 +148,68 @@ export class AIService {
     )
   }
 
+  async analyzeVideo(
+    videoData: string,
+    caption: string,
+    systemPrompt?: string,
+    mimeType: string = 'video/mp4'
+  ): Promise<{ text: string; model: string }> {
+    const baseMime = (mimeType.split(';')[0].trim() || 'video/mp4') as string
+    const safeMime = ['video/mp4', 'video/mpeg', 'video/webm', 'video/quicktime', 'video/3gpp'].includes(baseMime)
+      ? baseMime
+      : 'video/mp4'
+
+    const instruction = systemPrompt
+      ? `${systemPrompt}\n\nThe user sent this video${caption ? ` with caption: "${caption}"` : ''}. Describe what you see and reply naturally in Hinglish.`
+      : `The user sent this video${caption ? ` with caption: "${caption}"` : ''}. Describe what you see and reply naturally in Hinglish.`
+
+    for (const model of GEMINI_VISION_MODELS) {
+      try {
+        const genModel = this.client().getGenerativeModel({ model })
+        const result = await genModel.generateContent([
+          {
+            inlineData: {
+              data: videoData,
+              mimeType: safeMime
+            }
+          },
+          instruction
+        ])
+        const text = result.response.text().trim()
+        logger.info(`Video analyzed with model: ${model}, mime: ${safeMime}`)
+        return { text, model }
+      } catch (error) {
+        logger.warn(`Video model ${model} failed, trying next fallback...`)
+        if (model === GEMINI_VISION_MODELS[GEMINI_VISION_MODELS.length - 1]) {
+          logger.error('All video-capable models failed:', error)
+          throw new AppError(
+            ErrorCode.INTERNAL_ERROR,
+            'Failed to analyze video',
+            500
+          )
+        }
+        continue
+      }
+    }
+
+    throw new AppError(
+      ErrorCode.INTERNAL_ERROR,
+      'Failed to analyze video',
+      500
+    )
+  }
+
   /**
-   * Accepts an inline base64 audio blob and asks Gemini to reply in persona.
-   * Uses multimodal models which handle audio inlineData directly.
+   * Accepts a base64 MP3 audio blob and asks Gemini to reply in persona.
+   * Input must be MP3 — OGG/Opus should be converted before calling this.
    */
   async generateFromAudio(
     audioBase64: string,
-    mimeType: string,
     systemPrompt: string
   ): Promise<{ text: string; model: string }> {
     const instruction =
       systemPrompt +
-      '\n\nThe user just sent this voice message. Transcribe it internally, understand it, ' +
+      '\n\nThe user just sent this voice message (MP3). Transcribe it internally, understand it, ' +
       'and reply conversationally in short natural Hinglish (Hindi in Roman script). ' +
       'Do NOT prefix your reply with transcription or labels — just give the reply a human would speak.'
 
@@ -160,7 +217,7 @@ export class AIService {
       try {
         const genModel = this.client().getGenerativeModel({ model })
         const result = await genModel.generateContent([
-          { inlineData: { data: audioBase64, mimeType } },
+          { inlineData: { data: audioBase64, mimeType: 'audio/mp3' } },
           instruction,
         ])
         const text = result.response.text().trim()

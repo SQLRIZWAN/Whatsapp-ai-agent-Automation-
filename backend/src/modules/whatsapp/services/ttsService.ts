@@ -61,6 +61,29 @@ export interface TTSResult {
   durationSec: number
 }
 
+// Convert any audio buffer (typically OGG/Opus from WhatsApp) to MP3 for Gemini compatibility.
+export async function convertToMp3(input: Buffer, inputFormat = 'ogg'): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    const src = Readable.from(input)
+    const out = new PassThrough()
+    const chunks: Buffer[] = []
+    out.on('data', (c) => chunks.push(c as Buffer))
+    out.on('end', () => resolve(Buffer.concat(chunks)))
+    out.on('error', reject)
+
+    ffmpeg(src)
+      .inputFormat(inputFormat)
+      .audioCodec('libmp3lame')
+      .audioBitrate('64k')
+      .format('mp3')
+      .on('error', (err) => {
+        logger.error('[tts] convertToMp3 error', err)
+        reject(err)
+      })
+      .pipe(out, { end: true })
+  })
+}
+
 export async function synthesizeVoiceNote(
   text: string,
   opts: { lang?: string } = {}

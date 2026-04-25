@@ -89,6 +89,7 @@ export interface Call {
   from: string
   to: string
   callType: 'incoming' | 'outgoing'
+  isVideo?: boolean
   status: 'missed' | 'declined' | 'forwarded' | 'handled' | 'failed'
   duration: number
   forwardedTo?: string

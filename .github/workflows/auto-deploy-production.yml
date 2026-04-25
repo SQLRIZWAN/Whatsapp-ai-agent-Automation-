@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - claude/production-deployment-setup-pnyZn
+      - claude/fix-ai-messaging-stability-a9TSt
       - main
     paths-ignore:
       - 'diagnostics/**'

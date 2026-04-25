@@ -12,7 +12,8 @@ export class CallService {
     status: string = CALL_STATUS.MISSED,
     duration: number = 0,
     forwardedTo?: string,
-    aiDecision?: any
+    aiDecision?: any,
+    isVideo?: boolean
   ): Promise<string> {
     try {
       const db = getFirestore()
@@ -24,6 +25,7 @@ export class CallService {
         from,
         to,
         callType,
+        isVideo: !!isVideo,
         status,
         duration,
         forwardedTo,

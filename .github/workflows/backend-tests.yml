@@ -26,11 +26,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          cache-dependency-path: 'backend/package-lock.json'
 
       - name: Install dependencies
-        run: cd backend && npm ci
+        run: cd backend && npm install
 
       - name: Lint code
         run: cd backend && npm run lint --if-present
@@ -40,10 +38,3 @@ jobs:
 
       - name: Build
         run: cd backend && npm run build
-
-      - name: Upload coverage
-        if: matrix.node-version == '18.x'
-        uses: codecov/codecov-action@v3
-        with:
-          files: ./backend/coverage/coverage-final.json
-          flags: backend
