@@ -410,9 +410,6 @@ class BaileyService {
         return
       } catch (e) {
         logger.error('[wa] audio handling error', e as Error)
-        await r.sock.sendMessage(jid, {
-          text: 'Voice message sun li — lekin process mein thodi gadbad aayi. Kya aap dobara bhej sakte hain ya text mein likh sakte hain?',
-        })
         return
       }
     }
@@ -441,9 +438,6 @@ class BaileyService {
         return
       } catch (e) {
         logger.error('[wa] image handling error', e as Error)
-        await r.sock.sendMessage(jid, {
-          text: 'Aapki image dekh li — lekin process mein kuch gadbad aayi. Thodi der baad try karein ya kuch aur bataein.',
-        })
         return
       }
     }
@@ -455,9 +449,6 @@ class BaileyService {
         const buf = (await downloadMediaMessage(msg, 'buffer', {})) as Buffer
         // Only send to Gemini if size is reasonable (< 15 MB to stay in free tier).
         if (buf.byteLength > 15 * 1024 * 1024) {
-          await r.sock.sendMessage(jid, {
-            text: 'Video thodi badi hai, is baar analyze nahi kar paya. Chota clip bhejein ya kuch aur bataein — main reply karunga!',
-          })
           return
         }
         const base64 = buf.toString('base64')
@@ -479,9 +470,6 @@ class BaileyService {
         return
       } catch (e) {
         logger.error('[wa] video handling error', e as Error)
-        await r.sock.sendMessage(jid, {
-          text: 'Video dekh li — lekin process mein kuch gadbad aayi. Thodi der baad try karein.',
-        })
         return
       }
     }
@@ -501,13 +489,6 @@ class BaileyService {
       })
     } catch (e) {
       logger.error('[wa] text reply error', e as Error)
-      try {
-        await r.sock.sendMessage(jid, {
-          text: 'Message mila — reply mein thodi der ho sakti hai. Kripya dobara bhejein ya thodi der intezaar karein.',
-        })
-      } catch {
-        // ignore secondary failure
-      }
     }
   }
 
