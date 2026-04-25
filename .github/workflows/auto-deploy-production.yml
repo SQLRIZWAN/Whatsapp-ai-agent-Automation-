@@ -363,7 +363,7 @@ jobs:
           echo "VITE_API_URL=$BACKEND_URL" > .env.production
 
           # Build locally
-          npm ci --prefer-offline >> ../diagnostics/vercel/build.log 2>&1
+          npm install >> ../diagnostics/vercel/build.log 2>&1
           npm run build >> ../diagnostics/vercel/build.log 2>&1
           BUILD_EC=$?
           echo "build exit: $BUILD_EC"
