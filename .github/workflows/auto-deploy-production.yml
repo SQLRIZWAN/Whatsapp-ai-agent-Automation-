@@ -313,31 +313,28 @@ jobs:
         run: |
           set -e
           PN="$PROJECT_NAME"
-          CHECK=$(curl -s -o /tmp/proj.json -w "%{http_code}" \
+
+          # Always delete and recreate to ensure clean project state
+          echo "Deleting existing project (if any)..."
+          curl -s -X DELETE \
             -H "Authorization: Bearer $VERCEL_TOKEN" \
-            "https://api.vercel.com/v9/projects/$PN")
-          if [ "$CHECK" != "200" ]; then
-            echo "Creating Vercel project $PN..."
-            curl -s -o /tmp/proj.json -w "create http: %{http_code}\n" \
-              -X POST "https://api.vercel.com/v10/projects" \
-              -H "Authorization: Bearer $VERCEL_TOKEN" \
-              -H "Content-Type: application/json" \
-              -d "$(jq -n --arg name "$PN" --arg api "$BACKEND_URL" '{
-                name: $name,
-                framework: "vite",
-                rootDirectory: "frontend",
-                buildCommand: "npm run build",
-                outputDirectory: "dist",
-                environmentVariables: [
-                  {key:"VITE_API_URL", value:$api, type:"plain", target:["production","preview","development"]}
-                ]
-              }')"
-          else
-            curl -s -X POST "https://api.vercel.com/v10/projects/$PN/env?upsert=true" \
-              -H "Authorization: Bearer $VERCEL_TOKEN" \
-              -H "Content-Type: application/json" \
-              -d "$(jq -n --arg api "$BACKEND_URL" '{key:"VITE_API_URL", value:$api, type:"plain", target:["production","preview","development"]}')" >/dev/null
-          fi
+            "https://api.vercel.com/v9/projects/$PN" || true
+          sleep 3
+
+          echo "Creating fresh Vercel project $PN..."
+          curl -s -o /tmp/proj.json -w "create http: %{http_code}\n" \
+            -X POST "https://api.vercel.com/v10/projects" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n --arg name "$PN" --arg api "$BACKEND_URL" '{
+              name: $name,
+              framework: "vite",
+              buildCommand: "npm run build",
+              outputDirectory: "dist",
+              environmentVariables: [
+                {key:"VITE_API_URL", value:$api, type:"plain", target:["production","preview","development"]}
+              ]
+            }')"
           jq '{id,name,framework,rootDirectory}' /tmp/proj.json || cat /tmp/proj.json
           PROJECT_ID=$(jq -r '.id' /tmp/proj.json)
           echo "project_id=$PROJECT_ID" >> "$GITHUB_OUTPUT"
@@ -353,7 +350,7 @@ jobs:
           PROJECT_NAME: whatsapp-ai-automation
         run: |
           set +e
-          mkdir -p .vercel ../diagnostics/vercel
+          mkdir -p ../diagnostics/vercel
 
           # Bake backend URL into build
           echo "VITE_API_URL=$BACKEND_URL" > .env.production
@@ -371,20 +368,8 @@ jobs:
             exit 1
           fi
 
-          # Build Vercel output structure manually (avoids rootDirectory confusion)
-          mkdir -p .vercel/output/static
-          cp -r dist/. .vercel/output/static/
-          printf '%s\n' '{"version":3,"routes":[{"handle":"filesystem"},{"src":"/(.*)","dest":"/index.html"}]}' \
-            > .vercel/output/config.json
-          echo "--- .vercel/output ---"
-          find .vercel/output -type f | head -20
-
-          # Write project.json for CLI auth
-          jq -n --arg pid "$VERCEL_PROJECT_ID" --arg oid "$VERCEL_ORG_ID" \
-            '{"projectId":$pid,"orgId":$oid}' > .vercel/project.json
-
-          # Deploy prebuilt output
-          vercel deploy --prebuilt --prod --yes --token "$VERCEL_TOKEN" \
+          # Deploy source from frontend/ — fresh project has no rootDirectory confusion
+          vercel --prod --yes --token "$VERCEL_TOKEN" \
             > ../diagnostics/vercel/deploy.log 2>&1
           DEPLOY_EC=$?
           echo "deploy exit: $DEPLOY_EC"
