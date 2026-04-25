@@ -28,8 +28,8 @@ const CallsPage: React.FC = () => {
     load()
   }, [])
 
-  const voiceCalls = calls.filter((c) => c.callType !== 'video').length
-  const videoCalls = calls.filter((c) => c.callType === 'video').length
+  const voiceCalls = calls.filter((c) => !c.isVideo).length
+  const videoCalls = calls.filter((c) => c.isVideo).length
 
   return (
     <div>
@@ -89,7 +89,7 @@ const CallsPage: React.FC = () => {
               </thead>
               <tbody>
                 {calls.map((c) => {
-                  const isVideo = c.callType === 'video'
+                  const isVideo = !!c.isVideo
                   const aiDecision = (c as any).aiDecision
                   const isUrgent = aiDecision?.reason
                     ? URGENCY_KEYWORDS.some((k) => aiDecision.reason.toLowerCase().includes(k))

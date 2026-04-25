@@ -309,11 +309,8 @@ class BaileyService {
         'declined',
         0,
         undefined,
-        {
-          decision: 'auto_declined',
-          reason: 'baileys cannot answer calls',
-          timestamp: Date.now(),
-        }
+        { decision: 'auto_declined', reason: 'baileys cannot answer calls', timestamp: Date.now() },
+        !!call.isVideo
       )
     } catch (e) {
       logger.warn('[wa] saveCall failed', e as Error)
