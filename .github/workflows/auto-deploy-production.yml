@@ -355,7 +355,7 @@ jobs:
           set +e
           mkdir -p .vercel
           cat > .vercel/project.json <<EOF
-          {"projectId":"$VERCEL_PROJECT_ID","orgId":"$VERCEL_ORG_ID"}
+          {"projectId":"$VERCEL_PROJECT_ID","orgId":"$VERCEL_ORG_ID","settings":{"rootDirectory":null,"outputDirectory":"dist"}}
           EOF
           echo "VITE_API_URL=$BACKEND_URL" > .env.production
 
