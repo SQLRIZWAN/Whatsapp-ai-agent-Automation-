@@ -364,10 +364,9 @@ jobs:
           cat .vercel/project.json || true
 
           # Override AFTER pull so rootDirectory:null takes effect for build
-          # (vercel pull would overwrite this if written before)
-          cat > .vercel/project.json <<EOF
-{"projectId":"$VERCEL_PROJECT_ID","orgId":"$VERCEL_ORG_ID","settings":{"rootDirectory":null,"outputDirectory":"dist"}}
-EOF
+          jq -n --arg pid "$VERCEL_PROJECT_ID" --arg oid "$VERCEL_ORG_ID" \
+            '{"projectId":$pid,"orgId":$oid,"settings":{"rootDirectory":null,"outputDirectory":"dist"}}' \
+            > .vercel/project.json
           echo "--- project.json after override ---"
           cat .vercel/project.json
 
