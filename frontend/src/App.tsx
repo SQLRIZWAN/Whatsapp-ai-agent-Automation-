@@ -8,6 +8,9 @@ const LoginPage = React.lazy(() => import('@pages/LoginPage'))
 const RegisterPage = React.lazy(() => import('@pages/RegisterPage'))
 const DashboardPage = React.lazy(() => import('@pages/DashboardPage'))
 const SettingsPage = React.lazy(() => import('@pages/SettingsPage'))
+const MessagesPage = React.lazy(() => import('@pages/MessagesPage'))
+const CallsPage = React.lazy(() => import('@pages/CallsPage'))
+const AppShell = React.lazy(() => import('./components/AppShell'))
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuthStore()
@@ -21,7 +24,6 @@ const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
 const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated } = useAuthStore()
-
   return !isAuthenticated ? <>{children}</> : <Navigate to="/dashboard" replace />
 }
 
@@ -29,9 +31,8 @@ const App: React.FC = () => {
   const { token } = useAuthStore()
 
   useEffect(() => {
-    // Check token on mount and restore session if needed
     if (token) {
-      // Could fetch current user here if needed
+      // session restore hook (no-op for now)
     }
   }, [token])
 
@@ -55,22 +56,21 @@ const App: React.FC = () => {
               </PublicRoute>
             }
           />
+
+          {/* All authenticated app pages share the multi-tab AppShell layout */}
           <Route
-            path="/dashboard"
             element={
               <PrivateRoute>
-                <DashboardPage />
+                <AppShell />
               </PrivateRoute>
             }
-          />
-          <Route
-            path="/settings"
-            element={
-              <PrivateRoute>
-                <SettingsPage />
-              </PrivateRoute>
-            }
-          />
+          >
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/messages" element={<MessagesPage />} />
+            <Route path="/calls" element={<CallsPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+          </Route>
+
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>

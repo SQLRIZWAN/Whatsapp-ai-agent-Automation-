@@ -5,7 +5,7 @@ import {
   initAuthCreds,
   SignalDataSet,
   SignalDataTypeMap,
-} from 'baileys'
+} from '@whiskeysockets/baileys'
 import admin from 'firebase-admin'
 import { getFirestore } from '../../database/firestore'
 import logger from '@shared/utils/logger'

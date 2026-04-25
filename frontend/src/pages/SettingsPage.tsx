@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { useAuthStore } from '@store/authStore'
 import * as configApi from '@services/api/configApi'
 
 const DEFAULT_PROMPT =
   'My name is SQL 💉. I am a highly advanced AI, and I was created by SQL RIZWAN. I manage this WhatsApp account.'
 
 const SettingsPage: React.FC = () => {
-  const navigate = useNavigate()
-  const { logout } = useAuthStore()
-
   const [systemPrompt, setSystemPrompt] = useState(DEFAULT_PROMPT)
   const [forwardingEnabled, setForwardingEnabled] = useState(false)
   const [forwardingNumber, setForwardingNumber] = useState('')
@@ -61,25 +56,14 @@ const SettingsPage: React.FC = () => {
     }
   }
 
-  const handleLogoutApp = async () => {
-    await logout()
-    navigate('/login')
-  }
-
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <div>
-          <h1 style={{ margin: 0, color: '#075e54' }}>Settings</h1>
-          <div style={{ color: '#666', fontSize: 13 }}>
-            System prompt aur call forwarding configure karein
-          </div>
-        </div>
-        <div style={{ display: 'flex', gap: 10 }}>
-          <Link to="/dashboard" style={styles.linkBtn}>Dashboard</Link>
-          <button onClick={handleLogoutApp} style={styles.logoutButton}>Sign out</button>
-        </div>
-      </div>
+    <div>
+      <header style={{ marginBottom: 18 }}>
+        <h1 style={{ margin: 0, color: '#0e3b35' }}>⚙️ Settings</h1>
+        <p style={{ margin: '6px 0 0', color: '#666' }}>
+          System prompt aur call forwarding configure karein
+        </p>
+      </header>
 
       <div style={styles.card}>
         {loading ? (

@@ -6,7 +6,8 @@ import {
   downloadMediaMessage,
   Browsers,
   WAMessage,
-} from 'baileys'
+  fetchLatestBaileysVersion,
+} from '@whiskeysockets/baileys'
 import { Boom } from '@hapi/boom'
 import pino from 'pino'
 import QRCode from 'qrcode'
@@ -28,6 +29,8 @@ interface SessionRuntime {
   qrDataUrl: string | null
   phone: string | null
   reconnecting: boolean
+  attempts: number
+  lastError: string | null
 }
 
 class BaileyService {
@@ -50,6 +53,8 @@ class BaileyService {
         status: r.status,
         qrCode: r.qrDataUrl,
         phone: r.phone,
+        attempts: r.attempts,
+        lastError: r.lastError,
       })
     }
   }
@@ -60,6 +65,8 @@ class BaileyService {
       status: r?.status || 'disconnected',
       qrCode: r?.qrDataUrl || null,
       phone: r?.phone || null,
+      attempts: r?.attempts || 0,
+      lastError: r?.lastError || null,
     }
   }
 
@@ -116,17 +123,37 @@ class BaileyService {
     }
   }
 
-  private async spawn(uid: string): Promise<void> {
-    logger.info(`[wa] spawning connection for ${uid}`)
+  private cachedWAVersion: [number, number, number] | null = null
+
+  private async getWAVersion(): Promise<[number, number, number]> {
+    if (this.cachedWAVersion) return this.cachedWAVersion
+    try {
+      const { version } = await fetchLatestBaileysVersion()
+      this.cachedWAVersion = version as [number, number, number]
+      logger.info(`[wa] using WA web version ${this.cachedWAVersion.join('.')}`)
+    } catch (e) {
+      logger.warn('[wa] fetchLatestBaileysVersion failed, falling back to 2.3000.x', e as Error)
+      this.cachedWAVersion = [2, 3000, 1027054683]
+    }
+    return this.cachedWAVersion
+  }
+
+  private async spawn(uid: string, prevAttempts = 0): Promise<void> {
+    logger.info(`[wa] spawning connection for ${uid} (attempt ${prevAttempts + 1})`)
     const { state, saveCreds } = await useFirestoreAuthState(uid)
+    const version = await this.getWAVersion()
 
     const sock = makeWASocket({
+      version,
       auth: state,
       printQRInTerminal: false,
       logger: this.waLogger as never,
-      browser: Browsers.macOS('SQL 💉'),
+      browser: Browsers.ubuntu('Chrome'),
       syncFullHistory: false,
       markOnlineOnConnect: true,
+      connectTimeoutMs: 60_000,
+      defaultQueryTimeoutMs: 60_000,
+      keepAliveIntervalMs: 25_000,
     })
 
     const runtime: SessionRuntime = {
@@ -135,6 +162,8 @@ class BaileyService {
       qrDataUrl: null,
       phone: null,
       reconnecting: false,
+      attempts: prevAttempts + 1,
+      lastError: null,
     }
     this.runtimes.set(uid, runtime)
 
@@ -166,10 +195,12 @@ class BaileyService {
 
       if (connection === 'close') {
         const code = (lastDisconnect?.error as Boom | undefined)?.output?.statusCode
+        const errMsg = (lastDisconnect?.error as Error | undefined)?.message || String(code)
         const loggedOut = code === DisconnectReason.loggedOut
         runtime.status = 'disconnected'
+        runtime.lastError = errMsg
         this.emitStatus(uid)
-        logger.warn(`[wa] connection closed for ${uid} (code=${code})`)
+        logger.warn(`[wa] connection closed for ${uid} (code=${code}, msg=${errMsg})`)
         this.runtimes.delete(uid)
 
         if (loggedOut) {
@@ -184,11 +215,32 @@ class BaileyService {
           return
         }
 
+        // Hard cap reconnect attempts to avoid Render CPU storm.
+        if (runtime.attempts >= 8) {
+          logger.error(`[wa] giving up after ${runtime.attempts} attempts for ${uid}`)
+          await this.persistSessionStatus(uid, SESSION_STATUS.DISCONNECTED, null)
+          return
+        }
+
+        // 405 (methodNotAllowed) often means stale auth — clear it once.
+        if (code === 405 && runtime.attempts === 1) {
+          logger.warn('[wa] got 405; clearing stored creds and retrying fresh')
+          try {
+            const { clear } = await useFirestoreAuthState(uid)
+            await clear()
+          } catch {
+            // ignore
+          }
+        }
+
         if (!runtime.reconnecting) {
           runtime.reconnecting = true
+          const delay = Math.min(1000 * 2 ** runtime.attempts, 30_000)
           setTimeout(() => {
-            this.spawn(uid).catch((e) => logger.error('[wa] respawn failed', e))
-          }, 2500)
+            this.spawn(uid, runtime.attempts).catch((e) =>
+              logger.error('[wa] respawn failed', e)
+            )
+          }, delay)
         }
       }
     })
