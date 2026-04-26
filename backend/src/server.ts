@@ -75,6 +75,22 @@ export const startServer = async (app: Express): Promise<http.Server> => {
         .catch(() => logger.warn('[keepalive] ping failed'))
     }, 13 * 60 * 1000)
 
+    // Auto-reconnect WhatsApp sessions that were connected before restart
+    setTimeout(async () => {
+      try {
+        const db = (await import('@modules/database/firestore')).getFirestore()
+        if (!db) return
+        const snap = await db.collection('sessions').where('connectionStatus', '==', 'connected').get()
+        for (const doc of snap.docs) {
+          const uid = doc.id
+          logger.info(`[server] auto-reconnecting WhatsApp for ${uid}`)
+          baileyService.start(uid).catch((e) => logger.warn('[server] auto-reconnect failed', e))
+        }
+      } catch (e) {
+        logger.warn('[server] auto-reconnect query failed', e as Error)
+      }
+    }, 3000)
+
     return httpServer
   } catch (error) {
     logger.error('Failed to start server:', error)
