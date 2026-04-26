@@ -8,23 +8,40 @@ const MODEL = 'gemini-2.5-flash'
 
 type Part = string | { inlineData: { data: string; mimeType: string } }
 
+function extract429Delay(msg: string): number {
+  // Parse "Please retry in Xs" from Gemini 429 responses
+  const m = msg.match(/retry[^0-9]*(\d+(?:\.\d+)?)\s*s/i)
+  if (m) return Math.min(parseFloat(m[1]) * 1000, 8000) // cap at 8s
+  return 0
+}
+
 async function callGemini(
   genAI: GoogleGenerativeAI,
   parts: Part[],
   tag: string
 ): Promise<{ text: string; model: string }> {
-  try {
-    const m = genAI.getGenerativeModel({ model: MODEL })
-    const result = await m.generateContent(parts as never)
-    const text = result.response.text().trim()
-    if (!text) throw new Error('empty response')
-    logger.info(`[ai] ${tag} OK via ${MODEL}`)
-    return { text, model: MODEL }
-  } catch (e) {
-    const msg = (e as Error).message || String(e)
-    logger.error(`[ai] ${tag} failed: ${msg}`)
-    throw new AppError(ErrorCode.INTERNAL_ERROR, `AI unavailable (${tag}): ${msg}`, 500)
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const m = genAI.getGenerativeModel({ model: MODEL })
+      const result = await m.generateContent(parts as never)
+      const text = result.response.text().trim()
+      if (!text) throw new Error('empty response')
+      logger.info(`[ai] ${tag} OK via ${MODEL}`)
+      return { text, model: MODEL }
+    } catch (e) {
+      const msg = (e as Error).message || String(e)
+      const is429 = msg.includes('429')
+      const retryDelay = is429 ? extract429Delay(msg) : 0
+      if (attempt === 0 && is429 && retryDelay > 0 && retryDelay <= 8000) {
+        logger.warn(`[ai] ${tag} 429 — retrying in ${retryDelay}ms`)
+        await new Promise((r) => setTimeout(r, retryDelay))
+        continue
+      }
+      logger.error(`[ai] ${tag} failed: ${msg}`)
+      throw new AppError(ErrorCode.INTERNAL_ERROR, `AI unavailable (${tag}): ${msg}`, 500)
+    }
   }
+  throw new AppError(ErrorCode.INTERNAL_ERROR, `AI unavailable (${tag}): retries exhausted`, 500)
 }
 
 export class AIService {

@@ -205,8 +205,10 @@ jobs:
           DEPLOY_ID: ${{ steps.resolve.outputs.deploy_id }}
         run: |
           set +e
-          OWNER_ID=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
-            "https://api.render.com/v1/services/$SERVICE_ID" | jq -r '.ownerId')
+          SVCJSON=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
+            "https://api.render.com/v1/services/$SERVICE_ID")
+          OWNER_ID=$(echo "$SVCJSON" | jq -r '.ownerId // empty')
+          echo "ownerId=$OWNER_ID serviceId=$SERVICE_ID"
 
           mkdir -p diagnostics
           {
@@ -219,8 +221,7 @@ jobs:
             echo ""
             echo "## Service details"
             echo '```json'
-            curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
-              "https://api.render.com/v1/services/$SERVICE_ID" | jq '.' || true
+            echo "$SVCJSON" | jq '.' || true
             echo '```'
             echo ""
             echo "## Latest deploy"
@@ -229,22 +230,9 @@ jobs:
               "https://api.render.com/v1/services/$SERVICE_ID/deploys/$DEPLOY_ID" | jq '.' || true
             echo '```'
             echo ""
-            echo "## Build logs (last 4h)"
+            echo "## App logs (last 4h)"
             NOW=$(date -u +%Y-%m-%dT%H:%M:%S.000Z)
             AGO=$(date -u -d '4 hours ago' +%Y-%m-%dT%H:%M:%S.000Z)
-            echo '```'
-            curl -s -G -H "Authorization: Bearer $RENDER_API_KEY" \
-              "https://api.render.com/v1/logs" \
-              --data-urlencode "ownerId=$OWNER_ID" \
-              --data-urlencode "resource=$SERVICE_ID" \
-              --data-urlencode "type=build" \
-              --data-urlencode "startTime=$AGO" \
-              --data-urlencode "endTime=$NOW" \
-              --data-urlencode "limit=1000" \
-              | jq -r '.logs[]? | "\(.timestamp) \(.message)"' || true
-            echo '```'
-            echo ""
-            echo "## App logs (last 4h)"
             echo '```'
             curl -s -G -H "Authorization: Bearer $RENDER_API_KEY" \
               "https://api.render.com/v1/logs" \
@@ -258,25 +246,16 @@ jobs:
             echo '```'
           } > diagnostics/render.md 2>&1
 
-          # Commit via contents API
-          B64=$(base64 -w0 diagnostics/render.md)
-          CUR=$(curl -s -H "Authorization: token $GH_TOKEN" \
-            "https://api.github.com/repos/${{ github.repository }}/contents/diagnostics/render.md?ref=${{ github.ref_name }}")
-          SHA=$(echo "$CUR" | jq -r '.sha // empty')
-          PAYLOAD=$(jq -n --arg msg "diagnostics: render run ${{ github.run_id }}" \
-                         --arg content "$B64" \
-                         --arg branch "${{ github.ref_name }}" \
-                         --arg sha "$SHA" \
-                         'if $sha == "" then
-                            {message:$msg, content:$content, branch:$branch}
-                          else
-                            {message:$msg, content:$content, branch:$branch, sha:$sha}
-                          end')
-          curl -s -X PUT \
-            -H "Authorization: token $GH_TOKEN" \
-            -H "Content-Type: application/json" \
-            "https://api.github.com/repos/${{ github.repository }}/contents/diagnostics/render.md" \
-            -d "$PAYLOAD" | jq '.commit.sha // .message'
+          # Commit via git (more reliable than Contents API)
+          git config user.email "noreply@anthropic.com"
+          git config user.name "Claude"
+          git fetch origin "${{ github.ref_name }}" --depth=1
+          git checkout "${{ github.ref_name }}"
+          git add diagnostics/render.md
+          git diff --cached --quiet && echo "no changes" && exit 0
+          git commit -m "diagnostics: render run ${{ github.run_id }}"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" \
+            "HEAD:${{ github.ref_name }}" || echo "push failed (non-fatal)"
 
   deploy-frontend:
     name: Deploy Frontend to Vercel
