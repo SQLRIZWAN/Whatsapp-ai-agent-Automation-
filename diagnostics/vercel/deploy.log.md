@@ -4,9 +4,9 @@
 > https://vercel.com/docs/cli/about-telemetry
 Retrieving project…
 Deploying sqlrizwan/whatsapp-ai-automation
-Inspect: https://vercel.com/sqlrizwans-projects/whatsapp-ai-automation/Anpphbj36ZTXMZvZpj8yhgqbWUx7 [1s]
-Production: https://whatsapp-ai-automation-l9q2dfc04-sqlrizwans-projects.vercel.app [1s]
-https://whatsapp-ai-automation-l9q2dfc04-sqlrizwans-projects.vercel.appBuilding...
+Inspect: https://vercel.com/sqlrizwans-projects/whatsapp-ai-automation/FgTq8BR1Jrigc3xUKjxSZfwFwvfa [1s]
+Production: https://whatsapp-ai-automation-rg1hj0thu-sqlrizwans-projects.vercel.app [1s]
+https://whatsapp-ai-automation-rg1hj0thu-sqlrizwans-projects.vercel.appBuilding...
 Building...
 Building: Running build in Washington, D.C., USA (East) – iad1
 Building: Build machine configuration: 2 cores, 8 GB
@@ -43,14 +43,12 @@ Building: dist/assets/CallsPage-Dw3LYI9r.js        8.91 kB │ gzip:  2.22 kB
 Building: dist/assets/DashboardPage-RTLbyo8a.js   14.68 kB │ gzip:  3.70 kB
 Building: dist/assets/index-BtypAtrY.js           89.66 kB │ gzip: 21.09 kB
 Building: dist/assets/index-x3b3nVbM.js          370.54 kB │ gzip: 93.08 kB
-Building: ✓ built in 1.72s
-Building: Build Completed in /vercel/output [11s]
+Building: ✓ built in 1.81s
+Building: Build Completed in /vercel/output [10s]
 Building: Deploying outputs...
-Building: Deployment completed
-Building: Creating build cache...
-[2K[1A[2K[GProduction: https://whatsapp-ai-automation-l9q2dfc04-sqlrizwans-projects.vercel.app [22s]
+[2K[1A[2K[GProduction: https://whatsapp-ai-automation-rg1hj0thu-sqlrizwans-projects.vercel.app [16s]
 Completing...
-Aliased: https://whatsapp-ai-automation.vercel.app [22s]
-> Assigning alias whatsapp-ai-automation.vercel.app to deployment whatsapp-ai-automation-l9q2dfc04-sqlrizwans-projects.vercel.app
+Aliased: https://whatsapp-ai-automation.vercel.app [16s]
+> Assigning alias whatsapp-ai-automation.vercel.app to deployment whatsapp-ai-automation-rg1hj0thu-sqlrizwans-projects.vercel.app
 Creating alias
-> Success! https://whatsapp-ai-automation.vercel.app now points to https://whatsapp-ai-automation-l9q2dfc04-sqlrizwans-projects.vercel.app [583ms]
+> Success! https://whatsapp-ai-automation.vercel.app now points to https://whatsapp-ai-automation-rg1hj0thu-sqlrizwans-projects.vercel.app [832ms]
