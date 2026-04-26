@@ -16,8 +16,8 @@ import logger from '@shared/utils/logger'
 const ROOT = 'whatsappAuth'
 
 function sanitizeId(raw: string): string {
-  // Firestore doc IDs can't contain '/', and shouldn't be too long.
-  return raw.replace(/\//g, '_').replace(/\./g, '_')
+  // Preserve uniqueness while keeping Firestore-safe IDs.
+  return encodeURIComponent(raw)
 }
 
 function writeJSON(value: unknown): string {
@@ -48,10 +48,7 @@ export async function useFirestoreAuthState(
     try {
       const userDoc = db.collection(ROOT).doc(uid)
       const credsDoc = userDoc.collection('state').doc('creds')
-      const snap = await Promise.race([
-        credsDoc.get(),
-        new Promise<any>((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 3000))
-      ])
+      const snap = await credsDoc.get()
       
       if (snap.exists) {
         const data = snap.data() as { json?: string } | undefined
@@ -88,10 +85,7 @@ export async function useFirestoreAuthState(
     memoryAuthCache.set(uid, creds)
     if (!useMemoryOnly && db && credsDoc) {
       try {
-        await Promise.race([
-          credsDoc.set({ json: writeJSON(creds), updatedAt: Date.now() }),
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 3000))
-        ])
+        await credsDoc.set({ json: writeJSON(creds), updatedAt: Date.now() })
       } catch (e) {
         logger.warn(`[wa-auth] Failed to save creds to Firestore for ${uid}: ${e}`)
       }
@@ -105,10 +99,7 @@ export async function useFirestoreAuthState(
     if (!db || !keysCol || useMemoryOnly) return null
     try {
       const docId = `${type}_${sanitizeId(id)}`
-      const doc = await Promise.race([
-        keysCol.doc(docId).get(),
-        new Promise<any>((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 2000))
-      ])
+      const doc = await keysCol.doc(docId).get()
       if (!doc.exists) return null
       const data = doc.data() as { json?: string } | undefined
       if (!data?.json) return null
@@ -139,10 +130,7 @@ export async function useFirestoreAuthState(
           }
         }
       }
-      await Promise.race([
-        Promise.all(ops),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 5000))
-      ])
+      await Promise.all(ops)
     } catch (e) {
       logger.warn(`[wa-auth] Failed to set keys for ${uid}: ${e}`)
     }
