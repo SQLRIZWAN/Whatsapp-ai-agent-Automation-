@@ -4,44 +4,77 @@ import logger from '@shared/utils/logger'
 import { AppError } from '@shared/utils/errorHandler'
 import { ErrorCode } from '@shared/types/common.types'
 
-// Gemini model fallback chain
 const GEMINI_MODELS = [
   'gemini-2.5-flash',
   'gemini-2.5-flash-preview-05-20',
   'gemini-2.0-flash',
   'gemini-2.0-flash-lite',
-  'gemini-1.5-flash-latest'
+  'gemini-1.5-flash-latest',
 ]
 
 const GEMINI_VISION_MODELS = [
   'gemini-2.5-flash',
   'gemini-2.5-flash-preview-05-20',
   'gemini-2.0-flash',
-  'gemini-1.5-flash-latest'
+  'gemini-1.5-flash-latest',
 ]
+
+type Part = string | { inlineData: { data: string; mimeType: string } }
+
+async function runWithFallback(
+  genAI: GoogleGenerativeAI,
+  models: string[],
+  parts: Part[],
+  tag: string
+): Promise<{ text: string; model: string }> {
+  let lastErr = ''
+  for (const model of models) {
+    try {
+      const m = genAI.getGenerativeModel({ model })
+      const result = await m.generateContent(parts as never)
+      const text = result.response.text().trim()
+      if (!text) throw new Error('empty response')
+      logger.info(`[ai] ${tag} OK via ${model}`)
+      return { text, model }
+    } catch (e) {
+      lastErr = (e as Error).message || String(e)
+      logger.warn(`[ai] ${tag} — ${model} failed: ${lastErr}`)
+    }
+  }
+  logger.error(`[ai] ALL models failed for ${tag}. Last: ${lastErr}`)
+  throw new AppError(ErrorCode.INTERNAL_ERROR, `AI unavailable (${tag}): ${lastErr}`, 500)
+}
 
 export class AIService {
   private genAI: GoogleGenerativeAI | null = null
-  private primaryModel: string = GEMINI_MODELS[0]
-  private visionModel: string = GEMINI_VISION_MODELS[0]
 
   constructor() {
     if (CONFIG.GEMINI_API_KEY) {
       this.genAI = new GoogleGenerativeAI(CONFIG.GEMINI_API_KEY)
-      logger.info(`AI Service initialized with primary model: ${this.primaryModel}`)
+      logger.info(`[ai] Gemini ready. Primary: ${GEMINI_MODELS[0]}`)
+      this.selfTest().catch(() => undefined)
     } else {
-      logger.warn('GEMINI_API_KEY not configured — AI calls will fail until it is set')
+      logger.error('[ai] ❌ GEMINI_API_KEY missing — AI disabled!')
+    }
+  }
+
+  private async selfTest(): Promise<void> {
+    if (!this.genAI) return
+    try {
+      const { model } = await runWithFallback(
+        this.genAI,
+        GEMINI_MODELS,
+        ['Reply with exactly one word: OK'],
+        'self-test'
+      )
+      logger.info(`[ai] ✅ Self-test PASSED — working model: ${model}`)
+    } catch (e) {
+      logger.error(`[ai] ❌ Self-test FAILED: ${(e as Error).message}`)
     }
   }
 
   private client(): GoogleGenerativeAI {
-    if (!this.genAI) {
-      throw new AppError(
-        ErrorCode.INTERNAL_ERROR,
-        'GEMINI_API_KEY not configured',
-        500
-      )
-    }
+    if (!this.genAI) throw new AppError(ErrorCode.INTERNAL_ERROR, 'GEMINI_API_KEY not set', 500)
     return this.genAI
   }
 
@@ -53,194 +86,56 @@ export class AIService {
     const fullPrompt = systemPrompt
       ? `${systemPrompt}\n\nUser Message: ${userMessage}`
       : userMessage
-
-    for (const model of GEMINI_MODELS) {
-      try {
-        const genModel = this.client().getGenerativeModel({ model })
-        const result = await genModel.generateContent(fullPrompt)
-        const response = result.response
-        const text = response.text()
-
-        logger.info(`AI response generated with model: ${model}`)
-
-        return {
-          text,
-          tokensUsed: 0,
-          model
-        }
-      } catch (error) {
-        logger.warn(`Model ${model} failed, trying next fallback...`)
-        if (model === GEMINI_MODELS[GEMINI_MODELS.length - 1]) {
-          logger.error('All Gemini models failed:', error)
-          throw new AppError(
-            ErrorCode.INTERNAL_ERROR,
-            'Failed to generate AI response',
-            500
-          )
-        }
-        continue
-      }
-    }
-
-    throw new AppError(
-      ErrorCode.INTERNAL_ERROR,
-      'Failed to generate AI response',
-      500
-    )
+    const { text, model } = await runWithFallback(this.client(), GEMINI_MODELS, [fullPrompt], 'text')
+    return { text, tokensUsed: 0, model }
   }
 
   async analyzeImage(
     imageData: string,
     prompt: string,
     systemPrompt?: string,
-    mimeType: string = 'image/jpeg'
+    mimeType = 'image/jpeg'
   ): Promise<{ text: string; tokensUsed: number; model: string }> {
     const fullPrompt = systemPrompt ? `${systemPrompt}\n\n${prompt}` : prompt
-    // Normalise MIME: strip parameters (e.g. "image/webp; codecs=...") and
-    // map unknown types to jpeg so Gemini doesn't reject the request.
-    const baseMime = (mimeType.split(';')[0].trim() || 'image/jpeg') as string
-    const safeMime = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(baseMime)
-      ? baseMime
-      : 'image/jpeg'
-
-    for (const model of GEMINI_VISION_MODELS) {
-      try {
-        const modelWithVision = this.client().getGenerativeModel({ model })
-
-        const result = await modelWithVision.generateContent([
-          {
-            inlineData: {
-              data: imageData,
-              mimeType: safeMime
-            }
-          },
-          fullPrompt
-        ])
-
-        const response = result.response
-        const text = response.text()
-
-        logger.info(`Image analyzed with model: ${model}, mime: ${safeMime}`)
-
-        return {
-          text,
-          tokensUsed: 0,
-          model
-        }
-      } catch (error) {
-        logger.warn(`Vision model ${model} failed, trying next fallback...`)
-        if (model === GEMINI_VISION_MODELS[GEMINI_VISION_MODELS.length - 1]) {
-          logger.error('All vision models failed:', error)
-          throw new AppError(
-            ErrorCode.INTERNAL_ERROR,
-            'Failed to analyze image',
-            500
-          )
-        }
-        continue
-      }
-    }
-
-    throw new AppError(
-      ErrorCode.INTERNAL_ERROR,
-      'Failed to analyze image',
-      500
+    const base = mimeType.split(';')[0].trim()
+    const safeMime = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(base)
+      ? base : 'image/jpeg'
+    const { text, model } = await runWithFallback(
+      this.client(), GEMINI_VISION_MODELS,
+      [{ inlineData: { data: imageData, mimeType: safeMime } }, fullPrompt],
+      'image'
     )
+    return { text, tokensUsed: 0, model }
   }
 
   async analyzeVideo(
     videoData: string,
     caption: string,
     systemPrompt?: string,
-    mimeType: string = 'video/mp4'
+    mimeType = 'video/mp4'
   ): Promise<{ text: string; model: string }> {
-    const baseMime = (mimeType.split(';')[0].trim() || 'video/mp4') as string
-    const safeMime = ['video/mp4', 'video/mpeg', 'video/webm', 'video/quicktime', 'video/3gpp'].includes(baseMime)
-      ? baseMime
-      : 'video/mp4'
-
-    const instruction = systemPrompt
-      ? `${systemPrompt}\n\nThe user sent this video${caption ? ` with caption: "${caption}"` : ''}. Describe what you see and reply naturally in Hinglish.`
-      : `The user sent this video${caption ? ` with caption: "${caption}"` : ''}. Describe what you see and reply naturally in Hinglish.`
-
-    for (const model of GEMINI_VISION_MODELS) {
-      try {
-        const genModel = this.client().getGenerativeModel({ model })
-        const result = await genModel.generateContent([
-          {
-            inlineData: {
-              data: videoData,
-              mimeType: safeMime
-            }
-          },
-          instruction
-        ])
-        const text = result.response.text().trim()
-        logger.info(`Video analyzed with model: ${model}, mime: ${safeMime}`)
-        return { text, model }
-      } catch (error) {
-        logger.warn(`Video model ${model} failed, trying next fallback...`)
-        if (model === GEMINI_VISION_MODELS[GEMINI_VISION_MODELS.length - 1]) {
-          logger.error('All video-capable models failed:', error)
-          throw new AppError(
-            ErrorCode.INTERNAL_ERROR,
-            'Failed to analyze video',
-            500
-          )
-        }
-        continue
-      }
-    }
-
-    throw new AppError(
-      ErrorCode.INTERNAL_ERROR,
-      'Failed to analyze video',
-      500
+    const base = mimeType.split(';')[0].trim()
+    const safeMime = ['video/mp4', 'video/mpeg', 'video/webm', 'video/quicktime', 'video/3gpp'].includes(base)
+      ? base : 'video/mp4'
+    const instruction = (systemPrompt ? `${systemPrompt}\n\n` : '') +
+      `User sent a video${caption ? ` with caption: "${caption}"` : ''}. Describe what you see and reply in Hinglish.`
+    return runWithFallback(
+      this.client(), GEMINI_VISION_MODELS,
+      [{ inlineData: { data: videoData, mimeType: safeMime } }, instruction],
+      'video'
     )
   }
 
-  /**
-   * Accepts a base64 MP3 audio blob and asks Gemini to reply in persona.
-   * Input must be MP3 — OGG/Opus should be converted before calling this.
-   */
   async generateFromAudio(
     audioBase64: string,
     systemPrompt: string
   ): Promise<{ text: string; model: string }> {
-    const instruction =
-      systemPrompt +
-      '\n\nThe user just sent this voice message (MP3). Transcribe it internally, understand it, ' +
-      'and reply conversationally in short natural Hinglish (Hindi in Roman script). ' +
-      'Do NOT prefix your reply with transcription or labels — just give the reply a human would speak.'
-
-    for (const model of GEMINI_VISION_MODELS) {
-      try {
-        const genModel = this.client().getGenerativeModel({ model })
-        const result = await genModel.generateContent([
-          { inlineData: { data: audioBase64, mimeType: 'audio/mp3' } },
-          instruction,
-        ])
-        const text = result.response.text().trim()
-        logger.info(`Audio handled with model: ${model}`)
-        return { text, model }
-      } catch (error) {
-        logger.warn(`Audio model ${model} failed, trying next fallback...`)
-        if (model === GEMINI_VISION_MODELS[GEMINI_VISION_MODELS.length - 1]) {
-          logger.error('All audio-capable models failed:', error)
-          throw new AppError(
-            ErrorCode.INTERNAL_ERROR,
-            'Failed to process audio with AI',
-            500
-          )
-        }
-        continue
-      }
-    }
-
-    throw new AppError(
-      ErrorCode.INTERNAL_ERROR,
-      'Failed to process audio with AI',
-      500
+    const instruction = systemPrompt +
+      '\n\nUser sent a voice message (MP3). Understand it and reply in short natural Hinglish. No transcription labels.'
+    return runWithFallback(
+      this.client(), GEMINI_VISION_MODELS,
+      [{ inlineData: { data: audioBase64, mimeType: 'audio/mp3' } }, instruction],
+      'audio'
     )
   }
 
@@ -248,47 +143,16 @@ export class AIService {
     context: string,
     systemPrompt: string
   ): Promise<{ decision: string; model: string }> {
-    const prompt = `${systemPrompt}\n\nContext: ${context}\n\nMake a decision based on the context and your system prompt.`
-
-    for (const model of GEMINI_MODELS) {
-      try {
-        const genModel = this.client().getGenerativeModel({ model })
-        const result = await genModel.generateContent(prompt)
-        const response = result.response
-        const decision = response.text()
-
-        logger.info(`Decision made with model: ${model}`)
-
-        return {
-          decision,
-          model
-        }
-      } catch (error) {
-        logger.warn(`Model ${model} failed for decision, trying next...`)
-        if (model === GEMINI_MODELS[GEMINI_MODELS.length - 1]) {
-          logger.error('All models failed for decision:', error)
-          throw new AppError(
-            ErrorCode.INTERNAL_ERROR,
-            'Failed to make decision',
-            500
-          )
-        }
-        continue
-      }
-    }
-
-    throw new AppError(
-      ErrorCode.INTERNAL_ERROR,
-      'Failed to make decision',
-      500
+    const { text, model } = await runWithFallback(
+      this.client(), GEMINI_MODELS,
+      [`${systemPrompt}\n\nContext: ${context}\n\nMake a decision.`],
+      'decision'
     )
+    return { decision: text, model }
   }
 
-  getAvailableModels(): { text: string[]; vision: string[] } {
-    return {
-      text: GEMINI_MODELS,
-      vision: GEMINI_VISION_MODELS
-    }
+  getAvailableModels() {
+    return { text: GEMINI_MODELS, vision: GEMINI_VISION_MODELS }
   }
 }
 
