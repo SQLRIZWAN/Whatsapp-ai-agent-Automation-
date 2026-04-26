@@ -246,19 +246,25 @@ jobs:
             echo '```'
           } > diagnostics/render.md 2>&1
 
-          # Commit the newly-generated file via git push
-          # (git fetch+checkout would overwrite the file we just created, so skip it)
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
-          git add diagnostics/render.md
-          if git diff --cached --quiet; then
-            echo "render.md unchanged, skipping commit"
-            exit 0
-          fi
-          git commit -m "diagnostics: render run ${{ github.run_id }}"
-          git push "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" \
-            "HEAD:refs/heads/${{ github.ref_name }}" \
-            || echo "render.md push failed (non-fatal)"
+          # Commit render.md via Contents API (proven to work for this repo)
+          B64=$(base64 -w0 diagnostics/render.md)
+          CUR_SHA=$(curl -sf -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/contents/diagnostics/render.md?ref=${{ github.ref_name }}" \
+            | jq -r '.sha // empty' 2>/dev/null || echo "")
+          echo "render.md current SHA on branch: '${CUR_SHA}'"
+          HTTP=$(curl -s -o /tmp/render_commit.json -w "%{http_code}" -X PUT \
+            -H "Authorization: token $GH_TOKEN" \
+            -H "Content-Type: application/json" \
+            "https://api.github.com/repos/${{ github.repository }}/contents/diagnostics/render.md" \
+            -d "$(jq -n \
+              --arg msg "diagnostics: render run ${{ github.run_id }}" \
+              --arg content "$B64" \
+              --arg branch "${{ github.ref_name }}" \
+              --arg sha "$CUR_SHA" \
+              'if $sha == "" then {message:$msg,content:$content,branch:$branch}
+               else {message:$msg,content:$content,branch:$branch,sha:$sha} end')")
+          echo "Contents API PUT: HTTP $HTTP"
+          jq -r '.commit.sha // .message // "no output"' /tmp/render_commit.json 2>/dev/null || cat /tmp/render_commit.json | head -3
 
   deploy-frontend:
     name: Deploy Frontend to Vercel
