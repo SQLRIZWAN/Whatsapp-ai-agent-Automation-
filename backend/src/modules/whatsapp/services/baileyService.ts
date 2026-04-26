@@ -112,23 +112,7 @@ class BaileyService {
       }
     }
 
-    // 3. No creds — check for a valid QR in DB (less than 1 min old)
-    const cachedQR = await qrService.getQRCode(uid)
-    if (cachedQR) {
-      logger.info(`[wa] Found valid cached QR in Firestore for ${uid}`)
-      // Start connection in background if not already started
-      this.spawn(uid).catch(e => logger.error('[wa] background spawn error', e))
-      return {
-        status: 'qr' as Status,
-        qrCode: cachedQR,
-        phone: null,
-        attempts: 0,
-        lastError: null,
-        connectedAt: null,
-      }
-    }
-
-    // 4. Fresh start
+    // 3. Fresh start (memory-first QR to avoid Firestore quota pressure)
     await this.spawn(uid)
     return this.getStatusSnapshot(uid)
   }
@@ -325,8 +309,7 @@ class BaileyService {
             runtime.qrGeneratedAt = Date.now()
             runtime.status = 'qr'
             this.emitStatus(uid)
-            await qrService.saveQRCode(uid, dataUrl)
-            logger.info(`[wa] QR code saved and emitted for ${uid}`)
+            logger.info(`[wa] QR code emitted for ${uid}`)
           } catch (e) {
             runtime.lastError = (e as Error).message
             logger.error(`[wa] QR generation failed for ${uid}`, e as Error)
@@ -343,7 +326,6 @@ class BaileyService {
           this.consecutiveFailures.delete(uid)
           this.clearReconnectTimer(uid)
           this.emitStatus(uid)
-          await qrService.markQRAsScanned(uid)
           await this.persistSessionStatus(uid, SESSION_STATUS.CONNECTED, runtime.phone)
           logger.info(`[wa] Connected as ${runtime.phone}`)
         }

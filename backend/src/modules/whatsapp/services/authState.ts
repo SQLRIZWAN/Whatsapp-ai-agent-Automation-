@@ -28,6 +28,11 @@ function readJSON<T>(raw: string): T {
   return JSON.parse(raw, BufferJSON.reviver) as T
 }
 
+function isQuotaError(error: unknown): boolean {
+  const msg = String(error || '')
+  return msg.includes('RESOURCE_EXHAUSTED') || msg.includes('Quota exceeded')
+}
+
 // In-memory cache for auth state when Firestore fails
 const memoryAuthCache = new Map<string, AuthenticationCreds>()
 const memoryKeyCache = new Map<string, Map<string, unknown>>()
@@ -99,6 +104,7 @@ export async function useFirestoreAuthState(
         await withTimeout(credsDoc.set({ json: writeJSON(creds), updatedAt: Date.now() }))
       } catch (e) {
         logger.warn(`[wa-auth] Failed to save creds to Firestore for ${uid}: ${e}`)
+        if (isQuotaError(e)) useMemoryOnly = true
       }
     }
   }
@@ -122,6 +128,7 @@ export async function useFirestoreAuthState(
       return parsed
     } catch (e) {
       logger.warn(`[wa-auth] Failed to get key ${type}/${id}: ${e}`)
+      if (isQuotaError(e)) useMemoryOnly = true
       return null
     }
   }
@@ -151,6 +158,7 @@ export async function useFirestoreAuthState(
       await withTimeout(Promise.all(ops))
     } catch (e) {
       logger.warn(`[wa-auth] Failed to set keys for ${uid}: ${e}`)
+      if (isQuotaError(e)) useMemoryOnly = true
     }
   }
 
