@@ -10,6 +10,7 @@ const router = Router()
 
 router.use(authMiddleware)
 
+// POST /connect — explicitly start/boot a WhatsApp session for this user
 router.post('/connect', asyncHandler(async (req: Request, res: Response) => {
   if (!req.uid) return res.status(401).json({ success: false, message: 'Unauthorized' })
   const snap = await baileyService.start(req.uid)
@@ -21,9 +22,13 @@ router.post('/connect', asyncHandler(async (req: Request, res: Response) => {
   })
 }))
 
+// GET /status — only reads the current snapshot; does NOT spawn a new session.
+// This prevents QR churn when the frontend polls every 4 s.
+// If no session is running yet, it returns status=disconnected so the UI
+// can prompt the user to click "Connect" explicitly.
 router.get('/status', asyncHandler(async (req: Request, res: Response) => {
   if (!req.uid) return res.status(401).json({ success: false, message: 'Unauthorized' })
-  await baileyService.start(req.uid)
+  // Do NOT call baileyService.start() here — just read the current state
   const snap = baileyService.getStatusSnapshot(req.uid)
   res.json({
     success: true,
@@ -33,16 +38,18 @@ router.get('/status', asyncHandler(async (req: Request, res: Response) => {
   })
 }))
 
+// POST /logout — fully unlinks WhatsApp (clears creds from DB), does NOT auto-reconnect
 router.post('/logout', asyncHandler(async (req: Request, res: Response) => {
   if (!req.uid) return res.status(401).json({ success: false, message: 'Unauthorized' })
   await baileyService.logout(req.uid)
   res.json({
     success: true,
-    message: 'Logged out of WhatsApp',
+    message: 'WhatsApp unlinked. Creds cleared from database.',
     timestamp: new Date().toISOString(),
   })
 }))
 
+// POST /disconnect — stops the socket but keeps creds in DB (for temporary pause)
 router.post('/disconnect', asyncHandler(async (req: Request, res: Response) => {
   if (!req.uid) return res.status(401).json({ success: false, message: 'Unauthorized' })
   await baileyService.stop(req.uid)
@@ -91,7 +98,7 @@ router.post('/send-message', asyncHandler(async (req: Request, res: Response) =>
   })
 }))
 
-// Diagnose Gemini API — tests each model and returns which work/fail
+// GET /test-ai — tests the Gemini fallback chain and returns results for each model
 router.get('/test-ai', asyncHandler(async (req: Request, res: Response) => {
   const models = aiService.getAvailableModels()
   const results: Record<string, string> = {}

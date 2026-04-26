@@ -27,12 +27,14 @@ const DashboardPage: React.FC = () => {
   const [err, setErr] = useState<string | null>(null)
   const [stats, setStats] = useState<Stats>({ messages: 0, calls: 0 })
   const [uptime, setUptime] = useState<string>('')
+  const [logoutConfirm, setLogoutConfirm] = useState(false)
+  const [logoutLoading, setLogoutLoading] = useState(false)
   const socketRef = useRef<Socket | null>(null)
   const pollRef = useRef<number | null>(null)
   const uptimeRef = useRef<number | null>(null)
   const connectedAtRef = useRef<number | null>(null)
 
-  // Load initial status (also boots the Baileys runtime)
+  // Load initial status — calls /status which does NOT spawn a new session
   useEffect(() => {
     let cancelled = false
     const boot = async () => {
@@ -91,7 +93,7 @@ const DashboardPage: React.FC = () => {
     }
   }, [token])
 
-  // Fallback poller when Socket.IO is blocked
+  // Fallback poller when Socket.IO is blocked — only polls /status (no session spawn)
   useEffect(() => {
     if (snap.status === 'connected') {
       if (pollRef.current) { window.clearInterval(pollRef.current); pollRef.current = null }
@@ -127,16 +129,18 @@ const DashboardPage: React.FC = () => {
     return () => { if (uptimeRef.current) window.clearInterval(uptimeRef.current) }
   }, [snap.status])
 
-  const handleWhatsappLogout = async () => {
+  // Connect WhatsApp — explicitly calls /connect to start session
+  const handleConnect = async () => {
+    setErr(null)
     try {
-      await whatsappApi.logoutWhatsapp()
-      setSnap({ status: 'disconnected', qrCode: null, phone: null, attempts: 0, lastError: null, connectedAt: null })
-      await whatsappApi.connect()
+      const res = await whatsappApi.connect()
+      setSnap(res.data.data)
     } catch (e: any) {
-      setErr(e?.response?.data?.message || 'Failed to logout of WhatsApp')
+      setErr(e?.response?.data?.message || 'Failed to connect')
     }
   }
 
+  // Force reconnect — disconnect then connect fresh
   const handleForceReconnect = async () => {
     setErr(null)
     try {
@@ -147,6 +151,39 @@ const DashboardPage: React.FC = () => {
       setErr(e?.response?.data?.message || 'Failed to restart')
     }
   }
+
+  /**
+   * WhatsApp Logout — fully unlinks the device.
+   * Clears credentials from Firestore DB.
+   * Does NOT auto-reconnect — user must click "Connect" again to scan a new QR.
+   */
+  const handleWhatsappLogout = async () => {
+    if (!logoutConfirm) {
+      setLogoutConfirm(true)
+      return
+    }
+    setLogoutLoading(true)
+    setLogoutConfirm(false)
+    try {
+      await whatsappApi.logoutWhatsapp()
+      // Reset to fully disconnected — do NOT auto-reconnect
+      setSnap({
+        status: 'disconnected',
+        qrCode: null,
+        phone: null,
+        attempts: 0,
+        lastError: null,
+        connectedAt: null,
+      })
+      connectedAtRef.current = null
+    } catch (e: any) {
+      setErr(e?.response?.data?.message || 'Failed to logout of WhatsApp')
+    } finally {
+      setLogoutLoading(false)
+    }
+  }
+
+  const cancelLogout = () => setLogoutConfirm(false)
 
   const { label: statusLabel, color: statusColor } = (() => {
     switch (snap.status) {
@@ -206,12 +243,17 @@ const DashboardPage: React.FC = () => {
           {loading && <p style={{ color: '#666' }}>Loading status…</p>}
           {err && <div style={errorBox}>{err}</div>}
 
+          {/* QR Code display */}
           {snap.status === 'qr' && snap.qrCode && (
             <div style={qrWrap}>
               <div>
-                <img src={snap.qrCode} alt="WhatsApp QR" style={{ width: 280, height: 280, borderRadius: 8, border: '3px solid #25d366' }} />
+                <img
+                  src={snap.qrCode}
+                  alt="WhatsApp QR"
+                  style={{ width: 280, height: 280, borderRadius: 8, border: '3px solid #25d366' }}
+                />
                 <p style={{ fontSize: 12, color: '#888', marginTop: 6, textAlign: 'center' }}>
-                  QR 60 seconds mein expire hota hai — jaldi scan karein
+                  Yeh QR aapke account se linked hai — ek baar scan karo, session save ho jayega
                 </p>
               </div>
               <ol style={qrSteps}>
@@ -229,12 +271,19 @@ const DashboardPage: React.FC = () => {
             </p>
           )}
 
+          {/* Disconnected — show Connect button */}
           {snap.status === 'disconnected' && (
-            <button onClick={handleForceReconnect} style={primaryBtn}>
-              🔄 Restart Connection
-            </button>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 8 }}>
+              <button onClick={handleConnect} style={primaryBtn}>
+                🔗 Connect WhatsApp
+              </button>
+              <button onClick={handleForceReconnect} style={secondaryBtn}>
+                🔄 Force Restart
+              </button>
+            </div>
           )}
 
+          {/* Connected — show logout button */}
           {snap.status === 'connected' && (
             <div>
               {uptime && (
@@ -245,9 +294,34 @@ const DashboardPage: React.FC = () => {
               <p style={{ color: '#25d366', fontWeight: 600, margin: '0 0 12px' }}>
                 ✅ Bot live hai — sare messages aur calls auto-handle ho rahe hain.
               </p>
-              <button onClick={handleWhatsappLogout} style={dangerBtn}>
-                Unlink this WhatsApp
-              </button>
+
+              {/* Logout confirmation flow */}
+              {!logoutConfirm ? (
+                <button
+                  onClick={handleWhatsappLogout}
+                  style={dangerBtn}
+                  disabled={logoutLoading}
+                >
+                  {logoutLoading ? 'Logging out…' : '🔌 WhatsApp Logout (Unlink Device)'}
+                </button>
+              ) : (
+                <div style={confirmBox}>
+                  <p style={{ margin: '0 0 10px', fontWeight: 600, color: '#991b1b' }}>
+                    ⚠️ Confirm Logout?
+                  </p>
+                  <p style={{ margin: '0 0 12px', fontSize: 13, color: '#555' }}>
+                    Yeh WhatsApp ko is device se unlink kar dega. Dobara connect karne ke liye nayi QR scan karni padegi.
+                  </p>
+                  <div style={{ display: 'flex', gap: 10 }}>
+                    <button onClick={handleWhatsappLogout} style={dangerBtnSolid} disabled={logoutLoading}>
+                      {logoutLoading ? 'Logging out…' : 'Haan, Logout Karo'}
+                    </button>
+                    <button onClick={cancelLogout} style={cancelBtn}>
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -334,6 +408,13 @@ const errorBox: React.CSSProperties = {
   borderRadius: 4,
   marginTop: 10,
 }
+const confirmBox: React.CSSProperties = {
+  padding: 14,
+  background: '#fff7ed',
+  border: '1px solid #fed7aa',
+  borderRadius: 8,
+  marginTop: 10,
+}
 const qrWrap: React.CSSProperties = {
   marginTop: 16,
   display: 'flex',
@@ -367,11 +448,20 @@ const dot = (color: string, pulse: boolean): React.CSSProperties => ({
   ...(pulse ? { animation: 'pulse-ring 1.5s infinite' } : {}),
 })
 const primaryBtn: React.CSSProperties = {
-  marginTop: 8,
   padding: '10px 20px',
   background: '#25d366',
   color: 'white',
   border: 'none',
+  borderRadius: 6,
+  cursor: 'pointer',
+  fontWeight: 600,
+  fontSize: 14,
+}
+const secondaryBtn: React.CSSProperties = {
+  padding: '10px 20px',
+  background: 'transparent',
+  color: '#0e3b35',
+  border: '1px solid #0e3b35',
   borderRadius: 6,
   cursor: 'pointer',
   fontWeight: 600,
@@ -384,6 +474,26 @@ const dangerBtn: React.CSSProperties = {
   border: '1px solid #ef4444',
   borderRadius: 6,
   cursor: 'pointer',
+  fontSize: 14,
+}
+const dangerBtnSolid: React.CSSProperties = {
+  padding: '10px 16px',
+  background: '#ef4444',
+  color: 'white',
+  border: 'none',
+  borderRadius: 6,
+  cursor: 'pointer',
+  fontWeight: 600,
+  fontSize: 14,
+}
+const cancelBtn: React.CSSProperties = {
+  padding: '10px 16px',
+  background: 'transparent',
+  color: '#6b7280',
+  border: '1px solid #d1d5db',
+  borderRadius: 6,
+  cursor: 'pointer',
+  fontSize: 14,
 }
 const linkBtn: React.CSSProperties = {
   display: 'inline-block',

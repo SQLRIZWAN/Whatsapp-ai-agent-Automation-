@@ -27,10 +27,15 @@ type Status = 'disconnected' | 'connecting' | 'qr' | 'connected'
 // After this many consecutive failures we give up and wait for manual restart.
 const MAX_RECONNECT_ATTEMPTS = 25
 
+// QR codes are valid for 60 seconds on WhatsApp's side.
+// We keep the same QR in DB for up to 55 seconds before treating it as expired.
+const QR_LIVE_MS = 55_000
+
 interface SessionRuntime {
   sock: WASocket
   status: Status
   qrDataUrl: string | null
+  qrGeneratedAt: number | null   // timestamp when this QR was generated
   phone: string | null
   reconnecting: boolean
   attempts: number
@@ -87,20 +92,49 @@ class BaileyService {
     }
   }
 
+  /**
+   * Start (or resume) a WhatsApp session for the given user UID.
+   *
+   * Strategy:
+   *  1. If a runtime is already active → return its snapshot immediately (no-op).
+   *  2. If the user has stored credentials in Firestore → spawn silently in the
+   *     background so the socket reconnects without showing a QR.
+   *  3. If no credentials exist → spawn and wait for the first QR to be emitted.
+   *
+   * The QR is stored in Firestore so that:
+   *  - Page refreshes show the same QR (no new QR on every reload).
+   *  - The QR is tied to this user's UID — not a global/shared code.
+   *  - Once scanned, it is marked as scanned and the session becomes persistent.
+   */
   async start(uid: string) {
+    // Already running — just return current state
     if (this.runtimes.has(uid)) {
       return this.getStatusSnapshot(uid)
     }
 
-    // Check for existing QR in database if not connected
-    // This allows users to see the same QR code across page refreshes or multiple devices
+    // Check if user has existing credentials (previously paired)
+    const hasCreds = await this.userHasStoredCreds(uid)
+
+    if (hasCreds) {
+      // Silently reconnect in background — no QR needed
+      logger.info(`[wa] ${uid} has stored creds — reconnecting silently`)
+      this.spawn(uid).catch(e => logger.error('[wa] background spawn error', e))
+      return {
+        status: 'connecting' as Status,
+        qrCode: null,
+        phone: null,
+        attempts: 0,
+        lastError: null,
+        connectedAt: null,
+      }
+    }
+
+    // No creds — check if there is a still-valid QR in DB (same session, not yet scanned)
     const cachedQR = await qrService.getQRCode(uid)
     if (cachedQR) {
-      logger.info(`[wa] Found cached QR in Firestore for ${uid}`)
-      // Spawn connection in background to listen for the scan event
+      logger.info(`[wa] Found valid cached QR in Firestore for ${uid}`)
+      // Spawn in background to listen for the scan event
       this.spawn(uid).catch(e => logger.error('[wa] background spawn error', e))
-      
-      // Return the cached QR immediately to the frontend for a seamless experience
       return {
         status: 'qr' as Status,
         qrCode: cachedQR,
@@ -111,8 +145,26 @@ class BaileyService {
       }
     }
 
+    // Fresh start — spawn and wait for first QR
     await this.spawn(uid)
     return this.getStatusSnapshot(uid)
+  }
+
+  /** Check whether this user already has Baileys credentials stored in Firestore */
+  private async userHasStoredCreds(uid: string): Promise<boolean> {
+    try {
+      const db = getFirestore()
+      if (!db) return false
+      const credsDoc = await db
+        .collection('whatsappAuth')
+        .doc(uid)
+        .collection('state')
+        .doc('creds')
+        .get()
+      return credsDoc.exists
+    } catch {
+      return false
+    }
   }
 
   async stop(uid: string): Promise<void> {
@@ -127,12 +179,23 @@ class BaileyService {
     await this.persistSessionStatus(uid, SESSION_STATUS.DISCONNECTED, null)
   }
 
+  /**
+   * Fully logout and unlink WhatsApp.
+   * Clears all credentials from Firestore so the user must scan a new QR next time.
+   * Does NOT auto-reconnect — the frontend must call /connect explicitly.
+   */
   async logout(uid: string): Promise<void> {
     const r = this.runtimes.get(uid)
     try {
       if (r) await r.sock.logout().catch(() => undefined)
     } finally {
       this.runtimes.delete(uid)
+      // Clear QR code from DB as well
+      try {
+        const db = getFirestore()
+        if (db) await db.collection(COLLECTIONS.QR_CODES).doc(uid).delete().catch(() => undefined)
+      } catch { /* ignore */ }
+      // Clear Baileys auth credentials
       try {
         const { clear } = await useFirestoreAuthState(uid)
         await clear()
@@ -140,6 +203,7 @@ class BaileyService {
         logger.warn('[wa] failed to clear auth state', e as Error)
       }
       await this.persistSessionStatus(uid, SESSION_STATUS.DISCONNECTED, null)
+      logger.info(`[wa] ${uid} fully logged out — creds cleared from DB`)
     }
   }
 
@@ -202,6 +266,7 @@ class BaileyService {
       sock,
       status: 'connecting',
       qrDataUrl: null,
+      qrGeneratedAt: null,
       phone: null,
       reconnecting: false,
       attempts: prevAttempts + 1,
@@ -215,13 +280,16 @@ class BaileyService {
 
     sock.ev.on('connection.update', async (u) => {
       const { connection, lastDisconnect, qr } = u
+
       if (qr) {
         try {
           const dataUrl = await QRCode.toDataURL(qr, { margin: 1, width: 360 })
           runtime.qrDataUrl = dataUrl
+          runtime.qrGeneratedAt = Date.now()
           runtime.status = 'qr'
           logger.info(`[wa] QR generated for ${uid}`)
           this.emitStatus(uid)
+          // Save QR to Firestore bound to this user's UID
           await qrService.saveQRCode(uid, dataUrl)
           await this.persistSessionStatus(uid, SESSION_STATUS.CONNECTING, null)
         } catch (e) {
@@ -232,6 +300,7 @@ class BaileyService {
       if (connection === 'open') {
         runtime.status = 'connected'
         runtime.qrDataUrl = null
+        runtime.qrGeneratedAt = null
         runtime.phone = sock.user?.id?.split(':')[0] || null
         runtime.connectedAt = Date.now()
         // Reset attempt counter so future disconnects get a fresh slate.

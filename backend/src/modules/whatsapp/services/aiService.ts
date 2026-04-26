@@ -4,7 +4,27 @@ import logger from '@shared/utils/logger'
 import { AppError } from '@shared/utils/errorHandler'
 import { ErrorCode } from '@shared/types/common.types'
 
-const MODEL = 'gemini-2.5-flash'
+/**
+ * Gemini model fallback chain (in priority order):
+ *  1. gemini-2.5-flash           ← primary (best quality)
+ *  2. gemini-2.5-flash-preview-05-20 ← fallback
+ *  3. gemini-2.0-flash           ← fallback
+ *  4. gemini-2.0-flash-lite      ← fallback (fast & cheap)
+ *  5. gemini-1.5-flash-latest    ← last resort
+ *
+ * Each model is tried in order. If a model returns a 429 (rate limit) or any
+ * other error, the next model in the chain is attempted automatically.
+ * Only after all models are exhausted is an error thrown.
+ */
+const FALLBACK_MODELS = [
+  'gemini-2.5-flash',
+  'gemini-2.5-flash-preview-05-20',
+  'gemini-2.0-flash',
+  'gemini-2.0-flash-lite',
+  'gemini-1.5-flash-latest',
+] as const
+
+type ModelName = typeof FALLBACK_MODELS[number]
 
 type Part = string | { inlineData: { data: string; mimeType: string } }
 
@@ -15,33 +35,63 @@ function extract429Delay(msg: string): number {
   return 0
 }
 
-async function callGemini(
+/**
+ * Try calling a specific Gemini model once (with one 429-retry if delay is short).
+ * Returns null if the model fails so the caller can try the next one.
+ */
+async function tryModel(
   genAI: GoogleGenerativeAI,
+  modelName: string,
   parts: Part[],
   tag: string
-): Promise<{ text: string; model: string }> {
+): Promise<{ text: string; model: string } | null> {
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
-      const m = genAI.getGenerativeModel({ model: MODEL })
+      const m = genAI.getGenerativeModel({ model: modelName })
       const result = await m.generateContent(parts as never)
       const text = result.response.text().trim()
       if (!text) throw new Error('empty response')
-      logger.info(`[ai] ${tag} OK via ${MODEL}`)
-      return { text, model: MODEL }
+      logger.info(`[ai] ${tag} OK via ${modelName}`)
+      return { text, model: modelName }
     } catch (e) {
       const msg = (e as Error).message || String(e)
       const is429 = msg.includes('429')
       const retryDelay = is429 ? extract429Delay(msg) : 0
+
+      // On first attempt with a short 429 delay, wait and retry same model once
       if (attempt === 0 && is429 && retryDelay > 0 && retryDelay <= 8000) {
-        logger.warn(`[ai] ${tag} 429 — retrying in ${retryDelay}ms`)
+        logger.warn(`[ai] ${tag} 429 on ${modelName} — retrying in ${retryDelay}ms`)
         await new Promise((r) => setTimeout(r, retryDelay))
         continue
       }
-      logger.error(`[ai] ${tag} failed: ${msg}`)
-      throw new AppError(ErrorCode.INTERNAL_ERROR, `AI unavailable (${tag}): ${msg}`, 500)
+
+      // Model failed — log and signal to try next model
+      logger.warn(`[ai] ${tag} failed on ${modelName}: ${msg.substring(0, 120)}`)
+      return null
     }
   }
-  throw new AppError(ErrorCode.INTERNAL_ERROR, `AI unavailable (${tag}): retries exhausted`, 500)
+  return null
+}
+
+/**
+ * Call Gemini with automatic fallback across all models in FALLBACK_MODELS.
+ * Throws only when every model in the chain has been exhausted.
+ */
+async function callGeminiWithFallback(
+  genAI: GoogleGenerativeAI,
+  parts: Part[],
+  tag: string
+): Promise<{ text: string; model: string }> {
+  for (const modelName of FALLBACK_MODELS) {
+    const result = await tryModel(genAI, modelName, parts, tag)
+    if (result) return result
+    logger.warn(`[ai] ${tag} — falling back from ${modelName}`)
+  }
+  throw new AppError(
+    ErrorCode.INTERNAL_ERROR,
+    `AI unavailable (${tag}): all models exhausted [${FALLBACK_MODELS.join(', ')}]`,
+    500
+  )
 }
 
 export class AIService {
@@ -50,7 +100,7 @@ export class AIService {
   constructor() {
     if (CONFIG.GEMINI_API_KEY) {
       this.genAI = new GoogleGenerativeAI(CONFIG.GEMINI_API_KEY)
-      logger.info(`[ai] Gemini ready — model: ${MODEL}`)
+      logger.info(`[ai] Gemini ready — primary: ${FALLBACK_MODELS[0]}, fallbacks: ${FALLBACK_MODELS.slice(1).join(' → ')}`)
     } else {
       logger.error('[ai] ❌ GEMINI_API_KEY missing — AI disabled!')
     }
@@ -69,7 +119,7 @@ export class AIService {
     const fullPrompt = systemPrompt
       ? `${systemPrompt}\n\nUser Message: ${userMessage}`
       : userMessage
-    const { text, model } = await callGemini(this.client(), [fullPrompt], 'text')
+    const { text, model } = await callGeminiWithFallback(this.client(), [fullPrompt], 'text')
     return { text, tokensUsed: 0, model }
   }
 
@@ -83,7 +133,7 @@ export class AIService {
     const base = mimeType.split(';')[0].trim()
     const safeMime = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(base)
       ? base : 'image/jpeg'
-    const { text, model } = await callGemini(
+    const { text, model } = await callGeminiWithFallback(
       this.client(),
       [{ inlineData: { data: imageData, mimeType: safeMime } }, fullPrompt],
       'image'
@@ -102,7 +152,7 @@ export class AIService {
       ? base : 'video/mp4'
     const instruction = (systemPrompt ? `${systemPrompt}\n\n` : '') +
       `User sent a video${caption ? ` with caption: "${caption}"` : ''}. Describe what you see and reply in Hinglish.`
-    return callGemini(
+    return callGeminiWithFallback(
       this.client(),
       [{ inlineData: { data: videoData, mimeType: safeMime } }, instruction],
       'video'
@@ -115,7 +165,7 @@ export class AIService {
   ): Promise<{ text: string; model: string }> {
     const instruction = systemPrompt +
       '\n\nUser sent a voice message (MP3). Understand it and reply in short natural Hinglish. No transcription labels.'
-    return callGemini(
+    return callGeminiWithFallback(
       this.client(),
       [{ inlineData: { data: audioBase64, mimeType: 'audio/mp3' } }, instruction],
       'audio'
@@ -126,7 +176,7 @@ export class AIService {
     context: string,
     systemPrompt: string
   ): Promise<{ decision: string; model: string }> {
-    const { text, model } = await callGemini(
+    const { text, model } = await callGeminiWithFallback(
       this.client(),
       [`${systemPrompt}\n\nContext: ${context}\n\nMake a decision.`],
       'decision'
@@ -155,8 +205,13 @@ export class AIService {
     }
   }
 
+  /** Returns the full model list for diagnostics/test-ai endpoint */
   getAvailableModels() {
-    return { text: [MODEL], vision: [MODEL] }
+    return {
+      text: [...FALLBACK_MODELS],
+      vision: [...FALLBACK_MODELS],
+      fallbackChain: FALLBACK_MODELS.join(' → '),
+    }
   }
 }
 
