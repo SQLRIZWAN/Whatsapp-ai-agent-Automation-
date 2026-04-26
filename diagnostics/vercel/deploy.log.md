@@ -4,14 +4,9 @@
 > https://vercel.com/docs/cli/about-telemetry
 Retrieving project…
 Deploying sqlrizwan/whatsapp-ai-automation
-Uploading [--------------------] (0.0B/176KB)
-Uploading [=====---------------] (48.0KB/176KB)
-Uploading [==========----------] (96.0KB/176KB)
-Uploading [================----] (144.0KB/176KB)
-Uploading [====================] (176.0KB/176KB)
-Inspect: https://vercel.com/sqlrizwans-projects/whatsapp-ai-automation/67FVpna2LpDSroomhoYexgrbapWE [2s]
-Production: https://whatsapp-ai-automation-rl44pyki7-sqlrizwans-projects.vercel.app [2s]
-https://whatsapp-ai-automation-rl44pyki7-sqlrizwans-projects.vercel.appBuilding...
+Inspect: https://vercel.com/sqlrizwans-projects/whatsapp-ai-automation/4qvKeUcrvY9HfFUppXE37ReYHeUY [1s]
+Production: https://whatsapp-ai-automation-9lop51koq-sqlrizwans-projects.vercel.app [1s]
+https://whatsapp-ai-automation-9lop51koq-sqlrizwans-projects.vercel.appBuilding...
 Building...
 Building: Running build in Washington, D.C., USA (East) – iad1
 Building: Build machine configuration: 2 cores, 8 GB
@@ -34,28 +29,9 @@ Building: > whatsapp-ai-agent-frontend@1.0.1 build
 Building: > tsc && vite build
 Building: vite v5.4.21 building for production...
 Building: transforming...
-Building: ✓ 139 modules transformed.
-Building: rendering chunks...
-Building: computing gzip size...
-Building: dist/index.html                          0.56 kB │ gzip:  0.34 kB
-Building: dist/assets/index-BM_Qrh1B.css           2.42 kB │ gzip:  0.92 kB
-Building: dist/assets/LoginPage-BAcGq2Xq.js        4.64 kB │ gzip:  1.37 kB
-Building: dist/assets/RegisterPage-DdIMm7f3.js     6.25 kB │ gzip:  1.53 kB
-Building: dist/assets/AppShell-BnMsqh6-.js         6.47 kB │ gzip:  2.08 kB
-Building: dist/assets/SettingsPage-dcnuNR9v.js     6.75 kB │ gzip:  1.99 kB
-Building: dist/assets/MessagesPage-D9qaZC6K.js     7.03 kB │ gzip:  2.43 kB
-Building: dist/assets/CallsPage-Dw3LYI9r.js        8.91 kB │ gzip:  2.22 kB
-Building: dist/assets/DashboardPage-RTLbyo8a.js   14.68 kB │ gzip:  3.70 kB
-Building: dist/assets/index-BtypAtrY.js           89.66 kB │ gzip: 21.09 kB
-Building: dist/assets/index-x3b3nVbM.js          370.54 kB │ gzip: 93.08 kB
-Building: ✓ built in 1.76s
-Building: Build Completed in /vercel/output [10s]
-Building: Deploying outputs...
-Building: Deployment completed
-Building: Creating build cache...
-[2K[1A[2K[GProduction: https://whatsapp-ai-automation-rl44pyki7-sqlrizwans-projects.vercel.app [23s]
+[2K[1A[2K[GProduction: https://whatsapp-ai-automation-9lop51koq-sqlrizwans-projects.vercel.app [17s]
 Completing...
-Aliased: https://whatsapp-ai-automation.vercel.app [23s]
-> Assigning alias whatsapp-ai-automation.vercel.app to deployment whatsapp-ai-automation-rl44pyki7-sqlrizwans-projects.vercel.app
+Aliased: https://whatsapp-ai-automation.vercel.app [17s]
+> Assigning alias whatsapp-ai-automation.vercel.app to deployment whatsapp-ai-automation-9lop51koq-sqlrizwans-projects.vercel.app
 Creating alias
-> Success! https://whatsapp-ai-automation.vercel.app now points to https://whatsapp-ai-automation-rl44pyki7-sqlrizwans-projects.vercel.app [648ms]
+> Success! https://whatsapp-ai-automation.vercel.app now points to https://whatsapp-ai-automation-9lop51koq-sqlrizwans-projects.vercel.app [684ms]

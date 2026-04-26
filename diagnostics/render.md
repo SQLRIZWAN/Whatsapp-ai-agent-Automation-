@@ -1,9 +1,9 @@
 # Render Deploy Diagnostics
 
-Run: 24939618499
-Commit: a73e5fa69ca67ca93611618b93068eae492c930b
+Run: 24939870831
+Commit: 5c71189b92e590326348c99229a21025435a5618
 Service ID: srv-d7kkne0sfn5c73b9t5cg
-Deploy ID: dep-d7mhvib7uimc73csn3rg
+Deploy ID: dep-d7mi5omgvqtc73abnitg
 
 ## Service details
 ```json
@@ -56,25 +56,25 @@ Deploy ID: dep-d7mhvib7uimc73csn3rg
   "suspended": "not_suspended",
   "suspenders": [],
   "type": "web_service",
-  "updatedAt": "2026-04-25T20:13:15.242906Z"
+  "updatedAt": "2026-04-25T20:27:43.602007Z"
 }
 ```
 
 ## Latest deploy
 ```json
 {
-  "id": "dep-d7mhvib7uimc73csn3rg",
+  "id": "dep-d7mi5omgvqtc73abnitg",
   "commit": {
-    "id": "a73e5fa69ca67ca93611618b93068eae492c930b",
-    "message": "Merge branch 'claude/fix-ai-messaging-stability-a9TSt' of http://127.0.0.1:46663/git/SQLRIZWAN/Whatsapp-ai-agent-Automation- into claude/fix-ai-messaging-stability-a9TSt",
-    "createdAt": "2026-04-25T20:10:37Z"
+    "id": "5c71189b92e590326348c99229a21025435a5618",
+    "message": "Merge branch 'claude/fix-ai-messaging-stability-a9TSt' of http://127.0.0.1:33455/git/SQLRIZWAN/Whatsapp-ai-agent-Automation- into claude/fix-ai-messaging-stability-a9TSt",
+    "createdAt": "2026-04-25T20:23:46Z"
   },
   "status": "live",
   "trigger": "api",
-  "createdAt": "2026-04-25T20:10:49.625301Z",
-  "updatedAt": "2026-04-25T20:13:15.241603Z",
-  "startedAt": "2026-04-25T20:10:49.578456Z",
-  "finishedAt": "2026-04-25T20:13:15.241435Z"
+  "createdAt": "2026-04-25T20:24:03.099306Z",
+  "updatedAt": "2026-04-25T20:27:43.600281Z",
+  "startedAt": "2026-04-25T20:24:03.044271Z",
+  "finishedAt": "2026-04-25T20:27:43.599959Z"
 }
 ```
 
@@ -296,267 +296,37 @@ Deploy ID: dep-d7mhvib7uimc73csn3rg
 2026-04-25T20:12:35.332489125Z [34;1m==>[0;22m [1mUploading build...[22m
 2026-04-25T20:12:41.45362872Z [34;1m==>[0;22m [1mUploaded in 3.6s. Compression took 2.5s[22m
 2026-04-25T20:12:41.48779425Z [32;1m==>[0;22m [1mBuild successful 🎉[22m
+2026-04-25T20:24:13.154211207Z [34m[1m==>(B[m [1mCloning from https://github.com/SQLRIZWAN/Whatsapp-ai-agent-Automation-(B[m
+2026-04-25T20:24:13.832143896Z [34m[1m==>(B[m [1mChecking out commit 5c71189b92e590326348c99229a21025435a5618 in branch claude/fix-ai-messaging-stability-a9TSt(B[m
+2026-04-25T20:24:15.207595765Z [34m[1m==>(B[m [1mUsing Node.js version 24.14.1 (default)(B[m
+2026-04-25T20:24:15.232751501Z [34m[1m==>(B[m [1mDocs on specifying a Node.js version: https://render.com/docs/node-version(B[m
+2026-04-25T20:24:17.459684986Z [34m[1m==>(B[m [1mRunning build command 'npm install --include=dev && npm run build'...(B[m
+2026-04-25T20:25:40.142060252Z 
+2026-04-25T20:25:40.142086825Z added 590 packages, and audited 591 packages in 1m
+2026-04-25T20:25:40.142124447Z 
+2026-04-25T20:25:40.142277179Z 113 packages are looking for funding
+2026-04-25T20:25:40.142364755Z   run `npm fund` for details
+2026-04-25T20:25:40.316443583Z 
+2026-04-25T20:25:40.316464125Z 24 vulnerabilities (2 low, 12 moderate, 8 high, 2 critical)
+2026-04-25T20:25:40.316468185Z 
+2026-04-25T20:25:40.316471635Z To address issues that do not require attention, run:
+2026-04-25T20:25:40.316474845Z   npm audit fix
+2026-04-25T20:25:40.316477846Z 
+2026-04-25T20:25:40.316480976Z To address all issues (including breaking changes), run:
+2026-04-25T20:25:40.316484246Z   npm audit fix --force
+2026-04-25T20:25:40.316487176Z 
+2026-04-25T20:25:40.316490827Z Run `npm audit` for details.
+2026-04-25T20:25:40.576809574Z 
+2026-04-25T20:25:40.576838926Z > whatsapp-ai-agent-backend@1.0.0 build
+2026-04-25T20:25:40.576846546Z > tsc && tsc-alias
+2026-04-25T20:25:40.576852407Z 
+2026-04-25T20:27:08.699726773Z [34;1m==>[0;22m [1mUploading build...[22m
+2026-04-25T20:27:16.600071634Z [34;1m==>[0;22m [1mUploaded in 3.8s. Compression took 4.1s[22m
+2026-04-25T20:27:16.719823072Z [32;1m==>[0;22m [1mBuild successful 🎉[22m
 ```
 
 ## App logs (last 4h)
 ```
-2026-04-25T19:51:10.315544233Z 2026-04-25 19:51:10 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:51:15.317416125Z 2026-04-25 19:51:15 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:51:20.31616677Z 2026-04-25 19:51:20 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:51:25.316977126Z 2026-04-25 19:51:25 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:51:30.318781875Z 2026-04-25 19:51:30 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:51:35.316521664Z 2026-04-25 19:51:35 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:51:35.317526798Z 2026-04-25 19:51:35 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:51:40.316543778Z 2026-04-25 19:51:40 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:51:45.319748931Z 2026-04-25 19:51:45 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:51:50.316176176Z 2026-04-25 19:51:50 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:51:55.316704832Z 2026-04-25 19:51:55 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:52:00.315959757Z 2026-04-25 19:52:00 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:52:05.316257706Z 2026-04-25 19:52:05 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:52:05.317032425Z 2026-04-25 19:52:05 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:52:10.316449013Z 2026-04-25 19:52:10 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:52:15.316357963Z 2026-04-25 19:52:15 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:52:20.31660779Z 2026-04-25 19:52:20 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:52:25.316271023Z 2026-04-25 19:52:25 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:52:30.316368656Z 2026-04-25 19:52:30 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:52:35.316419967Z 2026-04-25 19:52:35 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:52:35.317041132Z 2026-04-25 19:52:35 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:52:40.316496829Z 2026-04-25 19:52:40 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:52:45.316716034Z 2026-04-25 19:52:45 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:52:50.317171684Z 2026-04-25 19:52:50 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:52:55.316198539Z 2026-04-25 19:52:55 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:52:55.930378069Z [0;33m[1m==> [0m[1mNo open ports detected, continuing to scan...[0m
-2026-04-25T19:52:56.035314325Z [0;33m[1m==> [0m[1mDocs on specifying a port: https://render.com/docs/web-services#port-binding[0m
-2026-04-25T19:53:00.316237028Z 2026-04-25 19:53:00 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:53:05.319398374Z 2026-04-25 19:53:05 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:53:05.320324677Z 2026-04-25 19:53:05 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:53:10.316610293Z 2026-04-25 19:53:10 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:53:11.519017221Z [0;32m[1m==> [0m[1mYour service is live 🎉[0m
-2026-04-25T19:53:11.608085971Z [0;32m[1m==> [0m[1m[0m
-2026-04-25T19:53:11.617082002Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
-2026-04-25T19:53:11.627920613Z [0;32m[1m==> [0m[1m[0m
-2026-04-25T19:53:11.638505867Z [0;32m[1m==> [0m[1mAvailable at your primary URL https://whatsapp-ai-backend-8ylf.onrender.com[0m
-2026-04-25T19:53:11.649614855Z [0;32m[1m==> [0m[1m[0m
-2026-04-25T19:53:11.664480744Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
-2026-04-25T19:53:15.316716664Z 2026-04-25 19:53:15 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:53:20.316225948Z 2026-04-25 19:53:20 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:53:25.316053851Z 2026-04-25 19:53:25 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:53:30.322832784Z 2026-04-25 19:53:30 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:53:35.316546316Z 2026-04-25 19:53:35 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:53:40.316776557Z 2026-04-25 19:53:40 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:53:45.316046065Z 2026-04-25 19:53:45 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:53:50.316267445Z 2026-04-25 19:53:50 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:53:55.323776204Z 2026-04-25 19:53:55 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:54:00.316780877Z 2026-04-25 19:54:00 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:54:05.215027056Z 2026-04-25 19:54:05 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:54:05.316664768Z 2026-04-25 19:54:05 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:54:10.215433065Z 2026-04-25 19:54:10 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:54:10.316202501Z 2026-04-25 19:54:10 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.46"}
-2026-04-25T19:54:15.215174219Z 2026-04-25 19:54:15 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:54:20.21536862Z 2026-04-25 19:54:20 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:54:25.214860084Z 2026-04-25 19:54:25 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:54:30.215317332Z 2026-04-25 19:54:30 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:54:30.216421863Z 2026-04-25 19:54:30 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:54:35.216113561Z 2026-04-25 19:54:35 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:54:40.215616631Z 2026-04-25 19:54:40 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:54:45.216486136Z 2026-04-25 19:54:45 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:54:50.215713883Z 2026-04-25 19:54:50 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:54:55.215837692Z 2026-04-25 19:54:55 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:55:00.215084453Z 2026-04-25 19:55:00 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:55:00.215863546Z 2026-04-25 19:55:00 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:55:05.215366534Z 2026-04-25 19:55:05 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:55:10.215679047Z 2026-04-25 19:55:10 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:55:15.215855624Z 2026-04-25 19:55:15 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:55:20.217166275Z 2026-04-25 19:55:20 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:55:25.215122674Z 2026-04-25 19:55:25 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:55:30.215468195Z 2026-04-25 19:55:30 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:55:30.216039846Z 2026-04-25 19:55:30 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:55:35.215439978Z 2026-04-25 19:55:35 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:55:40.215546729Z 2026-04-25 19:55:40 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:55:45.215325274Z 2026-04-25 19:55:45 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:55:50.218829924Z 2026-04-25 19:55:50 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:55:55.214957753Z 2026-04-25 19:55:55 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:56:00.2152425Z 2026-04-25 19:56:00 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:56:00.216054884Z 2026-04-25 19:56:00 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:56:05.215743621Z 2026-04-25 19:56:05 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:56:10.215504703Z 2026-04-25 19:56:10 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:56:15.21496332Z 2026-04-25 19:56:15 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:56:20.217674176Z 2026-04-25 19:56:20 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:56:25.215143257Z 2026-04-25 19:56:25 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:56:30.215841776Z 2026-04-25 19:56:30 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:56:30.21665192Z 2026-04-25 19:56:30 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:56:35.21512186Z 2026-04-25 19:56:35 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:56:40.216289048Z 2026-04-25 19:56:40 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:56:45.214921249Z 2026-04-25 19:56:45 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:56:50.215574992Z 2026-04-25 19:56:50 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:56:55.215891099Z 2026-04-25 19:56:55 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:57:00.220099399Z 2026-04-25 19:57:00 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:57:00.220148212Z 2026-04-25 19:57:00 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:57:05.215448457Z 2026-04-25 19:57:05 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:57:10.215874884Z 2026-04-25 19:57:10 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:57:15.215496808Z 2026-04-25 19:57:15 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:57:20.215309735Z 2026-04-25 19:57:20 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:57:25.216210472Z 2026-04-25 19:57:25 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:57:30.215782267Z 2026-04-25 19:57:30 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:57:30.217368914Z 2026-04-25 19:57:30 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:57:35.215269361Z 2026-04-25 19:57:35 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:57:40.214860391Z 2026-04-25 19:57:40 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:57:45.214991333Z 2026-04-25 19:57:45 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:57:50.215315887Z 2026-04-25 19:57:50 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:57:55.215179357Z 2026-04-25 19:57:55 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:58:00.215185256Z 2026-04-25 19:58:00 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:58:00.215847092Z 2026-04-25 19:58:00 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:58:05.216648487Z 2026-04-25 19:58:05 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:58:10.215380559Z 2026-04-25 19:58:10 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:58:14.36936067Z [0;32m[1m==> [0m[1mDetected service running on port 10000[0m
-2026-04-25T19:58:14.452085163Z [0;32m[1m==> [0m[1mDocs on specifying a port: https://render.com/docs/web-services#port-binding[0m
-2026-04-25T19:58:15.215917032Z 2026-04-25 19:58:15 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:58:20.215929088Z 2026-04-25 19:58:20 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:58:25.216916128Z 2026-04-25 19:58:25 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:58:30.216545675Z 2026-04-25 19:58:30 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:58:30.217410622Z 2026-04-25 19:58:30 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:58:35.215274225Z 2026-04-25 19:58:35 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:58:40.21881805Z 2026-04-25 19:58:40 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:58:45.214785052Z 2026-04-25 19:58:45 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:58:50.216035154Z 2026-04-25 19:58:50 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:58:55.215773175Z 2026-04-25 19:58:55 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:59:00.174277457Z [0;34m[1m==> [0m[1mDeploying...[0m
-2026-04-25T19:59:00.216471561Z 2026-04-25 19:59:00 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:59:00.217159828Z 2026-04-25 19:59:00 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:59:00.261445561Z [0;34m[1m==> [0m[1mSetting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance[0m
-2026-04-25T19:59:05.215056942Z 2026-04-25 19:59:05 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:59:10.215924029Z 2026-04-25 19:59:10 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:59:15.215392492Z 2026-04-25 19:59:15 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:59:17.162287309Z [32m[1m==>(B[m [1mRunning 'npm start'(B[m
-2026-04-25T19:59:18.363487554Z 
-2026-04-25T19:59:18.363519885Z > whatsapp-ai-agent-backend@1.0.0 start
-2026-04-25T19:59:18.363525505Z > node dist/index.js
-2026-04-25T19:59:18.363527695Z 
-2026-04-25T19:59:20.215813528Z 2026-04-25 19:59:20 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:59:22.964094767Z 2026-04-25 19:59:22 [info] AI Service initialized with primary model: gemini-2.5-flash
-2026-04-25T19:59:23.956623043Z 2026-04-25 19:59:23 [info] Firestore initialized successfully
-2026-04-25T19:59:23.961574707Z 2026-04-25 19:59:23 [info] ✅ Server running on http://localhost:10000
-2026-04-25T19:59:23.961770602Z 2026-04-25 19:59:23 [info] Environment: production
-2026-04-25T19:59:23.961966686Z 2026-04-25 19:59:23 [info] API URL: http://localhost:5000
-2026-04-25T19:59:23.962192092Z 2026-04-25 19:59:23 [info] Frontend URL: https://whatsapp-ai-automation.vercel.app
-2026-04-25T19:59:24.638447967Z 2026-04-25 19:59:24 [error] Route / not found
-2026-04-25T19:59:24.638470948Z Error: Route / not found
-2026-04-25T19:59:24.638476058Z     at /opt/render/project/src/backend/dist/app.js:62:15
-2026-04-25T19:59:24.638480118Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-25T19:59:24.638485198Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-25T19:59:24.638488898Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-25T19:59:24.638492098Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
-2026-04-25T19:59:24.638495268Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
-2026-04-25T19:59:24.638498368Z     at /opt/render/project/src/backend/dist/app.js:44:9
-2026-04-25T19:59:24.638501599Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-25T19:59:24.638504849Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-25T19:59:24.638508599Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-25T19:59:24.642800886Z 2026-04-25 19:59:24 [info] {"method":"HEAD","path":"/","status":404,"duration":"5ms","ip":"::1"}
-2026-04-25T19:59:25.214976007Z 2026-04-25 19:59:25 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:59:30.215258318Z 2026-04-25 19:59:30 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:59:30.216332197Z 2026-04-25 19:59:30 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:59:30.629507232Z 2026-04-25 19:59:30 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T19:59:30.631992384Z 2026-04-25 19:59:30 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T19:59:31.331690648Z [0;32m[1m==> [0m[1mYour service is live 🎉[0m
-2026-04-25T19:59:31.41584502Z 2026-04-25 19:59:31 [error] Route / not found
-2026-04-25T19:59:31.415864581Z Error: Route / not found
-2026-04-25T19:59:31.415870561Z     at /opt/render/project/src/backend/dist/app.js:62:15
-2026-04-25T19:59:31.415875731Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-25T19:59:31.415881611Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-25T19:59:31.415885491Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-25T19:59:31.415888751Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
-2026-04-25T19:59:31.415891902Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
-2026-04-25T19:59:31.415895011Z     at /opt/render/project/src/backend/dist/app.js:44:9
-2026-04-25T19:59:31.415898331Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-25T19:59:31.415916142Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-25T19:59:31.415919662Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-25T19:59:31.416743493Z 2026-04-25 19:59:31 [info] {"method":"GET","path":"/","status":404,"duration":"1ms","ip":"::1"}
-2026-04-25T19:59:31.452040747Z [0;32m[1m==> [0m[1m[0m
-2026-04-25T19:59:31.454532126Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
-2026-04-25T19:59:31.456585023Z [0;32m[1m==> [0m[1m[0m
-2026-04-25T19:59:31.458875507Z [0;32m[1m==> [0m[1mAvailable at your primary URL https://whatsapp-ai-backend-8ylf.onrender.com[0m
-2026-04-25T19:59:31.460823312Z [0;32m[1m==> [0m[1m[0m
-2026-04-25T19:59:31.462891641Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
-2026-04-25T19:59:35.216120593Z 2026-04-25 19:59:35 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:59:35.635735914Z 2026-04-25 19:59:35 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T19:59:40.215525989Z 2026-04-25 19:59:40 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:59:40.632670144Z 2026-04-25 19:59:40 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T19:59:45.21589572Z 2026-04-25 19:59:45 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:59:45.632457697Z 2026-04-25 19:59:45 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T19:59:50.215414536Z 2026-04-25 19:59:50 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:59:50.632358015Z 2026-04-25 19:59:50 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T19:59:55.214844668Z 2026-04-25 19:59:55 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T19:59:55.631654499Z 2026-04-25 19:59:55 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:00:00.21570432Z 2026-04-25 20:00:00 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T20:00:00.628508583Z 2026-04-25 20:00:00 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:00:00.631761694Z 2026-04-25 20:00:00 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:00:05.215712967Z 2026-04-25 20:00:05 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T20:00:05.631885881Z 2026-04-25 20:00:05 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:00:10.216639336Z 2026-04-25 20:00:10 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T20:00:10.632658855Z 2026-04-25 20:00:10 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:00:15.215711515Z 2026-04-25 20:00:15 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T20:00:15.632126568Z 2026-04-25 20:00:15 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:00:20.215687484Z 2026-04-25 20:00:20 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T20:00:20.631130591Z 2026-04-25 20:00:20 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:00:25.214955737Z 2026-04-25 20:00:25 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T20:00:25.631602142Z 2026-04-25 20:00:25 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:00:30.215480759Z 2026-04-25 20:00:30 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.253"}
-2026-04-25T20:00:30.627498809Z 2026-04-25 20:00:30 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:00:30.631578701Z 2026-04-25 20:00:30 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:00:35.632127337Z 2026-04-25 20:00:35 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:00:40.632331644Z 2026-04-25 20:00:40 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:00:45.632740268Z 2026-04-25 20:00:45 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:00:50.63294562Z 2026-04-25 20:00:50 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:00:55.632240819Z 2026-04-25 20:00:55 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:01:00.628156524Z 2026-04-25 20:01:00 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:01:00.63119295Z 2026-04-25 20:01:00 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:01:05.632145653Z 2026-04-25 20:01:05 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:01:10.632938053Z 2026-04-25 20:01:10 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:01:15.631323764Z 2026-04-25 20:01:15 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:01:20.631514802Z 2026-04-25 20:01:20 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:01:25.635584028Z 2026-04-25 20:01:25 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:01:30.630729332Z 2026-04-25 20:01:30 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:01:30.635595884Z 2026-04-25 20:01:30 [info] {"method":"GET","path":"/health","status":200,"duration":"3ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:01:35.635313513Z 2026-04-25 20:01:35 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:01:40.631895466Z 2026-04-25 20:01:40 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:01:45.631853473Z 2026-04-25 20:01:45 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:01:50.631492875Z 2026-04-25 20:01:50 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:01:55.631589579Z 2026-04-25 20:01:55 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:02:00.627768456Z 2026-04-25 20:02:00 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:02:00.630876503Z 2026-04-25 20:02:00 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:02:05.631886973Z 2026-04-25 20:02:05 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:02:10.631371435Z 2026-04-25 20:02:10 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:02:15.631827844Z 2026-04-25 20:02:15 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:02:20.631629707Z 2026-04-25 20:02:20 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:02:25.633734768Z 2026-04-25 20:02:25 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:02:30.627185344Z 2026-04-25 20:02:30 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:02:30.630759204Z 2026-04-25 20:02:30 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:02:35.632253203Z 2026-04-25 20:02:35 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:02:40.631875706Z 2026-04-25 20:02:40 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:02:45.631523301Z 2026-04-25 20:02:45 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:02:50.632120641Z 2026-04-25 20:02:50 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:02:55.856356809Z 2026-04-25 20:02:55 [info] {"method":"GET","path":"/health","status":200,"duration":"100ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:03:00.627701885Z 2026-04-25 20:03:00 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:03:00.63151874Z 2026-04-25 20:03:00 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:03:05.633430457Z 2026-04-25 20:03:05 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:03:10.631831017Z 2026-04-25 20:03:10 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:03:15.631846208Z 2026-04-25 20:03:15 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:03:20.63181043Z 2026-04-25 20:03:20 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:03:25.632158692Z 2026-04-25 20:03:25 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:03:30.627688365Z 2026-04-25 20:03:30 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:03:30.630494665Z 2026-04-25 20:03:30 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:03:35.631444236Z 2026-04-25 20:03:35 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:03:40.632072499Z 2026-04-25 20:03:40 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:03:45.631541744Z 2026-04-25 20:03:45 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:03:50.631841211Z 2026-04-25 20:03:50 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:03:55.631848442Z 2026-04-25 20:03:55 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:04:00.627790353Z 2026-04-25 20:04:00 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:04:00.630794758Z 2026-04-25 20:04:00 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:04:05.63196805Z 2026-04-25 20:04:05 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:04:10.633015581Z 2026-04-25 20:04:10 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:04:15.63115659Z 2026-04-25 20:04:15 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:04:20.633325261Z 2026-04-25 20:04:20 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
-2026-04-25T20:04:25.632187211Z 2026-04-25 20:04:25 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
 2026-04-25T20:04:30.627534083Z 2026-04-25 20:04:30 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.17"}
 2026-04-25T20:04:30.63222184Z 2026-04-25 20:04:30 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.17"}
 2026-04-25T20:04:31.394447977Z [0;32m[1m==> [0m[1mDetected service running on port 10000[0m
@@ -742,50 +512,11 @@ Deploy ID: dep-d7mhvib7uimc73csn3rg
 2026-04-25T20:12:46.266305961Z 2026-04-25 20:12:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.88"}
 2026-04-25T20:12:51.266047649Z 2026-04-25 20:12:51 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.88"}
 2026-04-25T20:12:56.266395761Z 2026-04-25 20:12:56 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.88"}
-2026-04-25T20:12:58.523933397Z [32m[1m==>(B[m [1mRunning 'npm start'(B[m
-2026-04-25T20:12:59.723136372Z 
-2026-04-25T20:12:59.723169832Z > whatsapp-ai-agent-backend@1.0.0 start
-2026-04-25T20:12:59.723175602Z > node dist/index.js
-2026-04-25T20:12:59.723178823Z 
 2026-04-25T20:13:01.266371044Z 2026-04-25 20:13:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.88"}
-2026-04-25T20:13:04.227251586Z 2026-04-25 20:13:04 [info] AI Service initialized with primary model: gemini-2.5-flash
-2026-04-25T20:13:05.222850053Z 2026-04-25 20:13:05 [info] Firestore initialized successfully
-2026-04-25T20:13:05.425887109Z 2026-04-25 20:13:05 [info] ✅ Server running on http://localhost:10000
-2026-04-25T20:13:05.426191765Z 2026-04-25 20:13:05 [info] Environment: production
-2026-04-25T20:13:05.426360988Z 2026-04-25 20:13:05 [info] API URL: http://localhost:5000
-2026-04-25T20:13:05.426596803Z 2026-04-25 20:13:05 [info] Frontend URL: https://whatsapp-ai-automation.vercel.app
-2026-04-25T20:13:05.632363211Z 2026-04-25 20:13:05 [error] Route / not found
-2026-04-25T20:13:05.632381031Z Error: Route / not found
-2026-04-25T20:13:05.632385321Z     at /opt/render/project/src/backend/dist/app.js:62:15
-2026-04-25T20:13:05.632388741Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-25T20:13:05.632393581Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-25T20:13:05.632396831Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-25T20:13:05.632399151Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
-2026-04-25T20:13:05.632401442Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
-2026-04-25T20:13:05.632403691Z     at /opt/render/project/src/backend/dist/app.js:44:9
-2026-04-25T20:13:05.632406002Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-25T20:13:05.632408322Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-25T20:13:05.632410632Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-25T20:13:05.636293586Z 2026-04-25 20:13:05 [info] {"method":"HEAD","path":"/","status":404,"duration":"4ms","ip":"::1"}
 2026-04-25T20:13:06.262858359Z 2026-04-25 20:13:06 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.88"}
 2026-04-25T20:13:06.265621788Z 2026-04-25 20:13:06 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.88"}
 2026-04-25T20:13:11.265578938Z 2026-04-25 20:13:11 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.88"}
-2026-04-25T20:13:14.505746599Z 2026-04-25 20:13:14 [info] {"method":"GET","path":"/health","status":200,"duration":"2ms","ip":"::ffff:10.203.25.68"}
-2026-04-25T20:13:14.508736166Z 2026-04-25 20:13:14 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
 2026-04-25T20:13:15.359817849Z [0;32m[1m==> [0m[1mYour service is live 🎉[0m
-2026-04-25T20:13:15.474186849Z 2026-04-25 20:13:15 [error] Route / not found
-2026-04-25T20:13:15.474206009Z Error: Route / not found
-2026-04-25T20:13:15.474210089Z     at /opt/render/project/src/backend/dist/app.js:62:15
-2026-04-25T20:13:15.474213509Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-25T20:13:15.474217149Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-25T20:13:15.47422114Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-25T20:13:15.474223869Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
-2026-04-25T20:13:15.47422668Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
-2026-04-25T20:13:15.47422956Z     at /opt/render/project/src/backend/dist/app.js:44:9
-2026-04-25T20:13:15.47423224Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-25T20:13:15.47424855Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-25T20:13:15.47425152Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-25T20:13:15.475178518Z 2026-04-25 20:13:15 [info] {"method":"GET","path":"/","status":404,"duration":"1ms","ip":"::1"}
 2026-04-25T20:13:15.51695865Z [0;32m[1m==> [0m[1m[0m
 2026-04-25T20:13:15.521042946Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
 2026-04-25T20:13:15.522886769Z [0;32m[1m==> [0m[1m[0m
@@ -793,11 +524,307 @@ Deploy ID: dep-d7mhvib7uimc73csn3rg
 2026-04-25T20:13:15.528706336Z [0;32m[1m==> [0m[1m[0m
 2026-04-25T20:13:15.530791234Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
 2026-04-25T20:13:16.266530313Z 2026-04-25 20:13:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.88"}
-2026-04-25T20:13:19.511347199Z 2026-04-25 20:13:19 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
 2026-04-25T20:13:21.265860557Z 2026-04-25 20:13:21 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.88"}
-2026-04-25T20:13:24.503598225Z 2026-04-25 20:13:24 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
 2026-04-25T20:13:26.265429367Z 2026-04-25 20:13:26 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.88"}
-2026-04-25T20:13:29.503986954Z 2026-04-25 20:13:29 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
 2026-04-25T20:13:31.267881947Z 2026-04-25 20:13:31 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.88"}
-2026-04-25T20:13:34.50479374Z 2026-04-25 20:13:34 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:13:36.265132037Z 2026-04-25 20:13:36 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.88"}
+2026-04-25T20:13:41.265574486Z 2026-04-25 20:13:41 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.88"}
+2026-04-25T20:13:46.265789369Z 2026-04-25 20:13:46 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.88"}
+2026-04-25T20:13:51.266217496Z 2026-04-25 20:13:51 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.88"}
+2026-04-25T20:13:56.269161806Z 2026-04-25 20:13:56 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.88"}
+2026-04-25T20:14:01.26630324Z 2026-04-25 20:14:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.88"}
+2026-04-25T20:14:06.265913875Z 2026-04-25 20:14:06 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.26.88"}
+2026-04-25T20:14:11.265728685Z 2026-04-25 20:14:11 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.26.88"}
+2026-04-25T20:18:14.55493141Z [0;32m[1m==> [0m[1mDetected service running on port 10000[0m
+2026-04-25T20:18:14.922159966Z [0;32m[1m==> [0m[1mDocs on specifying a port: https://render.com/docs/web-services#port-binding[0m
+2026-04-25T20:18:55.421747593Z 2026-04-25 20:18:55 [error] All Gemini models failed: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-latest:generateContent: [400 Bad Request] API key not valid. Please pass a valid API key. [{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"API_KEY_INVALID","domain":"googleapis.com","metadata":{"service":"generativelanguage.googleapis.com"}},{"@type":"type.googleapis.com/google.rpc.LocalizedMessage","locale":"en-US","message":"API key not valid. Please pass a valid API key."}]
+2026-04-25T20:18:55.421770854Z Error: [400 Bad Request] API key not valid. Please pass a valid API key. [{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"API_KEY_INVALID","domain":"googleapis.com","metadata":{"service":"generativelanguage.googleapis.com"}},{"@type":"type.googleapis.com/google.rpc.LocalizedMessage","locale":"en-US","message":"API key not valid. Please pass a valid API key."}]
+2026-04-25T20:18:55.421776584Z     at makeRequest (/opt/render/project/src/backend/node_modules/@google/generative-ai/dist/index.js:257:19)
+2026-04-25T20:18:55.421781864Z     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+2026-04-25T20:18:55.421787354Z     at async generateContent (/opt/render/project/src/backend/node_modules/@google/generative-ai/dist/index.js:614:22)
+2026-04-25T20:18:55.421792104Z     at async AIService.generateResponse (/opt/render/project/src/backend/dist/modules/whatsapp/services/aiService.js:52:32)
+2026-04-25T20:18:55.421796754Z     at async Timeout._onTimeout (/opt/render/project/src/backend/dist/modules/whatsapp/services/baileyService.js:279:34)
+2026-04-25T20:18:55.42208917Z 2026-04-25 20:18:55 [info] [tts] synthesizing (hi, 230 chars)
+2026-04-25T20:18:55.422563489Z 2026-04-25 20:18:55 [error] [wa] failed to send post-call voice note Cannot read properties of undefined (reading 'getAllAudioUrls')
+2026-04-25T20:18:55.422576959Z TypeError: Cannot read properties of undefined (reading 'getAllAudioUrls')
+2026-04-25T20:18:55.422581449Z     at fetchMp3Chunks (/opt/render/project/src/backend/dist/modules/whatsapp/services/ttsService.js:18:43)
+2026-04-25T20:18:55.42259942Z     at synthesizeVoiceNote (/opt/render/project/src/backend/dist/modules/whatsapp/services/ttsService.js:86:23)
+2026-04-25T20:18:55.42260387Z     at Timeout._onTimeout (/opt/render/project/src/backend/dist/modules/whatsapp/services/baileyService.js:288:89)
+2026-04-25T20:18:55.42260798Z     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+2026-04-25T20:18:59.504301612Z 2026-04-25 20:18:59 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:19:04.50833495Z 2026-04-25 20:19:04 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:19:04.906714063Z 2026-04-25 20:19:04 [info] Client disconnected: U6eRUeRJuKlGiU1mAAAD
+2026-04-25T20:19:06.071989461Z 2026-04-25 20:19:06 [info] Client disconnected: 21dyYhj-v2kjUq5EAAAF
+2026-04-25T20:19:09.509024122Z 2026-04-25 20:19:09 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:19:14.503670667Z 2026-04-25 20:19:14 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:19:14.504628106Z 2026-04-25 20:19:14 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:19:19.504029501Z 2026-04-25 20:19:19 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:19:24.503607258Z 2026-04-25 20:19:24 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:19:26.145826869Z 2026-04-25 20:19:26 [warn] Model gemini-2.5-flash failed, trying next fallback...
+2026-04-25T20:19:29.505131371Z 2026-04-25 20:19:29 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:19:30.718386354Z 2026-04-25 20:19:30 [warn] Model gemini-2.5-flash-preview-05-20 failed, trying next fallback...
+2026-04-25T20:19:30.782171153Z 2026-04-25 20:19:30 [warn] Model gemini-2.0-flash failed, trying next fallback...
+2026-04-25T20:19:30.847776457Z 2026-04-25 20:19:30 [warn] Model gemini-2.0-flash-lite failed, trying next fallback...
+2026-04-25T20:19:30.914117344Z 2026-04-25 20:19:30 [warn] Model gemini-1.5-flash-latest failed, trying next fallback...
+2026-04-25T20:19:30.914138375Z 2026-04-25 20:19:30 [error] All Gemini models failed: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-latest:generateContent: [400 Bad Request] API key not valid. Please pass a valid API key. [{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"API_KEY_INVALID","domain":"googleapis.com","metadata":{"service":"generativelanguage.googleapis.com"}},{"@type":"type.googleapis.com/google.rpc.LocalizedMessage","locale":"en-US","message":"API key not valid. Please pass a valid API key."}]
+2026-04-25T20:19:30.914149055Z Error: [400 Bad Request] API key not valid. Please pass a valid API key. [{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"API_KEY_INVALID","domain":"googleapis.com","metadata":{"service":"generativelanguage.googleapis.com"}},{"@type":"type.googleapis.com/google.rpc.LocalizedMessage","locale":"en-US","message":"API key not valid. Please pass a valid API key."}]
+2026-04-25T20:19:30.914154445Z     at makeRequest (/opt/render/project/src/backend/node_modules/@google/generative-ai/dist/index.js:257:19)
+2026-04-25T20:19:30.914190356Z     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+2026-04-25T20:19:30.914195826Z     at async generateContent (/opt/render/project/src/backend/node_modules/@google/generative-ai/dist/index.js:614:22)
+2026-04-25T20:19:30.914214966Z     at async AIService.generateResponse (/opt/render/project/src/backend/dist/modules/whatsapp/services/aiService.js:52:32)
+2026-04-25T20:19:30.914219046Z     at async BaileyService.handleIncomingMessage (/opt/render/project/src/backend/dist/modules/whatsapp/services/baileyService.js:417:41)
+2026-04-25T20:19:30.914222056Z     at async EventEmitter.<anonymous> (/opt/render/project/src/backend/dist/modules/whatsapp/services/baileyService.js:238:17)
+2026-04-25T20:19:30.914340179Z 2026-04-25 20:19:30 [error] [wa] text reply error Failed to generate AI response
+2026-04-25T20:19:30.914350909Z Error: Failed to generate AI response
+2026-04-25T20:19:30.914355189Z     at AIService.generateResponse (/opt/render/project/src/backend/dist/modules/whatsapp/services/aiService.js:66:27)
+2026-04-25T20:19:30.914359349Z     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+2026-04-25T20:19:30.914362099Z     at async BaileyService.handleIncomingMessage (/opt/render/project/src/backend/dist/modules/whatsapp/services/baileyService.js:417:41)
+2026-04-25T20:19:30.914364189Z     at async EventEmitter.<anonymous> (/opt/render/project/src/backend/dist/modules/whatsapp/services/baileyService.js:238:17)
+2026-04-25T20:19:34.504301827Z 2026-04-25 20:19:34 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:19:39.503752858Z 2026-04-25 20:19:39 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:19:42.827158291Z 2026-04-25 20:19:42 [info] [wa] incoming video call from 35635846971580@lid
+2026-04-25T20:19:43.055990394Z 2026-04-25 20:19:43 [info] Call saved: 42eb8053-f2d7-4859-a9ff-cbdbdb325008
+2026-04-25T20:19:44.504049873Z 2026-04-25 20:19:44 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:19:44.504615224Z 2026-04-25 20:19:44 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:19:44.641389747Z 2026-04-25 20:19:44 [warn] Model gemini-2.5-flash failed, trying next fallback...
+2026-04-25T20:19:44.861616275Z 2026-04-25 20:19:44 [warn] Model gemini-2.5-flash-preview-05-20 failed, trying next fallback...
+2026-04-25T20:19:44.926384143Z 2026-04-25 20:19:44 [warn] Model gemini-2.0-flash failed, trying next fallback...
+2026-04-25T20:19:45.141041255Z 2026-04-25 20:19:45 [warn] Model gemini-2.0-flash-lite failed, trying next fallback...
+2026-04-25T20:19:45.198082334Z 2026-04-25 20:19:45 [warn] Model gemini-1.5-flash-latest failed, trying next fallback...
+2026-04-25T20:19:45.198434411Z 2026-04-25 20:19:45 [error] All Gemini models failed: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-latest:generateContent: [400 Bad Request] API key not valid. Please pass a valid API key. [{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"API_KEY_INVALID","domain":"googleapis.com","metadata":{"service":"generativelanguage.googleapis.com"}},{"@type":"type.googleapis.com/google.rpc.LocalizedMessage","locale":"en-US","message":"API key not valid. Please pass a valid API key."}]
+2026-04-25T20:19:45.198443101Z Error: [400 Bad Request] API key not valid. Please pass a valid API key. [{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"API_KEY_INVALID","domain":"googleapis.com","metadata":{"service":"generativelanguage.googleapis.com"}},{"@type":"type.googleapis.com/google.rpc.LocalizedMessage","locale":"en-US","message":"API key not valid. Please pass a valid API key."}]
+2026-04-25T20:19:45.198447452Z     at makeRequest (/opt/render/project/src/backend/node_modules/@google/generative-ai/dist/index.js:257:19)
+2026-04-25T20:19:45.198451321Z     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+2026-04-25T20:19:45.198819648Z     at async generateContent (/opt/render/project/src/backend/node_modules/@google/generative-ai/dist/index.js:614:22)
+2026-04-25T20:19:45.198827639Z     at async AIService.generateResponse (/opt/render/project/src/backend/dist/modules/whatsapp/services/aiService.js:52:32)
+2026-04-25T20:19:45.198830889Z     at async Timeout._onTimeout (/opt/render/project/src/backend/dist/modules/whatsapp/services/baileyService.js:279:34)
+2026-04-25T20:19:45.198834699Z 2026-04-25 20:19:45 [info] [tts] synthesizing (hi, 230 chars)
+2026-04-25T20:19:45.198844929Z 2026-04-25 20:19:45 [error] [wa] failed to send post-call voice note Cannot read properties of undefined (reading 'getAllAudioUrls')
+2026-04-25T20:19:45.198849679Z TypeError: Cannot read properties of undefined (reading 'getAllAudioUrls')
+2026-04-25T20:19:45.198853099Z     at fetchMp3Chunks (/opt/render/project/src/backend/dist/modules/whatsapp/services/ttsService.js:18:43)
+2026-04-25T20:19:45.198856069Z     at synthesizeVoiceNote (/opt/render/project/src/backend/dist/modules/whatsapp/services/ttsService.js:86:23)
+2026-04-25T20:19:45.198859009Z     at Timeout._onTimeout (/opt/render/project/src/backend/dist/modules/whatsapp/services/baileyService.js:288:89)
+2026-04-25T20:19:45.19886424Z     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+2026-04-25T20:19:49.50345009Z 2026-04-25 20:19:49 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:19:54.504535168Z 2026-04-25 20:19:54 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:19:59.503535595Z 2026-04-25 20:19:59 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:20:01.327554746Z 2026-04-25 20:20:01 [info] Client connected: JemqHtiraFVHkVvjAAAH
+2026-04-25T20:20:01.590935669Z 2026-04-25 20:20:01 [info] Client disconnected: JemqHtiraFVHkVvjAAAH
+2026-04-25T20:20:02.211265511Z 2026-04-25 20:20:02 [info] {"method":"GET","path":"/messages","status":200,"duration":"100ms","ip":"::1"}
+2026-04-25T20:20:02.262770366Z 2026-04-25 20:20:02 [info] Client connected: 0PuL7almh7LeDuJrAAAJ
+2026-04-25T20:20:02.591469686Z 2026-04-25 20:20:02 [info] User 2a0780dd-50a4-4fda-bf7b-dad5714154dd authenticated with socket 0PuL7almh7LeDuJrAAAJ
+2026-04-25T20:20:03.221643347Z 2026-04-25 20:20:03 [info] Client connected: bRbthECCiWQ-ITuTAAAL
+2026-04-25T20:20:03.550571072Z 2026-04-25 20:20:03 [info] User 2a0780dd-50a4-4fda-bf7b-dad5714154dd authenticated with socket bRbthECCiWQ-ITuTAAAL
+2026-04-25T20:20:04.503835985Z 2026-04-25 20:20:04 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:20:05.421481819Z 2026-04-25 20:20:05 [info] Client disconnected: bRbthECCiWQ-ITuTAAAL
+2026-04-25T20:20:06.49131222Z 2026-04-25 20:20:06 [info] {"method":"GET","path":"/calls","status":200,"duration":"219ms","ip":"::1"}
+2026-04-25T20:20:09.50287585Z 2026-04-25 20:20:09 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:20:11.969649602Z 2026-04-25 20:20:11 [info] {"method":"GET","path":"/messages","status":200,"duration":"97ms","ip":"::1"}
+2026-04-25T20:20:12.49505311Z 2026-04-25 20:20:12 [info] Client connected: 2h9WJSx93kpTkZsUAAAN
+2026-04-25T20:20:12.573886266Z 2026-04-25 20:20:12 [info] Client disconnected: 2h9WJSx93kpTkZsUAAAN
+2026-04-25T20:20:13.004929902Z 2026-04-25 20:20:13 [info] {"method":"GET","path":"/","status":200,"duration":"82ms","ip":"::1"}
+2026-04-25T20:20:14.505813879Z 2026-04-25 20:20:14 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:20:14.505837039Z 2026-04-25 20:20:14 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:20:14.623459826Z 2026-04-25 20:20:14 [info] {"method":"GET","path":"/status","status":200,"duration":"0ms","ip":"::1"}
+2026-04-25T20:20:14.726852752Z 2026-04-25 20:20:14 [info] {"method":"GET","path":"/messages","status":200,"duration":"92ms","ip":"::1"}
+2026-04-25T20:20:14.738576876Z 2026-04-25 20:20:14 [info] {"method":"GET","path":"/calls","status":200,"duration":"102ms","ip":"::1"}
+2026-04-25T20:20:15.200260287Z 2026-04-25 20:20:15 [info] Client connected: ZZ69dft-xh_VcQczAAAP
+2026-04-25T20:20:15.47939455Z 2026-04-25 20:20:15 [info] User 2a0780dd-50a4-4fda-bf7b-dad5714154dd authenticated with socket ZZ69dft-xh_VcQczAAAP
+2026-04-25T20:20:19.506313629Z 2026-04-25 20:20:19 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:20:24.504159217Z 2026-04-25 20:20:24 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:20:29.503019844Z 2026-04-25 20:20:29 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:20:34.503964169Z 2026-04-25 20:20:34 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:20:39.503247471Z 2026-04-25 20:20:39 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:20:44.507479146Z 2026-04-25 20:20:44 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:20:44.510184068Z 2026-04-25 20:20:44 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:20:49.504793558Z 2026-04-25 20:20:49 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:20:54.507337518Z 2026-04-25 20:20:54 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:20:59.503604578Z 2026-04-25 20:20:59 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:21:04.504252429Z 2026-04-25 20:21:04 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:21:09.503216157Z 2026-04-25 20:21:09 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:21:14.508557306Z 2026-04-25 20:21:14 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:21:14.509994594Z 2026-04-25 20:21:14 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:21:19.50322836Z 2026-04-25 20:21:19 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:21:24.503328216Z 2026-04-25 20:21:24 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:21:29.502957522Z 2026-04-25 20:21:29 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:21:34.503332169Z 2026-04-25 20:21:34 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:21:37.629945374Z 2026-04-25 20:21:37 [info] Client disconnected: 0PuL7almh7LeDuJrAAAJ
+2026-04-25T20:21:39.502762199Z 2026-04-25 20:21:39 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:21:44.50285488Z 2026-04-25 20:21:44 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:21:44.504020212Z 2026-04-25 20:21:44 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:21:49.505292254Z 2026-04-25 20:21:49 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:21:50.559562852Z 2026-04-25 20:21:50 [info] Client disconnected: ZZ69dft-xh_VcQczAAAP
+2026-04-25T20:21:54.506149847Z 2026-04-25 20:21:54 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:21:59.503557113Z 2026-04-25 20:21:59 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:22:04.502739341Z 2026-04-25 20:22:04 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:22:05.496986212Z 2026-04-25 20:22:05 [error] Route / not found
+2026-04-25T20:22:05.497010012Z Error: Route / not found
+2026-04-25T20:22:05.497015663Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-25T20:22:05.497020863Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-25T20:22:05.497025993Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-25T20:22:05.497030523Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-25T20:22:05.497034623Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-25T20:22:05.497038603Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-25T20:22:05.497042903Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-25T20:22:05.497047043Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-25T20:22:05.497051113Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-25T20:22:05.497054903Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-25T20:22:05.497778597Z 2026-04-25 20:22:05 [info] {"method":"GET","path":"/","status":404,"duration":"1ms","ip":"::1"}
+2026-04-25T20:22:07.194446934Z 2026-04-25 20:22:07 [error] Route /favicon.ico not found
+2026-04-25T20:22:07.194471295Z Error: Route /favicon.ico not found
+2026-04-25T20:22:07.194476955Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-25T20:22:07.194482785Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-25T20:22:07.194488555Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-25T20:22:07.194493935Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-25T20:22:07.194498435Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-25T20:22:07.194502666Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-25T20:22:07.194507456Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-25T20:22:07.194512596Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-25T20:22:07.194517296Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-25T20:22:07.194521536Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-25T20:22:07.195462414Z 2026-04-25 20:22:07 [info] {"method":"GET","path":"/favicon.ico","status":404,"duration":"2ms","ip":"::1"}
+2026-04-25T20:22:07.711518631Z 2026-04-25 20:22:07 [info] Client connected: T7eqGINL3Jgjp3V_AAAR
+2026-04-25T20:22:07.990606001Z 2026-04-25 20:22:07 [info] User 2a0780dd-50a4-4fda-bf7b-dad5714154dd authenticated with socket T7eqGINL3Jgjp3V_AAAR
+2026-04-25T20:22:09.504062439Z 2026-04-25 20:22:09 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:22:10.024549311Z 2026-04-25 20:22:10 [info] Client connected: dDEOWgpUOkSTscNfAAAT
+2026-04-25T20:22:13.717751912Z 2026-04-25 20:22:13 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::1"}
+2026-04-25T20:22:14.503996749Z 2026-04-25 20:22:14 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:22:14.505885896Z 2026-04-25 20:22:14 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:22:17.416658322Z 2026-04-25 20:22:17 [info] User 2a0780dd-50a4-4fda-bf7b-dad5714154dd authenticated with socket dDEOWgpUOkSTscNfAAAT
+2026-04-25T20:22:19.507535967Z 2026-04-25 20:22:19 [info] {"method":"GET","path":"/health","status":200,"duration":"2ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:22:20.421183638Z 2026-04-25 20:22:20 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::1"}
+2026-04-25T20:22:24.50563845Z 2026-04-25 20:22:24 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:22:24.55383002Z 2026-04-25 20:22:24 [info] Client disconnected: T7eqGINL3Jgjp3V_AAAR
+2026-04-25T20:22:24.568923409Z 2026-04-25 20:22:24 [info] Client disconnected: dDEOWgpUOkSTscNfAAAT
+2026-04-25T20:22:29.503973067Z 2026-04-25 20:22:29 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:22:34.503761599Z 2026-04-25 20:22:34 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:22:39.504759624Z 2026-04-25 20:22:39 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:22:43.821930306Z 2026-04-25 20:22:43 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
+2026-04-25T20:22:43.937741128Z 2026-04-25 20:22:43 [info] {"method":"GET","path":"/messages","status":200,"duration":"120ms","ip":"::1"}
+2026-04-25T20:22:43.962757546Z 2026-04-25 20:22:43 [info] {"method":"GET","path":"/calls","status":200,"duration":"115ms","ip":"::1"}
+2026-04-25T20:22:44.199763933Z 2026-04-25 20:22:44 [info] Client connected: RwnLYiypob1I3ECFAAAV
+2026-04-25T20:22:44.489971765Z 2026-04-25 20:22:44 [info] User 2a0780dd-50a4-4fda-bf7b-dad5714154dd authenticated with socket RwnLYiypob1I3ECFAAAV
+2026-04-25T20:22:44.505336499Z 2026-04-25 20:22:44 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:22:44.506898188Z 2026-04-25 20:22:44 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:22:45.22690522Z 2026-04-25 20:22:45 [info] Client connected: -va1mbphef2Ir02KAAAX
+2026-04-25T20:22:45.554799432Z 2026-04-25 20:22:45 [info] User 2a0780dd-50a4-4fda-bf7b-dad5714154dd authenticated with socket -va1mbphef2Ir02KAAAX
+2026-04-25T20:22:49.504786211Z 2026-04-25 20:22:49 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:22:54.504176841Z 2026-04-25 20:22:54 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:22:59.503686172Z 2026-04-25 20:22:59 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:23:04.504757101Z 2026-04-25 20:23:04 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:23:09.502759991Z 2026-04-25 20:23:09 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:23:14.503464141Z 2026-04-25 20:23:14 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:23:14.504313787Z 2026-04-25 20:23:14 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:23:19.504827342Z 2026-04-25 20:23:19 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:23:24.505619941Z 2026-04-25 20:23:24 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:23:29.503003054Z 2026-04-25 20:23:29 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:23:34.505761668Z 2026-04-25 20:23:34 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:23:39.503190469Z 2026-04-25 20:23:39 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:23:44.51164361Z 2026-04-25 20:23:44 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:23:44.511668921Z 2026-04-25 20:23:44 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:23:49.503061964Z 2026-04-25 20:23:49 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:23:54.504455847Z 2026-04-25 20:23:54 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:23:59.503886452Z 2026-04-25 20:23:59 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:24:04.508842721Z 2026-04-25 20:24:04 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:24:09.505791286Z 2026-04-25 20:24:09 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:24:09.555155038Z 2026-04-25 20:24:09 [info] Client disconnected: RwnLYiypob1I3ECFAAAV
+2026-04-25T20:24:09.590525524Z 2026-04-25 20:24:09 [info] Client disconnected: -va1mbphef2Ir02KAAAX
+2026-04-25T20:24:14.50486625Z 2026-04-25 20:24:14 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:24:14.50488928Z 2026-04-25 20:24:14 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:24:19.505430372Z 2026-04-25 20:24:19 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:24:24.505762698Z 2026-04-25 20:24:24 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:24:29.503069564Z 2026-04-25 20:24:29 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:24:34.507831042Z 2026-04-25 20:24:34 [info] {"method":"GET","path":"/health","status":200,"duration":"2ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:24:39.502497596Z 2026-04-25 20:24:39 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:24:44.503079121Z 2026-04-25 20:24:44 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:24:44.504473178Z 2026-04-25 20:24:44 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:24:49.505756526Z 2026-04-25 20:24:49 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:24:54.503493195Z 2026-04-25 20:24:54 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:24:59.503059838Z 2026-04-25 20:24:59 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:25:04.505765559Z 2026-04-25 20:25:04 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:25:09.503059386Z 2026-04-25 20:25:09 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:25:14.503003552Z 2026-04-25 20:25:14 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:25:14.503757106Z 2026-04-25 20:25:14 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:25:19.503837234Z 2026-04-25 20:25:19 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:25:24.50337902Z 2026-04-25 20:25:24 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:25:29.5031661Z 2026-04-25 20:25:29 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:25:34.503334715Z 2026-04-25 20:25:34 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:25:39.503687993Z 2026-04-25 20:25:39 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:25:44.504820155Z 2026-04-25 20:25:44 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:25:44.505808404Z 2026-04-25 20:25:44 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:25:49.504406386Z 2026-04-25 20:25:49 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:25:54.504367883Z 2026-04-25 20:25:54 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:25:59.503770788Z 2026-04-25 20:25:59 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:26:04.506450034Z 2026-04-25 20:26:04 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:26:09.504175185Z 2026-04-25 20:26:09 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:26:14.505763078Z 2026-04-25 20:26:14 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:26:14.506439451Z 2026-04-25 20:26:14 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:26:19.503240402Z 2026-04-25 20:26:19 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:26:24.503751202Z 2026-04-25 20:26:24 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:26:29.503526687Z 2026-04-25 20:26:29 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:26:34.512450236Z 2026-04-25 20:26:34 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:26:39.505225865Z 2026-04-25 20:26:39 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:26:44.503714022Z 2026-04-25 20:26:44 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:26:44.504598719Z 2026-04-25 20:26:44 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:26:49.503182847Z 2026-04-25 20:26:49 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:26:54.506235769Z 2026-04-25 20:26:54 [info] {"method":"GET","path":"/health","status":200,"duration":"3ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:26:59.504223191Z 2026-04-25 20:26:59 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:27:04.504781333Z 2026-04-25 20:27:04 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:27:09.504367765Z 2026-04-25 20:27:09 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:27:14.504787612Z 2026-04-25 20:27:14 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:27:14.50521226Z 2026-04-25 20:27:14 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:27:19.503650558Z 2026-04-25 20:27:19 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:27:22.596326616Z [0;34m[1m==> [0m[1mDeploying...[0m
+2026-04-25T20:27:22.66584956Z [0;34m[1m==> [0m[1mSetting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance[0m
+2026-04-25T20:27:24.503056833Z 2026-04-25 20:27:24 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:27:29.503410876Z 2026-04-25 20:27:29 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:27:34.507160801Z 2026-04-25 20:27:34 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:27:35.83321801Z [32m[1m==>(B[m [1mRunning 'npm start'(B[m
+2026-04-25T20:27:36.941457681Z 
+2026-04-25T20:27:36.941491601Z > whatsapp-ai-agent-backend@1.0.0 start
+2026-04-25T20:27:36.941496431Z > node dist/index.js
+2026-04-25T20:27:36.941498591Z 
+2026-04-25T20:27:39.503217179Z 2026-04-25 20:27:39 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
+2026-04-25T20:27:41.636890736Z 2026-04-25 20:27:41 [info] AI Service initialized with primary model: gemini-2.5-flash
+2026-04-25T20:27:42.441882354Z 2026-04-25 20:27:42 [info] Firestore initialized successfully
+2026-04-25T20:27:42.53306143Z 2026-04-25 20:27:42 [info] ✅ Server running on http://localhost:10000
+2026-04-25T20:27:42.533210163Z 2026-04-25 20:27:42 [info] Environment: production
+2026-04-25T20:27:42.533396467Z 2026-04-25 20:27:42 [info] API URL: http://localhost:5000
+2026-04-25T20:27:42.533605621Z 2026-04-25 20:27:42 [info] Frontend URL: https://whatsapp-ai-automation.vercel.app
+2026-04-25T20:27:42.935416001Z 2026-04-25 20:27:42 [error] Route / not found
+2026-04-25T20:27:42.935440201Z Error: Route / not found
+2026-04-25T20:27:42.935447341Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-25T20:27:42.935454582Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-25T20:27:42.935463062Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-25T20:27:42.935468842Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-25T20:27:42.935472482Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-25T20:27:42.935476052Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-25T20:27:42.935479582Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-25T20:27:42.935483062Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-25T20:27:42.935486662Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-25T20:27:42.935490092Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-25T20:27:42.939427122Z 2026-04-25 20:27:42 [info] {"method":"HEAD","path":"/","status":404,"duration":"4ms","ip":"::1"}
+2026-04-25T20:27:43.024562885Z 2026-04-25 20:27:43 [info] {"method":"GET","path":"/health","status":200,"duration":"2ms","ip":"::ffff:10.203.24.202"}
+2026-04-25T20:27:43.026574266Z 2026-04-25 20:27:43 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.202"}
+2026-04-25T20:27:43.737384554Z [0;32m[1m==> [0m[1mYour service is live 🎉[0m
+2026-04-25T20:27:43.803752567Z 2026-04-25 20:27:43 [error] Route / not found
+2026-04-25T20:27:43.803771498Z Error: Route / not found
+2026-04-25T20:27:43.803776408Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-25T20:27:43.803781158Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-25T20:27:43.803786138Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-25T20:27:43.803792388Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-25T20:27:43.803796848Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-25T20:27:43.803801188Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-25T20:27:43.803805708Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-25T20:27:43.803810059Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-25T20:27:43.803835809Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-25T20:27:43.803838359Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-25T20:27:43.804615755Z 2026-04-25 20:27:43 [info] {"method":"GET","path":"/","status":404,"duration":"1ms","ip":"::1"}
+2026-04-25T20:27:43.877894989Z [0;32m[1m==> [0m[1m[0m
+2026-04-25T20:27:43.881023002Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
+2026-04-25T20:27:43.883162532Z [0;32m[1m==> [0m[1m[0m
+2026-04-25T20:27:43.886126452Z [0;32m[1m==> [0m[1mAvailable at your primary URL https://whatsapp-ai-backend-8ylf.onrender.com[0m
+2026-04-25T20:27:43.889707706Z [0;32m[1m==> [0m[1m[0m
+2026-04-25T20:27:43.891773424Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
+2026-04-25T20:27:44.50683589Z 2026-04-25 20:27:44 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.68"}
 ```
