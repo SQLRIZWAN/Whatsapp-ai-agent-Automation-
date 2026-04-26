@@ -210,7 +210,11 @@ class BaileyService {
   }
 
   private async spawn(uid: string, prevAttempts = 0): Promise<void> {
-    if (this.spawning.has(uid)) return
+    if (this.spawning.has(uid)) {
+      logger.info(`[wa] spawn already in progress for ${uid}`)
+      return
+    }
+    logger.info(`[wa] spawning connection for ${uid} (attempt ${prevAttempts + 1})`)
     this.spawning.add(uid)
 
     try {
@@ -247,17 +251,21 @@ class BaileyService {
 
       sock.ev.on('connection.update', async (u) => {
         const { connection, lastDisconnect, qr } = u
+        logger.info(`[wa] connection.update for ${uid}: connection=${connection}, qr=${!!qr}, lastDisconnect=${!!lastDisconnect}`)
 
         if (qr) {
+          logger.info(`[wa] QR code received for ${uid}`)
           const dataUrl = await QRCode.toDataURL(qr, { margin: 1, width: 360 })
           runtime.qrDataUrl = dataUrl
           runtime.qrGeneratedAt = Date.now()
           runtime.status = 'qr'
           this.emitStatus(uid)
           await qrService.saveQRCode(uid, dataUrl)
+          logger.info(`[wa] QR code saved and emitted for ${uid}`)
         }
 
         if (connection === 'open') {
+          logger.info(`[wa] Connection opened for ${uid}`)
           runtime.status = 'connected'
           runtime.qrDataUrl = null
           runtime.phone = sock.user?.id?.split(':')[0] || null
@@ -266,11 +274,13 @@ class BaileyService {
           this.emitStatus(uid)
           await qrService.markQRAsScanned(uid)
           await this.persistSessionStatus(uid, SESSION_STATUS.CONNECTED, runtime.phone)
+          logger.info(`[wa] Connected as ${runtime.phone}`)
         }
 
         if (connection === 'close') {
           const code = (lastDisconnect?.error as Boom | undefined)?.output?.statusCode
           const errMsg = (lastDisconnect?.error as Error | undefined)?.message || String(code)
+          logger.warn(`[wa] Connection closed for ${uid}: code=${code}, error=${errMsg}`)
           
           runtime.status = 'disconnected'
           runtime.lastError = errMsg
@@ -278,6 +288,7 @@ class BaileyService {
           this.runtimes.delete(uid)
 
           if (code === DisconnectReason.loggedOut) {
+            logger.info(`[wa] User logged out: ${uid}`)
             await this.logout(uid)
             return
           }
@@ -285,6 +296,7 @@ class BaileyService {
           // Automatic reconnection for other reasons
           if (runtime.attempts < MAX_RECONNECT_ATTEMPTS) {
             const delay = Math.min(1000 * 2 ** Math.min(runtime.attempts, 5), 30_000)
+            logger.info(`[wa] Reconnecting ${uid} in ${delay}ms (attempt ${runtime.attempts + 1})`)
             setTimeout(() => this.spawn(uid, runtime.attempts).catch(() => {}), delay)
           }
         }
