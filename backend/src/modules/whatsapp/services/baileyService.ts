@@ -39,6 +39,7 @@ interface SessionRuntime {
 
 class BaileyService {
   private runtimes = new Map<string, SessionRuntime>()
+  private spawning = new Set<string>()   // global lock — prevents connection storms
   private io: unknown
   private waLogger = pino({ level: 'silent' })
 
@@ -145,6 +146,11 @@ class BaileyService {
   }
 
   private async spawn(uid: string, prevAttempts = 0): Promise<void> {
+    if (this.spawning.has(uid)) {
+      logger.warn(`[wa] spawn already in progress for ${uid} — skipping`)
+      return
+    }
+    this.spawning.add(uid)
     logger.info(`[wa] spawning connection for ${uid} (attempt ${prevAttempts + 1})`)
     const { state, saveCreds } = await useFirestoreAuthState(uid)
     const version = await this.getWAVersion()
@@ -173,6 +179,7 @@ class BaileyService {
       connectedAt: null,
     }
     this.runtimes.set(uid, runtime)
+    this.spawning.delete(uid)  // lock released once socket is created
 
     sock.ev.on('creds.update', saveCreds)
 
@@ -214,47 +221,46 @@ class BaileyService {
         logger.warn(`[wa] connection closed for ${uid} (code=${code}, msg=${errMsg})`)
         this.runtimes.delete(uid)
 
-        // Auth needs to be cleared for these codes — force fresh QR
+        // Clear stale auth for these codes so fresh QR is shown
         const badAuthCodes = [
           DisconnectReason.loggedOut,  // 401
-          403,                          // forbidden
-          405,                          // methodNotAllowed / stale session
-          500,                          // badSession
+          403, 405, 500,               // forbidden / stale session / bad session
         ]
         if (badAuthCodes.includes(code as number)) {
           logger.warn(`[wa] bad auth code ${code} — clearing creds, fresh QR needed`)
-          try {
-            const { clear } = await useFirestoreAuthState(uid)
-            await clear()
-          } catch { /* ignore */ }
+          try { const { clear } = await useFirestoreAuthState(uid); await clear() } catch { /* ignore */ }
           await this.persistSessionStatus(uid, SESSION_STATUS.DISCONNECTED, null)
-          if (loggedOut) return // logged out = don't auto-respawn, wait for user action
+          if (loggedOut) return
         }
 
-        if (runtime.attempts >= MAX_RECONNECT_ATTEMPTS) {
-          logger.error(`[wa] giving up after ${runtime.attempts} attempts for ${uid} — clear auth and respawn for QR`)
-          try {
-            const { clear } = await useFirestoreAuthState(uid)
-            await clear()
-          } catch { /* ignore */ }
+        // 440 = conflict (multiple sessions) — clear and wait before retry
+        if (code === 440) {
+          logger.warn('[wa] conflict (440) — another session active; clearing creds, waiting 15s')
+          try { const { clear } = await useFirestoreAuthState(uid); await clear() } catch { /* ignore */ }
           await this.persistSessionStatus(uid, SESSION_STATUS.DISCONNECTED, null)
-          // Respawn once more so user sees QR instead of dead status
           setTimeout(() => {
-            this.spawn(uid, 0).catch((e) => logger.error('[wa] final respawn failed', e))
-          }, 3000)
+            this.spawn(uid, 0).catch((e) => logger.error('[wa] respawn after 440 failed', e))
+          }, 15_000)
           return
         }
 
-        if (!runtime.reconnecting) {
-          runtime.reconnecting = true
-          const delay = Math.min(1000 * 2 ** Math.min(runtime.attempts, 5), 30_000)
-          logger.info(`[wa] reconnecting in ${delay}ms (attempt ${runtime.attempts + 1})`)
+        if (runtime.attempts >= MAX_RECONNECT_ATTEMPTS) {
+          logger.error(`[wa] max attempts reached for ${uid} — clearing auth, showing QR`)
+          try { const { clear } = await useFirestoreAuthState(uid); await clear() } catch { /* ignore */ }
+          await this.persistSessionStatus(uid, SESSION_STATUS.DISCONNECTED, null)
           setTimeout(() => {
-            this.spawn(uid, runtime.attempts).catch((e) =>
-              logger.error('[wa] respawn failed', e)
-            )
-          }, delay)
+            this.spawn(uid, 0).catch((e) => logger.error('[wa] final respawn failed', e))
+          }, 5_000)
+          return
         }
+
+        const delay = Math.min(1000 * 2 ** Math.min(runtime.attempts, 5), 30_000)
+        logger.info(`[wa] reconnecting in ${delay}ms (attempt ${runtime.attempts + 1})`)
+        setTimeout(() => {
+          this.spawn(uid, runtime.attempts).catch((e) =>
+            logger.error('[wa] respawn failed', e)
+          )
+        }, delay)
       }
     })
 
