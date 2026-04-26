@@ -21,6 +21,7 @@ export class QRService {
   async saveQRCode(uid: string, qrData: string): Promise<void> {
     try {
       const db = getFirestore()
+      if (!db) return
       const expiresAt = Date.now() + QR_EXPIRY_MS
 
       const qrDoc = {
@@ -34,18 +35,26 @@ export class QRService {
         lastScannedAt: null
       }
 
-      await db.collection(COLLECTIONS.QR_CODES).doc(uid).set(qrDoc, { merge: true })
+      const batch = db.batch()
+      batch.set(db.collection(COLLECTIONS.QR_CODES).doc(uid), qrDoc, { merge: true })
+      await Promise.race([
+        batch.commit(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 3000))
+      ])
       logger.info(`QR code saved for user ${uid}, expires in ${QR_EXPIRY_MS/1000}s`)
     } catch (error) {
-      logger.error('Failed to save QR code:', error)
-      throw error
+      logger.warn('Failed to save QR code:', error)
     }
   }
 
   async getQRCode(uid: string): Promise<string | null> {
     try {
       const db = getFirestore()
-      const doc = await db.collection(COLLECTIONS.QR_CODES).doc(uid).get()
+      if (!db) return null
+      const doc = await Promise.race([
+        db.collection(COLLECTIONS.QR_CODES).doc(uid).get(),
+        new Promise<any>((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 3000))
+      ])
 
       if (!doc.exists) return null
 
@@ -61,21 +70,27 @@ export class QRService {
 
       return currentQR.data
     } catch (error) {
-      logger.error('Failed to retrieve QR code:', error)
-      throw error
+      logger.warn('Failed to retrieve QR code:', error)
+      return null
     }
   }
 
   async markQRAsScanned(uid: string): Promise<void> {
     try {
       const db = getFirestore()
-      await db.collection(COLLECTIONS.QR_CODES).doc(uid).update({
+      if (!db) return
+      const batch = db.batch()
+      batch.update(db.collection(COLLECTIONS.QR_CODES).doc(uid), {
         'currentQR.scanned': true,
         'currentQR.scannedAt': Date.now(),
         'lastScannedAt': Date.now()
       })
+      await Promise.race([
+        batch.commit(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 3000))
+      ])
     } catch (error) {
-      logger.error('Failed to mark QR as scanned:', error)
+      logger.warn('Failed to mark QR as scanned:', error)
     }
   }
 }

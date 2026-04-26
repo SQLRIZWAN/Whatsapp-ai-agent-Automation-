@@ -187,7 +187,10 @@ class BaileyService {
     try {
       const db = getFirestore()
       if (!db) return
-      await db.collection(COLLECTIONS.SESSIONS).doc(uid).set(
+      // Use batch write with timeout to avoid quota exhaustion
+      const batch = db.batch()
+      batch.set(
+        db.collection(COLLECTIONS.SESSIONS).doc(uid),
         {
           connectionStatus: status,
           whatsappPhone: phone,
@@ -195,6 +198,10 @@ class BaileyService {
         },
         { merge: true }
       )
+      await Promise.race([
+        batch.commit(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 5000))
+      ])
     } catch (e) {
       logger.warn('[wa] persistSessionStatus failed', e as Error)
     }
