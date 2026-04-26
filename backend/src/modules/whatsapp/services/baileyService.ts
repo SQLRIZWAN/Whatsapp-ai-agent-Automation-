@@ -41,6 +41,8 @@ interface SessionRuntime {
 class BaileyService {
   private runtimes = new Map<string, SessionRuntime>()
   private spawning = new Set<string>()
+  private reconnectTimers = new Map<string, NodeJS.Timeout>()
+  private consecutiveFailures = new Map<string, number>()
   private io: unknown
   private waLogger = pino({ level: 'silent' })
 
@@ -147,6 +149,7 @@ class BaileyService {
   }
 
   async stop(uid: string): Promise<void> {
+    this.clearReconnectTimer(uid)
     const r = this.runtimes.get(uid)
     if (!r) return
     try {
@@ -160,6 +163,7 @@ class BaileyService {
   }
 
   async logout(uid: string): Promise<void> {
+    this.clearReconnectTimer(uid)
     const r = this.runtimes.get(uid)
     try {
       if (r) {
@@ -179,8 +183,45 @@ class BaileyService {
         logger.warn('[wa] failed to clear auth state', e as Error)
       }
       await this.persistSessionStatus(uid, SESSION_STATUS.DISCONNECTED, null)
+      this.consecutiveFailures.delete(uid)
       logger.info(`[wa] ${uid} fully logged out`)
     }
+  }
+
+  private clearReconnectTimer(uid: string) {
+    const t = this.reconnectTimers.get(uid)
+    if (t) clearTimeout(t)
+    this.reconnectTimers.delete(uid)
+  }
+
+  private scheduleReconnect(uid: string, attempt: number) {
+    this.clearReconnectTimer(uid)
+    const delay = Math.min(1000 * 2 ** Math.min(attempt, 5), 30_000)
+    logger.info(`[wa] Reconnecting ${uid} in ${delay}ms (attempt ${attempt + 1})`)
+    const t = setTimeout(() => {
+      this.reconnectTimers.delete(uid)
+      this.spawn(uid, attempt).catch(() => {})
+    }, delay)
+    this.reconnectTimers.set(uid, t)
+  }
+
+  private async resetAuthAndRestart(uid: string) {
+    logger.warn(`[wa] ${uid} repeated connection failures; clearing auth and forcing fresh QR`)
+    this.clearReconnectTimer(uid)
+    this.runtimes.delete(uid)
+    try {
+      const { clear } = await useFirestoreAuthState(uid)
+      await clear()
+    } catch (e) {
+      logger.warn('[wa] failed to clear auth during recovery', e as Error)
+    }
+    try {
+      const db = getFirestore()
+      if (db) await db.collection(COLLECTIONS.QR_CODES).doc(uid).delete().catch(() => undefined)
+    } catch { /* ignore */ }
+    this.consecutiveFailures.delete(uid)
+    await this.persistSessionStatus(uid, SESSION_STATUS.DISCONNECTED, null)
+    this.scheduleReconnect(uid, 0)
   }
 
   private async persistSessionStatus(uid: string, status: string, phone: string | null) {
@@ -229,6 +270,11 @@ class BaileyService {
   private async spawn(uid: string, prevAttempts = 0): Promise<void> {
     if (this.spawning.has(uid)) {
       logger.info(`[wa] spawn already in progress for ${uid}`)
+      return
+    }
+    const existing = this.runtimes.get(uid)
+    if (existing && (existing.status === 'connecting' || existing.status === 'qr' || existing.status === 'connected')) {
+      logger.info(`[wa] existing runtime already active for ${uid} (${existing.status}), skip spawn`)
       return
     }
     logger.info(`[wa] spawning connection for ${uid} (attempt ${prevAttempts + 1})`)
@@ -293,6 +339,8 @@ class BaileyService {
           runtime.phone = sock.user?.id?.split(':')[0] || null
           runtime.connectedAt = Date.now()
           runtime.attempts = 0
+          this.consecutiveFailures.delete(uid)
+          this.clearReconnectTimer(uid)
           this.emitStatus(uid)
           await qrService.markQRAsScanned(uid)
           await this.persistSessionStatus(uid, SESSION_STATUS.CONNECTED, runtime.phone)
@@ -316,11 +364,18 @@ class BaileyService {
             return
           }
 
-          // Automatic reconnection for other reasons
+          const failures = (this.consecutiveFailures.get(uid) || 0) + 1
+          this.consecutiveFailures.set(uid, failures)
+
+          // 405 loops usually indicate stale/invalid creds; force reset after a few retries.
+          if (code === 405 && failures >= 3) {
+            await this.resetAuthAndRestart(uid)
+            return
+          }
+
+          // Automatic reconnection for transient reasons
           if (runtime.attempts < MAX_RECONNECT_ATTEMPTS) {
-            const delay = Math.min(1000 * 2 ** Math.min(runtime.attempts, 5), 30_000)
-            logger.info(`[wa] Reconnecting ${uid} in ${delay}ms (attempt ${runtime.attempts + 1})`)
-            setTimeout(() => this.spawn(uid, runtime.attempts).catch(() => {}), delay)
+            this.scheduleReconnect(uid, runtime.attempts)
           }
         }
       })
