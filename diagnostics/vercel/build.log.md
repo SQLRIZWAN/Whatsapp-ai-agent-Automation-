@@ -39,4 +39,4 @@ computing gzip size...
 [2mdist/[22m[2massets/[22m[36mDashboardPage-NCNmF_Lt.js  [39m[1m[2m 17.67 kB[22m[1m[22m[2m │ gzip:  4.18 kB[22m
 [2mdist/[22m[2massets/[22m[36mindex-BtypAtrY.js          [39m[1m[2m 89.66 kB[22m[1m[22m[2m │ gzip: 21.09 kB[22m
 [2mdist/[22m[2massets/[22m[36mindex-CRdwC5zr.js          [39m[1m[2m370.54 kB[22m[1m[22m[2m │ gzip: 93.08 kB[22m
-[32m✓ built in 1.82s[39m
+[32m✓ built in 1.52s[39m
