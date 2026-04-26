@@ -4,9 +4,9 @@
 > https://vercel.com/docs/cli/about-telemetry
 Retrieving project…
 Deploying sqlrizwan/whatsapp-ai-automation
-Inspect: https://vercel.com/sqlrizwans-projects/whatsapp-ai-automation/8gQvYoF95ehn1X1pEAW8knryhAcX [1s]
-Production: https://whatsapp-ai-automation-gjj9zwys4-sqlrizwans-projects.vercel.app [1s]
-https://whatsapp-ai-automation-gjj9zwys4-sqlrizwans-projects.vercel.appBuilding...
+Inspect: https://vercel.com/sqlrizwans-projects/whatsapp-ai-automation/378J5c3iX35inYWtMzRJVPg8r5L1 [1s]
+Production: https://whatsapp-ai-automation-hd2w27iac-sqlrizwans-projects.vercel.app [1s]
+https://whatsapp-ai-automation-hd2w27iac-sqlrizwans-projects.vercel.appBuilding...
 Building...
 Building: Running build in Washington, D.C., USA (East) – iad1
 Building: Build machine configuration: 2 cores, 8 GB
@@ -22,16 +22,14 @@ Building: npm warn deprecated glob@7.2.3: Old versions of glob are not supported
 Building: npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
 Building: npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead
 Building: npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
-Building: added 330 packages in 5s
+Building: added 330 packages in 6s
 Building: 78 packages are looking for funding
 Building: run `npm fund` for details
 Building: > whatsapp-ai-agent-frontend@1.0.1 build
 Building: > tsc && vite build
-Building: vite v5.4.21 building for production...
-Building: transforming...
-[2K[1A[2K[GProduction: https://whatsapp-ai-automation-gjj9zwys4-sqlrizwans-projects.vercel.app [17s]
+[2K[1A[2K[GProduction: https://whatsapp-ai-automation-hd2w27iac-sqlrizwans-projects.vercel.app [17s]
 Completing...
 Aliased: https://whatsapp-ai-automation.vercel.app [17s]
-> Assigning alias whatsapp-ai-automation.vercel.app to deployment whatsapp-ai-automation-gjj9zwys4-sqlrizwans-projects.vercel.app
+> Assigning alias whatsapp-ai-automation.vercel.app to deployment whatsapp-ai-automation-hd2w27iac-sqlrizwans-projects.vercel.app
 Creating alias
-> Success! https://whatsapp-ai-automation.vercel.app now points to https://whatsapp-ai-automation-gjj9zwys4-sqlrizwans-projects.vercel.app [963ms]
+> Success! https://whatsapp-ai-automation.vercel.app now points to https://whatsapp-ai-automation-hd2w27iac-sqlrizwans-projects.vercel.app [687ms]
