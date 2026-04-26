@@ -4,14 +4,14 @@
 > https://vercel.com/docs/cli/about-telemetry
 Retrieving project…
 Deploying sqlrizwan/whatsapp-ai-automation
-Uploading [--------------------] (0.0B/443.2KB)
-Uploading [=====---------------] (113.3KB/443.2KB)
-Uploading [==========----------] (225.3KB/443.2KB)
-Uploading [===============-----] (337.3KB/443.2KB)
-Uploading [====================] (443.2KB/443.2KB)
-Inspect: https://vercel.com/sqlrizwans-projects/whatsapp-ai-automation/62LhGzBFhcik6BtpUheGnAdxAaEc [3s]
-Production: https://whatsapp-ai-automation-a2unvayap-sqlrizwans-projects.vercel.app [3s]
-https://whatsapp-ai-automation-a2unvayap-sqlrizwans-projects.vercel.appBuilding...
+Uploading [--------------------] (0.0B/611KB)
+Uploading [=====---------------] (167.7KB/611KB)
+Uploading [==========----------] (311.7KB/611KB)
+Uploading [===============-----] (466.9KB/611KB)
+Uploading [====================] (611.0KB/611KB)
+Inspect: https://vercel.com/sqlrizwans-projects/whatsapp-ai-automation/o5FhdhH9wYFZPA4uiYfZEmsMCDua [2s]
+Production: https://whatsapp-ai-automation-13uibd537-sqlrizwans-projects.vercel.app [2s]
+https://whatsapp-ai-automation-13uibd537-sqlrizwans-projects.vercel.appBuilding...
 Building...
 Building: Running build in Washington, D.C., USA (East) – iad1
 Building: Build machine configuration: 2 cores, 8 GB
@@ -32,11 +32,9 @@ Building: 78 packages are looking for funding
 Building: run `npm fund` for details
 Building: > whatsapp-ai-agent-frontend@1.0.1 build
 Building: > tsc && vite build
-Building: vite v5.4.21 building for production...
-Building: transforming...
-[2K[1A[2K[GProduction: https://whatsapp-ai-automation-a2unvayap-sqlrizwans-projects.vercel.app [17s]
+[2K[1A[2K[GProduction: https://whatsapp-ai-automation-13uibd537-sqlrizwans-projects.vercel.app [17s]
 Completing...
-Aliased: https://whatsapp-ai-automation.vercel.app [17s]
-> Assigning alias whatsapp-ai-automation.vercel.app to deployment whatsapp-ai-automation-a2unvayap-sqlrizwans-projects.vercel.app
+Aliased: https://whatsapp-ai-automation.vercel.app [22s]
+> Assigning alias whatsapp-ai-automation.vercel.app to deployment whatsapp-ai-automation-13uibd537-sqlrizwans-projects.vercel.app
 Creating alias
-> Success! https://whatsapp-ai-automation.vercel.app now points to https://whatsapp-ai-automation-a2unvayap-sqlrizwans-projects.vercel.app [770ms]
+> Success! https://whatsapp-ai-automation.vercel.app now points to https://whatsapp-ai-automation-13uibd537-sqlrizwans-projects.vercel.app [510ms]
