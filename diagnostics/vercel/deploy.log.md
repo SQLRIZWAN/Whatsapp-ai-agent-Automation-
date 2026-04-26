@@ -4,9 +4,9 @@
 > https://vercel.com/docs/cli/about-telemetry
 Retrieving project…
 Deploying sqlrizwan/whatsapp-ai-automation
-Inspect: https://vercel.com/sqlrizwans-projects/whatsapp-ai-automation/A1YKuQ5bCRQnXPKGeFffsoS1BWe7 [1s]
-Production: https://whatsapp-ai-automation-6x7n6l4xn-sqlrizwans-projects.vercel.app [1s]
-https://whatsapp-ai-automation-6x7n6l4xn-sqlrizwans-projects.vercel.appBuilding...
+Inspect: https://vercel.com/sqlrizwans-projects/whatsapp-ai-automation/7G8s24wTzmnFz2iNfziCvZtHPrVq [1s]
+Production: https://whatsapp-ai-automation-hmy8o3dyq-sqlrizwans-projects.vercel.app [1s]
+https://whatsapp-ai-automation-hmy8o3dyq-sqlrizwans-projects.vercel.appBuilding...
 Building...
 Building: Running build in Washington, D.C., USA (East) – iad1
 Building: Build machine configuration: 2 cores, 8 GB
@@ -22,35 +22,16 @@ Building: npm warn deprecated glob@7.2.3: Old versions of glob are not supported
 Building: npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
 Building: npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead
 Building: npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
-Building: added 330 packages in 6s
+Building: added 330 packages in 5s
 Building: 78 packages are looking for funding
 Building: run `npm fund` for details
 Building: > whatsapp-ai-agent-frontend@1.0.1 build
 Building: > tsc && vite build
 Building: vite v5.4.21 building for production...
 Building: transforming...
-Building: ✓ 139 modules transformed.
-Building: rendering chunks...
-Building: computing gzip size...
-Building: dist/index.html                          0.56 kB │ gzip:  0.34 kB
-Building: dist/assets/index-BM_Qrh1B.css           2.42 kB │ gzip:  0.92 kB
-Building: dist/assets/LoginPage-BAcGq2Xq.js        4.64 kB │ gzip:  1.37 kB
-Building: dist/assets/RegisterPage-DdIMm7f3.js     6.25 kB │ gzip:  1.53 kB
-Building: dist/assets/AppShell-BnMsqh6-.js         6.47 kB │ gzip:  2.08 kB
-Building: dist/assets/SettingsPage-dcnuNR9v.js     6.75 kB │ gzip:  1.99 kB
-Building: dist/assets/MessagesPage-D9qaZC6K.js     7.03 kB │ gzip:  2.43 kB
-Building: dist/assets/CallsPage-Dw3LYI9r.js        8.91 kB │ gzip:  2.22 kB
-Building: dist/assets/DashboardPage-RTLbyo8a.js   14.68 kB │ gzip:  3.70 kB
-Building: dist/assets/index-BtypAtrY.js           89.66 kB │ gzip: 21.09 kB
-Building: dist/assets/index-x3b3nVbM.js          370.54 kB │ gzip: 93.08 kB
-Building: ✓ built in 1.95s
-Building: Build Completed in /vercel/output [12s]
-Building: Deploying outputs...
-Building: Deployment completed
-Building: Creating build cache...
-[2K[1A[2K[GProduction: https://whatsapp-ai-automation-6x7n6l4xn-sqlrizwans-projects.vercel.app [23s]
+[2K[1A[2K[GProduction: https://whatsapp-ai-automation-hmy8o3dyq-sqlrizwans-projects.vercel.app [17s]
 Completing...
-Aliased: https://whatsapp-ai-automation.vercel.app [23s]
-> Assigning alias whatsapp-ai-automation.vercel.app to deployment whatsapp-ai-automation-6x7n6l4xn-sqlrizwans-projects.vercel.app
+Aliased: https://whatsapp-ai-automation.vercel.app [22s]
+> Assigning alias whatsapp-ai-automation.vercel.app to deployment whatsapp-ai-automation-hmy8o3dyq-sqlrizwans-projects.vercel.app
 Creating alias
-> Success! https://whatsapp-ai-automation.vercel.app now points to https://whatsapp-ai-automation-6x7n6l4xn-sqlrizwans-projects.vercel.app [903ms]
+> Success! https://whatsapp-ai-automation.vercel.app now points to https://whatsapp-ai-automation-hmy8o3dyq-sqlrizwans-projects.vercel.app [630ms]
