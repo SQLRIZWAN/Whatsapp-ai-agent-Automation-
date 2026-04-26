@@ -9,14 +9,14 @@ const GEMINI_MODELS = [
   'gemini-2.5-flash-preview-05-20',
   'gemini-2.0-flash',
   'gemini-2.0-flash-lite',
-  'gemini-1.5-flash-latest',
+  'gemini-1.5-flash',
 ]
 
 const GEMINI_VISION_MODELS = [
   'gemini-2.5-flash',
   'gemini-2.5-flash-preview-05-20',
   'gemini-2.0-flash',
-  'gemini-1.5-flash-latest',
+  'gemini-1.5-flash',
 ]
 
 type Part = string | { inlineData: { data: string; mimeType: string } }
@@ -39,6 +39,10 @@ async function runWithFallback(
     } catch (e) {
       lastErr = (e as Error).message || String(e)
       logger.warn(`[ai] ${tag} — ${model} failed: ${lastErr}`)
+      // On quota exceeded, wait before trying next model
+      if (lastErr.includes('429') || lastErr.toLowerCase().includes('quota')) {
+        await new Promise(r => setTimeout(r, 8000))
+      }
     }
   }
   logger.error(`[ai] ALL models failed for ${tag}. Last: ${lastErr}`)
@@ -52,7 +56,6 @@ export class AIService {
     if (CONFIG.GEMINI_API_KEY) {
       this.genAI = new GoogleGenerativeAI(CONFIG.GEMINI_API_KEY)
       logger.info(`[ai] Gemini ready. Primary: ${GEMINI_MODELS[0]}`)
-      this.selfTest().catch(() => undefined)
     } else {
       logger.error('[ai] ❌ GEMINI_API_KEY missing — AI disabled!')
     }
