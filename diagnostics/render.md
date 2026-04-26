@@ -1,9 +1,9 @@
 # Render Deploy Diagnostics
 
-Run: 24966695578
-Commit: 0dbd3b5126fd80b7daf914fa619b03438d1845c7
+Run: 24967772226
+Commit: 875c0deeb64620a355c18c55b8ef2816dd5ab4c5
 Service ID: srv-d7kkne0sfn5c73b9t5cg
-Deploy ID: dep-d7n7k6l7vvec738vnm1g
+Deploy ID: dep-d7n8dqho3t8c73ehmoa0
 
 ## Service details
 ```json
@@ -56,397 +56,30 @@ Deploy ID: dep-d7n7k6l7vvec738vnm1g
   "suspended": "not_suspended",
   "suspenders": [],
   "type": "web_service",
-  "updatedAt": "2026-04-26T20:50:44.201346Z"
+  "updatedAt": "2026-04-26T21:45:27.605304Z"
 }
 ```
 
 ## Latest deploy
 ```json
 {
-  "id": "dep-d7n7k6l7vvec738vnm1g",
+  "id": "dep-d7n8dqho3t8c73ehmoa0",
   "commit": {
-    "id": "0dbd3b5126fd80b7daf914fa619b03438d1845c7",
-    "message": "fix: downgrade Baileys to stable v6.6.0 for better WhatsApp compatibility",
-    "createdAt": "2026-04-26T20:48:05Z"
+    "id": "875c0deeb64620a355c18c55b8ef2816dd5ab4c5",
+    "message": "fix: stabilize WhatsApp QR/auth flow and harden deployment security",
+    "createdAt": "2026-04-26T21:42:44Z"
   },
   "status": "live",
   "trigger": "api",
-  "createdAt": "2026-04-26T20:48:26.542236Z",
-  "updatedAt": "2026-04-26T20:50:44.199507Z",
-  "startedAt": "2026-04-26T20:48:26.498616Z",
-  "finishedAt": "2026-04-26T20:50:44.199366Z"
+  "createdAt": "2026-04-26T21:43:06.292709Z",
+  "updatedAt": "2026-04-26T21:45:27.604204Z",
+  "startedAt": "2026-04-26T21:43:06.235439Z",
+  "finishedAt": "2026-04-26T21:45:27.603987Z"
 }
 ```
 
 ## App logs (last 4h)
 ```
-2026-04-26T20:38:09.189104574Z [0;32m[1m==> [0m[1mDetected service running on port 10000[0m
-2026-04-26T20:38:09.32267991Z [0;32m[1m==> [0m[1mDocs on specifying a port: https://render.com/docs/web-services#port-binding[0m
-2026-04-26T20:42:35.128427402Z 2026-04-26 20:42:35 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-26T20:42:35.128465143Z 2026-04-26 20:42:35 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
-2026-04-26T20:42:35.128957087Z 2026-04-26 20:42:35 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 2000ms (attempt 2)
-2026-04-26T20:42:36.283589273Z 2026-04-26 20:42:36 [info] Client disconnected: 5wx1sVHFLHCwLxj7AAAF
-2026-04-26T20:42:37.131042358Z 2026-04-26 20:42:37 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 2)
-2026-04-26T20:42:37.242235692Z 2026-04-26 20:42:37 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-26T20:42:37.254790671Z 2026-04-26 20:42:37 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-26T20:42:37.364473783Z 2026-04-26 20:42:37 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:42:38.031228097Z 2026-04-26 20:42:38 [info] {"method":"GET","path":"/status","status":200,"duration":"0ms","ip":"::1"}
-2026-04-26T20:42:39.757396635Z 2026-04-26 20:42:39 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 8)
-2026-04-26T20:42:39.855786654Z 2026-04-26 20:42:39 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-26T20:42:39.858503979Z 2026-04-26 20:42:39 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-26T20:42:40.497491013Z 2026-04-26 20:42:40 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 10)
-2026-04-26T20:42:40.598902585Z 2026-04-26 20:42:40 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-26T20:42:40.649115768Z 2026-04-26 20:42:40 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-26T20:42:40.927092198Z 2026-04-26 20:42:40 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-26T20:42:40.927118349Z 2026-04-26 20:42:40 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
-2026-04-26T20:42:40.92751872Z 2026-04-26 20:42:40 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 9)
-2026-04-26T20:42:42.340012158Z 2026-04-26 20:42:42 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-26T20:42:42.340051829Z 2026-04-26 20:42:42 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
-2026-04-26T20:42:42.340153372Z 2026-04-26 20:42:42 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 11)
-2026-04-26T20:42:42.364806726Z 2026-04-26 20:42:42 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:42:42.628064308Z 2026-04-26 20:42:42 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-26T20:42:42.628086679Z 2026-04-26 20:42:42 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
-2026-04-26T20:42:42.628093799Z 2026-04-26 20:42:42 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 4000ms (attempt 3)
-2026-04-26T20:42:45.196245011Z 2026-04-26 20:42:45 [info] {"method":"GET","path":"/calls","status":200,"duration":"116ms","ip":"::1"}
-2026-04-26T20:42:45.238911384Z 2026-04-26 20:42:45 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:42:45.41470234Z 2026-04-26 20:42:45 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:42:45.462786864Z 2026-04-26 20:42:45 [info] {"method":"GET","path":"/messages","status":200,"duration":"320ms","ip":"::1"}
-2026-04-26T20:42:46.114578763Z 2026-04-26 20:42:46 [info] Client connected: ZEQZvs9YDo7VzZGuAAAJ
-2026-04-26T20:42:46.417194276Z 2026-04-26 20:42:46 [info] {"method":"GET","path":"/calls","status":200,"duration":"100ms","ip":"::1"}
-2026-04-26T20:42:46.44870491Z 2026-04-26 20:42:46 [info] User 2a0780dd-50a4-4fda-bf7b-dad5714154dd authenticated with socket ZEQZvs9YDo7VzZGuAAAJ
-2026-04-26T20:42:46.628889778Z 2026-04-26 20:42:46 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 3)
-2026-04-26T20:42:46.675054968Z 2026-04-26 20:42:46 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:42:46.73424726Z 2026-04-26 20:42:46 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-26T20:42:46.74936317Z 2026-04-26 20:42:46 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-26T20:42:47.365088808Z 2026-04-26 20:42:47 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:42:48.971887945Z 2026-04-26 20:42:48 [info] Client disconnected: ZEQZvs9YDo7VzZGuAAAJ
-2026-04-26T20:42:48.971907276Z 2026-04-26 20:42:48 [info] Client disconnected: h5aHhSHHdEUmEedxAAAH
-2026-04-26T20:42:50.440348506Z 2026-04-26 20:42:50 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-26T20:42:50.440380356Z 2026-04-26 20:42:50 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
-2026-04-26T20:42:50.440559481Z 2026-04-26 20:42:50 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 8000ms (attempt 4)
-2026-04-26T20:42:52.053129809Z 2026-04-26 20:42:52 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:42:52.36469475Z 2026-04-26 20:42:52 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:42:52.60515268Z 2026-04-26 20:42:52 [info] Client connected: Bqhc-EH87_Cn7eQ7AAAL
-2026-04-26T20:42:52.914647844Z 2026-04-26 20:42:52 [info] User 2a0780dd-50a4-4fda-bf7b-dad5714154dd authenticated with socket Bqhc-EH87_Cn7eQ7AAAL
-2026-04-26T20:42:53.478902815Z 2026-04-26 20:42:53 [info] Client connected: DH9qBKe9I-sytw7PAAAN
-2026-04-26T20:42:53.792725379Z 2026-04-26 20:42:53 [info] User 2a0780dd-50a4-4fda-bf7b-dad5714154dd authenticated with socket DH9qBKe9I-sytw7PAAAN
-2026-04-26T20:42:54.449375123Z 2026-04-26 20:42:54 [info] {"method":"GET","path":"/messages","status":200,"duration":"152ms","ip":"::1"}
-2026-04-26T20:42:55.893303793Z 2026-04-26 20:42:55 [info] Client disconnected: DH9qBKe9I-sytw7PAAAN
-2026-04-26T20:42:55.895191865Z 2026-04-26 20:42:55 [info] Client disconnected: Bqhc-EH87_Cn7eQ7AAAL
-2026-04-26T20:42:57.364724025Z 2026-04-26 20:42:57 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:42:57.523668584Z 2026-04-26 20:42:57 [info] Client connected: fWMy_wImmi6sJpMuAAAP
-2026-04-26T20:42:57.862992835Z 2026-04-26 20:42:57 [info] User 2a0780dd-50a4-4fda-bf7b-dad5714154dd authenticated with socket fWMy_wImmi6sJpMuAAAP
-2026-04-26T20:42:57.989917756Z 2026-04-26 20:42:57 [info] {"method":"GET","path":"/messages","status":200,"duration":"166ms","ip":"::1"}
-2026-04-26T20:42:58.441216193Z 2026-04-26 20:42:58 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 4)
-2026-04-26T20:42:58.570311664Z 2026-04-26 20:42:58 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-26T20:42:58.572192197Z 2026-04-26 20:42:58 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-26T20:42:59.149248051Z 2026-04-26 20:42:59 [info] Client connected: dPMaM7TZ4C1qWf1BAAAR
-2026-04-26T20:42:59.262285476Z 2026-04-26 20:42:59 [info] {"method":"GET","path":"/calls","status":200,"duration":"102ms","ip":"::1"}
-2026-04-26T20:42:59.599538351Z 2026-04-26 20:42:59 [info] User 2a0780dd-50a4-4fda-bf7b-dad5714154dd authenticated with socket dPMaM7TZ4C1qWf1BAAAR
-2026-04-26T20:43:01.754702148Z 2026-04-26 20:43:01 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-26T20:43:01.754745039Z 2026-04-26 20:43:01 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
-2026-04-26T20:43:01.755182901Z 2026-04-26 20:43:01 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 16000ms (attempt 5)
-2026-04-26T20:43:02.36444203Z 2026-04-26 20:43:02 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:43:07.365224095Z 2026-04-26 20:43:07 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:43:10.302165257Z 2026-04-26 20:43:10 [info] {"method":"GET","path":"/calls","status":200,"duration":"100ms","ip":"::1"}
-2026-04-26T20:43:10.928326134Z 2026-04-26 20:43:10 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 9)
-2026-04-26T20:43:11.025400307Z 2026-04-26 20:43:11 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-26T20:43:11.028152083Z 2026-04-26 20:43:11 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-26T20:43:12.307355384Z 2026-04-26 20:43:12 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-26T20:43:12.307430496Z 2026-04-26 20:43:12 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
-2026-04-26T20:43:12.308409374Z 2026-04-26 20:43:12 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 10)
-2026-04-26T20:43:12.34578077Z 2026-04-26 20:43:12 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 11)
-2026-04-26T20:43:12.366881815Z 2026-04-26 20:43:12 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:43:12.455938126Z 2026-04-26 20:43:12 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-26T20:43:12.46440255Z 2026-04-26 20:43:12 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-26T20:43:14.243023453Z 2026-04-26 20:43:14 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-26T20:43:14.243717333Z 2026-04-26 20:43:14 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
-2026-04-26T20:43:14.243732963Z 2026-04-26 20:43:14 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 12)
-2026-04-26T20:43:15.372608925Z 2026-04-26 20:43:15 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:43:16.446226343Z 2026-04-26 20:43:16 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:43:17.07487048Z 2026-04-26 20:43:17 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:43:17.365914002Z 2026-04-26 20:43:17 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:43:17.755826657Z 2026-04-26 20:43:17 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 5)
-2026-04-26T20:43:17.861793456Z 2026-04-26 20:43:17 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-26T20:43:17.865203341Z 2026-04-26 20:43:17 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-26T20:43:18.318867794Z 2026-04-26 20:43:18 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:43:19.39744373Z 2026-04-26 20:43:19 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-26T20:43:19.397465841Z 2026-04-26 20:43:19 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
-2026-04-26T20:43:19.397470221Z 2026-04-26 20:43:19 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 6)
-2026-04-26T20:43:19.47891163Z 2026-04-26 20:43:19 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:43:20.011463571Z 2026-04-26 20:43:20 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:43:22.053784909Z 2026-04-26 20:43:22 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:43:22.365166195Z 2026-04-26 20:43:22 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:43:25.427209647Z 2026-04-26 20:43:25 [info] {"method":"GET","path":"/status","status":200,"duration":"0ms","ip":"::1"}
-2026-04-26T20:43:27.364889321Z 2026-04-26 20:43:27 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:43:28.125421756Z 2026-04-26 20:43:28 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:43:32.365233175Z 2026-04-26 20:43:32 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:43:32.932251192Z 2026-04-26 20:43:32 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:43:37.36534039Z 2026-04-26 20:43:37 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:43:39.301831512Z 2026-04-26 20:43:39 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:43:41.97005092Z 2026-04-26 20:43:41 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:43:42.307989793Z 2026-04-26 20:43:42 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 10)
-2026-04-26T20:43:42.364689166Z 2026-04-26 20:43:42 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:43:42.413806238Z 2026-04-26 20:43:42 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-26T20:43:42.415779803Z 2026-04-26 20:43:42 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-26T20:43:43.851833714Z 2026-04-26 20:43:43 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:43:44.243625601Z 2026-04-26 20:43:44 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 12)
-2026-04-26T20:43:44.358642191Z 2026-04-26 20:43:44 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-26T20:43:44.360477613Z 2026-04-26 20:43:44 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-26T20:43:45.021792365Z 2026-04-26 20:43:45 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-26T20:43:45.021852087Z 2026-04-26 20:43:45 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
-2026-04-26T20:43:45.022254888Z 2026-04-26 20:43:45 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 13)
-2026-04-26T20:43:46.037291622Z 2026-04-26 20:43:46 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-26T20:43:46.037334613Z 2026-04-26 20:43:46 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
-2026-04-26T20:43:46.037374204Z 2026-04-26 20:43:46 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 11)
-2026-04-26T20:43:47.365629075Z 2026-04-26 20:43:47 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:43:49.399897279Z 2026-04-26 20:43:49 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 6)
-2026-04-26T20:43:49.505099668Z 2026-04-26 20:43:49 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-26T20:43:49.549211951Z 2026-04-26 20:43:49 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-26T20:43:50.332874527Z 2026-04-26 20:43:50 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:43:52.053722528Z 2026-04-26 20:43:52 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:43:52.365257829Z 2026-04-26 20:43:52 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:43:54.786505506Z 2026-04-26 20:43:54 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-26T20:43:54.786535027Z 2026-04-26 20:43:54 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
-2026-04-26T20:43:54.786770324Z 2026-04-26 20:43:54 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 7)
-2026-04-26T20:43:56.958275944Z 2026-04-26 20:43:56 [info] {"method":"GET","path":"/status","status":200,"duration":"0ms","ip":"::1"}
-2026-04-26T20:43:57.364957174Z 2026-04-26 20:43:57 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:44:02.367107558Z 2026-04-26 20:44:02 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:44:02.758987307Z 2026-04-26 20:44:02 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:44:03.942853394Z 2026-04-26 20:44:03 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:44:07.365457296Z 2026-04-26 20:44:07 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:44:08.213675292Z 2026-04-26 20:44:08 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:44:12.365098318Z 2026-04-26 20:44:12 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:44:15.02266914Z 2026-04-26 20:44:15 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 13)
-2026-04-26T20:44:15.128395243Z 2026-04-26 20:44:15 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-26T20:44:15.130310286Z 2026-04-26 20:44:15 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-26T20:44:16.038071854Z 2026-04-26 20:44:16 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 11)
-2026-04-26T20:44:16.137867472Z 2026-04-26 20:44:16 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-26T20:44:16.139765765Z 2026-04-26 20:44:16 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-26T20:44:17.365010899Z 2026-04-26 20:44:17 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:44:18.383775407Z 2026-04-26 20:44:18 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-26T20:44:18.383842498Z 2026-04-26 20:44:18 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
-2026-04-26T20:44:18.384239969Z 2026-04-26 20:44:18 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 12)
-2026-04-26T20:44:20.461493605Z 2026-04-26 20:44:20 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-26T20:44:20.461522576Z 2026-04-26 20:44:20 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
-2026-04-26T20:44:20.461549947Z 2026-04-26 20:44:20 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 14)
-2026-04-26T20:44:22.053235515Z 2026-04-26 20:44:22 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:44:22.364392286Z 2026-04-26 20:44:22 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:44:24.786554699Z 2026-04-26 20:44:24 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 7)
-2026-04-26T20:44:24.881896233Z 2026-04-26 20:44:24 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-26T20:44:24.883671522Z 2026-04-26 20:44:24 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-26T20:44:27.364483882Z 2026-04-26 20:44:27 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:44:27.707716672Z 2026-04-26 20:44:27 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-26T20:44:27.707740993Z 2026-04-26 20:44:27 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
-2026-04-26T20:44:27.708079552Z 2026-04-26 20:44:27 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 8)
-2026-04-26T20:44:30.978104143Z [0;34m[1m==> [0m[1mDeploying...[0m
-2026-04-26T20:44:31.030409849Z [0;34m[1m==> [0m[1mSetting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance[0m
-2026-04-26T20:44:32.364677901Z 2026-04-26 20:44:32 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:44:37.364367726Z 2026-04-26 20:44:37 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:44:40.635152277Z 2026-04-26 20:44:40 [info] {"method":"GET","path":"/status","status":200,"duration":"0ms","ip":"::1"}
-2026-04-26T20:44:42.364958276Z 2026-04-26 20:44:42 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:44:43.957459844Z [32m[1m==>(B[m [1mRunning 'npm start'(B[m
-2026-04-26T20:44:45.061654727Z 
-2026-04-26T20:44:45.061674078Z > whatsapp-ai-agent-backend@1.0.0 start
-2026-04-26T20:44:45.061679028Z > node dist/index.js
-2026-04-26T20:44:45.061681328Z 
-2026-04-26T20:44:45.202053198Z 2026-04-26 20:44:45 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:44:47.365370811Z 2026-04-26 20:44:47 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:44:48.384805307Z 2026-04-26 20:44:48 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 12)
-2026-04-26T20:44:48.549365522Z 2026-04-26 20:44:48 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-26T20:44:48.553527707Z 2026-04-26 20:44:48 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-26T20:44:49.260189749Z 2026-04-26 20:44:49 [info] [ai] Gemini ready — primary: gemini-2.5-flash, fallbacks: gemini-2.5-flash-preview-05-20 → gemini-2.0-flash → gemini-2.0-flash-lite → gemini-1.5-flash-latest
-2026-04-26T20:44:49.891774146Z 2026-04-26 20:44:49 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-26T20:44:49.891844458Z 2026-04-26 20:44:49 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
-2026-04-26T20:44:49.892256099Z 2026-04-26 20:44:49 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 13)
-2026-04-26T20:44:49.903682146Z 2026-04-26 20:44:49 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:44:50.262014198Z 2026-04-26 20:44:50 [info] Firestore initialized successfully
-2026-04-26T20:44:50.266402791Z 2026-04-26 20:44:50 [info] ✅ Server running on http://localhost:10000
-2026-04-26T20:44:50.266600896Z 2026-04-26 20:44:50 [info] Environment: production
-2026-04-26T20:44:50.35448363Z 2026-04-26 20:44:50 [info] API URL: http://localhost:5000
-2026-04-26T20:44:50.360068143Z 2026-04-26 20:44:50 [info] Frontend URL: https://whatsapp-ai-automation.vercel.app
-2026-04-26T20:44:50.46193392Z 2026-04-26 20:44:50 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 14)
-2026-04-26T20:44:50.561987265Z 2026-04-26 20:44:50 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-26T20:44:50.563987221Z 2026-04-26 20:44:50 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-26T20:44:50.858931836Z 2026-04-26 20:44:50 [error] Route / not found
-2026-04-26T20:44:50.858950296Z Error: Route / not found
-2026-04-26T20:44:50.858954456Z     at /opt/render/project/src/backend/dist/app.js:62:15
-2026-04-26T20:44:50.858958526Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-26T20:44:50.858961646Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-26T20:44:50.858964816Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-26T20:44:50.858967806Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
-2026-04-26T20:44:50.858970837Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
-2026-04-26T20:44:50.858973497Z     at /opt/render/project/src/backend/dist/app.js:44:9
-2026-04-26T20:44:50.858980347Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-26T20:44:50.858986127Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-26T20:44:50.858988787Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-26T20:44:50.863126543Z 2026-04-26 20:44:50 [info] {"method":"HEAD","path":"/","status":404,"duration":"4ms","ip":"::1"}
-2026-04-26T20:44:51.405892976Z 2026-04-26 20:44:51 [info] {"method":"GET","path":"/health","status":200,"duration":"2ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:44:51.407513468Z 2026-04-26 20:44:51 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:44:51.591898941Z 2026-04-26 20:44:51 [info] Client disconnected: fWMy_wImmi6sJpMuAAAP
-2026-04-26T20:44:51.594582636Z 2026-04-26 20:44:51 [info] Client disconnected: dPMaM7TZ4C1qWf1BAAAR
-2026-04-26T20:44:52.143893139Z [0;32m[1m==> [0m[1mYour service is live 🎉[0m
-2026-04-26T20:44:52.150436424Z 2026-04-26 20:44:52 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-26T20:44:52.150470204Z 2026-04-26 20:44:52 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
-2026-04-26T20:44:52.150699481Z 2026-04-26 20:44:52 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 15)
-2026-04-26T20:44:52.224350672Z 2026-04-26 20:44:52 [error] Route / not found
-2026-04-26T20:44:52.224366373Z Error: Route / not found
-2026-04-26T20:44:52.224370053Z     at /opt/render/project/src/backend/dist/app.js:62:15
-2026-04-26T20:44:52.224373163Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-26T20:44:52.224376413Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-26T20:44:52.224379463Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-26T20:44:52.224382003Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
-2026-04-26T20:44:52.224384703Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
-2026-04-26T20:44:52.224401163Z     at /opt/render/project/src/backend/dist/app.js:44:9
-2026-04-26T20:44:52.224404344Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-26T20:44:52.224418214Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-26T20:44:52.224421154Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-26T20:44:52.225235685Z 2026-04-26 20:44:52 [info] {"method":"GET","path":"/","status":404,"duration":"1ms","ip":"::1"}
-2026-04-26T20:44:52.226377778Z [0;32m[1m==> [0m[1m[0m
-2026-04-26T20:44:52.228851914Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
-2026-04-26T20:44:52.233203141Z [0;32m[1m==> [0m[1m[0m
-2026-04-26T20:44:52.235228795Z [0;32m[1m==> [0m[1mAvailable at your primary URL https://whatsapp-ai-backend-8ylf.onrender.com[0m
-2026-04-26T20:44:52.237094325Z [0;32m[1m==> [0m[1m[0m
-2026-04-26T20:44:52.238681348Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
-2026-04-26T20:44:52.365586651Z 2026-04-26 20:44:52 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:44:56.405201184Z 2026-04-26 20:44:56 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:44:56.814311834Z 2026-04-26 20:44:56 [info] {"method":"GET","path":"/status","status":200,"duration":"33ms","ip":"::1"}
-2026-04-26T20:44:57.359138961Z 2026-04-26 20:44:57 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:44:57.365460851Z 2026-04-26 20:44:57 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:44:57.70937654Z 2026-04-26 20:44:57 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 8)
-2026-04-26T20:44:57.797914966Z 2026-04-26 20:44:57 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-26T20:44:57.797936457Z 2026-04-26 20:44:57 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-26T20:44:57.910686689Z 2026-04-26 20:44:57 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:45:01.405807367Z 2026-04-26 20:45:01 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:45:01.407255924Z 2026-04-26 20:45:01 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:45:01.893515095Z 2026-04-26 20:45:01 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:45:02.365676081Z 2026-04-26 20:45:02 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:45:02.386747695Z 2026-04-26 20:45:02 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-26T20:45:02.386793156Z 2026-04-26 20:45:02 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
-2026-04-26T20:45:02.387055664Z 2026-04-26 20:45:02 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 9)
-2026-04-26T20:45:04.266936031Z 2026-04-26 20:45:04 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:45:04.478425604Z 2026-04-26 20:45:04 [info] Client connected: E0kKI0lD8LiDlViiAAAB
-2026-04-26T20:45:04.757061061Z 2026-04-26 20:45:04 [info] User 2a0780dd-50a4-4fda-bf7b-dad5714154dd authenticated with socket E0kKI0lD8LiDlViiAAAB
-2026-04-26T20:45:05.522149555Z 2026-04-26 20:45:05 [info] Client connected: l6K9Saiuz16i5jUfAAAD
-2026-04-26T20:45:06.122556072Z 2026-04-26 20:45:06 [info] User 2a0780dd-50a4-4fda-bf7b-dad5714154dd authenticated with socket l6K9Saiuz16i5jUfAAAD
-2026-04-26T20:45:06.404499234Z 2026-04-26 20:45:06 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:45:07.365324075Z 2026-04-26 20:45:07 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:45:10.740638807Z 2026-04-26 20:45:10 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:45:11.405044099Z 2026-04-26 20:45:11 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:45:12.367668483Z 2026-04-26 20:45:12 [info] {"method":"GET","path":"/health","status":200,"duration":"3ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:45:12.798872634Z 2026-04-26 20:45:12 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:45:13.651080974Z 2026-04-26 20:45:13 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:45:14.15752296Z 2026-04-26 20:45:14 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:45:14.190489703Z 2026-04-26 20:45:14 [info] {"method":"GET","path":"/status","status":200,"duration":"3ms","ip":"::1"}
-2026-04-26T20:45:16.404333995Z 2026-04-26 20:45:16 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:45:17.365588859Z 2026-04-26 20:45:17 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:45:18.378210868Z 2026-04-26 20:45:18 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:45:19.894597415Z 2026-04-26 20:45:19 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 13)
-2026-04-26T20:45:20.008760792Z 2026-04-26 20:45:20 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-26T20:45:20.011022194Z 2026-04-26 20:45:20 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-26T20:45:20.409883387Z 2026-04-26 20:45:20 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:45:21.405218804Z 2026-04-26 20:45:21 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:45:22.052716244Z 2026-04-26 20:45:22 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-26T20:45:22.052904629Z 2026-04-26 20:45:22 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
-2026-04-26T20:45:22.053083425Z 2026-04-26 20:45:22 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 14)
-2026-04-26T20:45:22.152044809Z 2026-04-26 20:45:22 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 15)
-2026-04-26T20:45:22.237923991Z 2026-04-26 20:45:22 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-26T20:45:22.250769988Z 2026-04-26 20:45:22 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-26T20:45:22.365583102Z 2026-04-26 20:45:22 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:45:25.379686263Z 2026-04-26 20:45:25 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-26T20:45:25.379735055Z 2026-04-26 20:45:25 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
-2026-04-26T20:45:25.379963781Z 2026-04-26 20:45:25 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 16)
-2026-04-26T20:45:26.405139469Z 2026-04-26 20:45:26 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:45:27.371328915Z 2026-04-26 20:45:27 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:45:30.162873644Z 2026-04-26 20:45:30 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:45:31.404740689Z 2026-04-26 20:45:31 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:45:31.40595354Z 2026-04-26 20:45:31 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:45:31.407597692Z 2026-04-26 20:45:31 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:45:32.364719085Z 2026-04-26 20:45:32 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:45:32.387446995Z 2026-04-26 20:45:32 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 9)
-2026-04-26T20:45:32.5015493Z 2026-04-26 20:45:32 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-26T20:45:32.503903346Z 2026-04-26 20:45:32 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-26T20:45:33.568356621Z 2026-04-26 20:45:33 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:45:36.404504686Z 2026-04-26 20:45:36 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:45:37.364677178Z 2026-04-26 20:45:37 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:45:38.048173876Z 2026-04-26 20:45:38 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-26T20:45:38.048196866Z 2026-04-26 20:45:38 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
-2026-04-26T20:45:38.04833793Z 2026-04-26 20:45:38 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 10)
-2026-04-26T20:45:41.405006323Z 2026-04-26 20:45:41 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:45:42.364442744Z 2026-04-26 20:45:42 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:45:46.404689581Z 2026-04-26 20:45:46 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:45:47.364832559Z 2026-04-26 20:45:47 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.227"}
-2026-04-26T20:45:51.405236143Z 2026-04-26 20:45:51 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:45:56.405747986Z 2026-04-26 20:45:56 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:45:57.763697449Z 2026-04-26 20:45:57 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:45:59.248913564Z 2026-04-26 20:45:59 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:46:00.314815496Z 2026-04-26 20:46:00 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:46:00.827071624Z 2026-04-26 20:46:00 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:46:01.403985893Z 2026-04-26 20:46:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:46:01.404863775Z 2026-04-26 20:46:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:46:01.419671274Z 2026-04-26 20:46:01 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:46:01.943830235Z 2026-04-26 20:46:01 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:46:02.535668176Z 2026-04-26 20:46:02 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:46:03.626188387Z 2026-04-26 20:46:03 [info] {"method":"GET","path":"/status","status":200,"duration":"0ms","ip":"::1"}
-2026-04-26T20:46:04.604513892Z 2026-04-26 20:46:04 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:46:06.405107766Z 2026-04-26 20:46:06 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:46:08.023277328Z 2026-04-26 20:46:08 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:46:11.348618488Z 2026-04-26 20:46:11 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:46:11.404473986Z 2026-04-26 20:46:11 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:46:14.212615962Z 2026-04-26 20:46:14 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:46:15.095466569Z 2026-04-26 20:46:15 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:46:16.404915005Z 2026-04-26 20:46:16 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:46:21.409762269Z 2026-04-26 20:46:21 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:46:26.404700741Z 2026-04-26 20:46:26 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:46:28.623852442Z 2026-04-26 20:46:28 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:46:29.509771408Z 2026-04-26 20:46:29 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:46:30.107147891Z 2026-04-26 20:46:30 [info] {"method":"GET","path":"/status","status":200,"duration":"0ms","ip":"::1"}
-2026-04-26T20:46:31.40408358Z 2026-04-26 20:46:31 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:46:31.404755157Z 2026-04-26 20:46:31 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:46:31.548810078Z 2026-04-26 20:46:31 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:46:35.906166493Z 2026-04-26 20:46:35 [info] {"method":"GET","path":"/status","status":200,"duration":"0ms","ip":"::1"}
-2026-04-26T20:46:36.404734482Z 2026-04-26 20:46:36 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:46:39.280546163Z 2026-04-26 20:46:39 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:46:41.404493304Z 2026-04-26 20:46:41 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:46:43.926501846Z 2026-04-26 20:46:43 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:46:46.404298989Z 2026-04-26 20:46:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:46:47.104613823Z 2026-04-26 20:46:47 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:46:51.403848899Z 2026-04-26 20:46:51 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:46:51.555236228Z 2026-04-26 20:46:51 [info] {"method":"GET","path":"/status","status":200,"duration":"0ms","ip":"::1"}
-2026-04-26T20:46:55.251429986Z 2026-04-26 20:46:55 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:46:56.404185132Z 2026-04-26 20:46:56 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:47:00.300178067Z 2026-04-26 20:47:00 [info] {"method":"GET","path":"/status","status":200,"duration":"0ms","ip":"::1"}
-2026-04-26T20:47:01.407647997Z 2026-04-26 20:47:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:47:01.407824921Z 2026-04-26 20:47:01 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:47:03.254170992Z 2026-04-26 20:47:03 [info] {"method":"GET","path":"/status","status":200,"duration":"0ms","ip":"::1"}
-2026-04-26T20:47:06.404383271Z 2026-04-26 20:47:06 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:47:07.803518364Z 2026-04-26 20:47:07 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:47:11.404564096Z 2026-04-26 20:47:11 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:47:11.703440383Z 2026-04-26 20:47:11 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:47:15.652625552Z 2026-04-26 20:47:15 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:47:16.404563158Z 2026-04-26 20:47:16 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:47:19.224695005Z 2026-04-26 20:47:19 [info] {"method":"GET","path":"/status","status":200,"duration":"0ms","ip":"::1"}
-2026-04-26T20:47:21.404672674Z 2026-04-26 20:47:21 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:47:23.44951498Z 2026-04-26 20:47:23 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:47:26.40427766Z 2026-04-26 20:47:26 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:47:27.117084106Z 2026-04-26 20:47:27 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:47:31.404893494Z 2026-04-26 20:47:31 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:47:31.405713505Z 2026-04-26 20:47:31 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:47:31.700672263Z 2026-04-26 20:47:31 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:47:35.130939126Z 2026-04-26 20:47:35 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:47:36.404913204Z 2026-04-26 20:47:36 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:47:40.089013166Z 2026-04-26 20:47:40 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:47:41.404453063Z 2026-04-26 20:47:41 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:47:43.182186646Z 2026-04-26 20:47:43 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:47:46.4053548Z 2026-04-26 20:47:46 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:47:47.762013052Z 2026-04-26 20:47:47 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:47:51.405865269Z 2026-04-26 20:47:51 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:47:51.594577192Z 2026-04-26 20:47:51 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:47:55.736034017Z 2026-04-26 20:47:55 [info] {"method":"GET","path":"/status","status":200,"duration":"0ms","ip":"::1"}
-2026-04-26T20:47:56.404548093Z 2026-04-26 20:47:56 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:47:59.204731389Z 2026-04-26 20:47:59 [info] {"method":"GET","path":"/status","status":200,"duration":"2ms","ip":"::1"}
-2026-04-26T20:48:01.404391308Z 2026-04-26 20:48:01 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:48:01.405085446Z 2026-04-26 20:48:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
 2026-04-26T20:48:04.425965745Z 2026-04-26 20:48:04 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
 2026-04-26T20:48:06.404843471Z 2026-04-26 20:48:06 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
 2026-04-26T20:48:07.226734618Z 2026-04-26 20:48:07 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
@@ -521,56 +154,16 @@ Deploy ID: dep-d7n7k6l7vvec738vnm1g
 2026-04-26T20:50:23.179702699Z 2026-04-26 20:50:23 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
 2026-04-26T20:50:26.404202896Z 2026-04-26 20:50:26 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
 2026-04-26T20:50:28.037215481Z 2026-04-26 20:50:28 [info] {"method":"GET","path":"/status","status":200,"duration":"0ms","ip":"::1"}
-2026-04-26T20:50:28.207307393Z [32m[1m==>(B[m [1mRunning 'npm start'(B[m
-2026-04-26T20:50:29.222634619Z 
-2026-04-26T20:50:29.222664071Z > whatsapp-ai-agent-backend@1.0.0 start
-2026-04-26T20:50:29.222669401Z > node dist/index.js
-2026-04-26T20:50:29.222671972Z 
 2026-04-26T20:50:31.105970537Z 2026-04-26 20:50:31 [info] {"method":"GET","path":"/status","status":200,"duration":"0ms","ip":"::1"}
 2026-04-26T20:50:31.40408933Z 2026-04-26 20:50:31 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
 2026-04-26T20:50:31.404772137Z 2026-04-26 20:50:31 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:50:33.711944653Z 2026-04-26 20:50:33 [info] [ai] Gemini ready — primary: gemini-2.5-flash, fallbacks: gemini-2.5-flash-preview-05-20 → gemini-2.0-flash → gemini-2.0-flash-lite → gemini-1.5-flash-latest
-2026-04-26T20:50:35.109532907Z 2026-04-26 20:50:35 [info] Firestore initialized successfully
-2026-04-26T20:50:35.115145935Z 2026-04-26 20:50:35 [info] ✅ Server running on http://localhost:10000
-2026-04-26T20:50:35.115325526Z 2026-04-26 20:50:35 [info] Environment: production
-2026-04-26T20:50:35.115487006Z 2026-04-26 20:50:35 [info] API URL: http://localhost:5000
-2026-04-26T20:50:35.115667708Z 2026-04-26 20:50:35 [info] Frontend URL: https://whatsapp-ai-automation.vercel.app
 2026-04-26T20:50:35.854061625Z 2026-04-26 20:50:35 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
-2026-04-26T20:50:35.880985065Z 2026-04-26 20:50:35 [error] Route / not found
-2026-04-26T20:50:35.881002436Z Error: Route / not found
-2026-04-26T20:50:35.881005777Z     at /opt/render/project/src/backend/dist/app.js:62:15
-2026-04-26T20:50:35.881009417Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-26T20:50:35.881012487Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-26T20:50:35.881015397Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-26T20:50:35.881017557Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
-2026-04-26T20:50:35.881019688Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
-2026-04-26T20:50:35.881022018Z     at /opt/render/project/src/backend/dist/app.js:44:9
-2026-04-26T20:50:35.881024428Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-26T20:50:35.881026678Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-26T20:50:35.881028848Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-26T20:50:35.884624107Z 2026-04-26 20:50:35 [info] {"method":"HEAD","path":"/","status":404,"duration":"4ms","ip":"::1"}
 2026-04-26T20:50:36.404031747Z 2026-04-26 20:50:36 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
 2026-04-26T20:50:39.104406416Z 2026-04-26 20:50:39 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
 2026-04-26T20:50:41.407353123Z 2026-04-26 20:50:41 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:50:43.412197745Z 2026-04-26 20:50:43 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
-2026-04-26T20:50:43.413557122Z 2026-04-26 20:50:43 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
 2026-04-26T20:50:43.555691067Z 2026-04-26 20:50:43 [info] Client disconnected: E0kKI0lD8LiDlViiAAAB
 2026-04-26T20:50:43.557461472Z 2026-04-26 20:50:43 [info] Client disconnected: l6K9Saiuz16i5jUfAAAD
-2026-04-26T20:50:44.234093154Z 2026-04-26 20:50:44 [info] {"method":"GET","path":"/status","status":200,"duration":"3ms","ip":"::1"}
 2026-04-26T20:50:44.345913552Z [0;32m[1m==> [0m[1mYour service is live 🎉[0m
-2026-04-26T20:50:44.452303098Z 2026-04-26 20:50:44 [error] Route / not found
-2026-04-26T20:50:44.452323729Z Error: Route / not found
-2026-04-26T20:50:44.452327949Z     at /opt/render/project/src/backend/dist/app.js:62:15
-2026-04-26T20:50:44.4523322Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-26T20:50:44.4523366Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-26T20:50:44.45234091Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-26T20:50:44.45234314Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
-2026-04-26T20:50:44.452345261Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
-2026-04-26T20:50:44.452359791Z     at /opt/render/project/src/backend/dist/app.js:44:9
-2026-04-26T20:50:44.452362162Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-26T20:50:44.452364252Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-26T20:50:44.452366482Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-26T20:50:44.453055646Z 2026-04-26 20:50:44 [info] {"method":"GET","path":"/","status":404,"duration":"1ms","ip":"::1"}
 2026-04-26T20:50:44.487577115Z [0;32m[1m==> [0m[1m[0m
 2026-04-26T20:50:44.489850376Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
 2026-04-26T20:50:44.492132617Z [0;32m[1m==> [0m[1m[0m
@@ -578,6 +171,413 @@ Deploy ID: dep-d7n7k6l7vvec738vnm1g
 2026-04-26T20:50:44.498615851Z [0;32m[1m==> [0m[1m[0m
 2026-04-26T20:50:44.500556613Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
 2026-04-26T20:50:46.404639306Z 2026-04-26 20:50:46 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
-2026-04-26T20:50:47.156730777Z 2026-04-26 20:50:47 [info] {"method":"GET","path":"/status","status":200,"duration":"2ms","ip":"::1"}
-2026-04-26T20:50:48.410559378Z 2026-04-26 20:50:48 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T20:50:51.404428266Z 2026-04-26 20:50:51 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
+2026-04-26T20:50:56.404692929Z 2026-04-26 20:50:56 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
+2026-04-26T20:51:01.403886086Z 2026-04-26 20:51:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
+2026-04-26T20:51:06.40443035Z 2026-04-26 20:51:06 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
+2026-04-26T20:51:11.404016001Z 2026-04-26 20:51:11 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
+2026-04-26T20:51:16.404713003Z 2026-04-26 20:51:16 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
+2026-04-26T20:51:21.404885133Z 2026-04-26 20:51:21 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
+2026-04-26T20:51:26.403907655Z 2026-04-26 20:51:26 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
+2026-04-26T20:51:31.404061259Z 2026-04-26 20:51:31 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
+2026-04-26T20:51:36.404639625Z 2026-04-26 20:51:36 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.221"}
+2026-04-26T20:51:41.405050438Z 2026-04-26 20:51:41 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.221"}
+2026-04-26T20:55:42.712061078Z [0;32m[1m==> [0m[1mDetected service running on port 10000[0m
+2026-04-26T20:55:42.800249787Z [0;32m[1m==> [0m[1mDocs on specifying a port: https://render.com/docs/web-services#port-binding[0m
+2026-04-26T21:01:48.409278Z 2026-04-26 21:01:48 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:01:51.445507266Z 2026-04-26 21:01:51 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 15)
+2026-04-26T21:01:51.538509348Z 2026-04-26 21:01:51 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:01:51.539897406Z 2026-04-26 21:01:51 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:01:53.410272333Z 2026-04-26 21:01:53 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:01:55.734237809Z 2026-04-26 21:01:55 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 13)
+2026-04-26T21:01:55.837742859Z 2026-04-26 21:01:55 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:01:55.839343261Z 2026-04-26 21:01:55 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:01:55.930065307Z 2026-04-26 21:01:55 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:01:55.930092669Z 2026-04-26 21:01:55 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:01:55.9302621Z 2026-04-26 21:01:55 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 16)
+2026-04-26T21:01:58.410074788Z 2026-04-26 21:01:58 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:02:00.115248966Z 2026-04-26 21:02:00 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:02:00.115352452Z 2026-04-26 21:02:00 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:02:00.115532624Z 2026-04-26 21:02:00 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 14)
+2026-04-26T21:02:03.409770686Z 2026-04-26 21:02:03 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:02:08.409286992Z 2026-04-26 21:02:08 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:02:13.409360923Z 2026-04-26 21:02:13 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:02:13.410077138Z 2026-04-26 21:02:13 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:02:18.409484725Z 2026-04-26 21:02:18 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:02:23.409894556Z 2026-04-26 21:02:23 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:02:25.932889612Z 2026-04-26 21:02:25 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 16)
+2026-04-26T21:02:26.028318187Z 2026-04-26 21:02:26 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:02:26.02992649Z 2026-04-26 21:02:26 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:02:28.410170757Z 2026-04-26 21:02:28 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:02:30.11859751Z 2026-04-26 21:02:30 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 14)
+2026-04-26T21:02:30.225790995Z 2026-04-26 21:02:30 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:02:30.227499503Z 2026-04-26 21:02:30 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:02:31.032613204Z 2026-04-26 21:02:31 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:02:31.032639476Z 2026-04-26 21:02:31 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:02:31.032792155Z 2026-04-26 21:02:31 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 15)
+2026-04-26T21:02:31.404312509Z 2026-04-26 21:02:31 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:02:31.404338371Z 2026-04-26 21:02:31 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:02:31.404422987Z 2026-04-26 21:02:31 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 17)
+2026-04-26T21:02:33.410306628Z 2026-04-26 21:02:33 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:02:38.409450726Z 2026-04-26 21:02:38 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:02:43.409389353Z 2026-04-26 21:02:43 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:02:43.410088107Z 2026-04-26 21:02:43 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:02:48.4102815Z 2026-04-26 21:02:48 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:02:53.412616468Z 2026-04-26 21:02:53 [info] {"method":"GET","path":"/health","status":200,"duration":"3ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:02:58.409581554Z 2026-04-26 21:02:58 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:03:01.034537418Z 2026-04-26 21:03:01 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 15)
+2026-04-26T21:03:01.120066214Z 2026-04-26 21:03:01 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:03:01.121828986Z 2026-04-26 21:03:01 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:03:01.40539093Z 2026-04-26 21:03:01 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 17)
+2026-04-26T21:03:01.524742188Z 2026-04-26 21:03:01 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:03:01.604447393Z 2026-04-26 21:03:01 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:03:02.842871871Z 2026-04-26 21:03:02 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:03:02.842891412Z 2026-04-26 21:03:02 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:03:02.842895002Z 2026-04-26 21:03:02 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 18)
+2026-04-26T21:03:03.409931184Z 2026-04-26 21:03:03 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:03:06.264994868Z 2026-04-26 21:03:06 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:03:06.26501902Z 2026-04-26 21:03:06 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:03:06.26502465Z 2026-04-26 21:03:06 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 16)
+2026-04-26T21:03:08.410566831Z 2026-04-26 21:03:08 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:03:13.409569684Z 2026-04-26 21:03:13 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:03:13.410824494Z 2026-04-26 21:03:13 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:03:18.410215071Z 2026-04-26 21:03:18 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:03:23.409430506Z 2026-04-26 21:03:23 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:03:28.409457072Z 2026-04-26 21:03:28 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:03:32.843525524Z 2026-04-26 21:03:32 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 18)
+2026-04-26T21:03:33.002716299Z 2026-04-26 21:03:33 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:03:33.004411767Z 2026-04-26 21:03:33 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:03:33.409770115Z 2026-04-26 21:03:33 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:03:33.58764628Z 2026-04-26 21:03:33 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:03:33.587668191Z 2026-04-26 21:03:33 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:03:33.587673832Z 2026-04-26 21:03:33 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 19)
+2026-04-26T21:03:35.128541983Z 2026-04-26 21:03:35 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::1"}
+2026-04-26T21:03:35.204298576Z 2026-04-26 21:03:35 [info] [keepalive] ping OK
+2026-04-26T21:03:36.26408674Z 2026-04-26 21:03:36 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 16)
+2026-04-26T21:03:36.409275063Z 2026-04-26 21:03:36 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:03:36.410813131Z 2026-04-26 21:03:36 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:03:38.410166143Z 2026-04-26 21:03:38 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:03:40.751412481Z 2026-04-26 21:03:40 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:03:40.751467015Z 2026-04-26 21:03:40 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:03:40.751638476Z 2026-04-26 21:03:40 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 17)
+2026-04-26T21:03:43.410236629Z 2026-04-26 21:03:43 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:03:43.411214071Z 2026-04-26 21:03:43 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:03:48.410312335Z 2026-04-26 21:03:48 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:03:53.410258782Z 2026-04-26 21:03:53 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:03:58.40992946Z 2026-04-26 21:03:58 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:04:03.410275241Z 2026-04-26 21:04:03 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:04:03.587969204Z 2026-04-26 21:04:03 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 19)
+2026-04-26T21:04:03.693750839Z 2026-04-26 21:04:03 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:04:03.69548875Z 2026-04-26 21:04:03 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:04:06.346007726Z 2026-04-26 21:04:06 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:04:06.346030548Z 2026-04-26 21:04:06 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:04:06.346169216Z 2026-04-26 21:04:06 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 20)
+2026-04-26T21:04:08.409944138Z 2026-04-26 21:04:08 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:04:10.753539684Z 2026-04-26 21:04:10 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 17)
+2026-04-26T21:04:10.857345453Z 2026-04-26 21:04:10 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:04:10.858936694Z 2026-04-26 21:04:10 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:04:13.245871189Z 2026-04-26 21:04:13 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:04:13.245889461Z 2026-04-26 21:04:13 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:04:13.245992607Z 2026-04-26 21:04:13 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 18)
+2026-04-26T21:04:13.411188294Z 2026-04-26 21:04:13 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:04:13.411823635Z 2026-04-26 21:04:13 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:04:18.409544396Z 2026-04-26 21:04:18 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:04:23.410912939Z 2026-04-26 21:04:23 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:04:28.409884028Z 2026-04-26 21:04:28 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:04:33.41031744Z 2026-04-26 21:04:33 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:04:36.346706724Z 2026-04-26 21:04:36 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 20)
+2026-04-26T21:04:36.459875299Z 2026-04-26 21:04:36 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:04:36.46287851Z 2026-04-26 21:04:36 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:04:38.412181842Z 2026-04-26 21:04:38 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:04:41.389197702Z 2026-04-26 21:04:41 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:04:41.389232845Z 2026-04-26 21:04:41 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:04:41.389408966Z 2026-04-26 21:04:41 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 21)
+2026-04-26T21:04:43.245949432Z 2026-04-26 21:04:43 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 18)
+2026-04-26T21:04:43.326902165Z 2026-04-26 21:04:43 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:04:43.32870089Z 2026-04-26 21:04:43 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:04:43.410024347Z 2026-04-26 21:04:43 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:04:43.410674429Z 2026-04-26 21:04:43 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:04:45.526898607Z 2026-04-26 21:04:45 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:04:45.526928919Z 2026-04-26 21:04:45 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:04:45.527038656Z 2026-04-26 21:04:45 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 19)
+2026-04-26T21:04:48.409919432Z 2026-04-26 21:04:48 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:04:53.40986358Z 2026-04-26 21:04:53 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:04:58.410431276Z 2026-04-26 21:04:58 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:05:03.41033353Z 2026-04-26 21:05:03 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:05:08.409872819Z 2026-04-26 21:05:08 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:05:11.391479489Z 2026-04-26 21:05:11 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 21)
+2026-04-26T21:05:11.492364212Z 2026-04-26 21:05:11 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:05:11.493888559Z 2026-04-26 21:05:11 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:05:12.673970087Z 2026-04-26 21:05:12 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:05:12.673991748Z 2026-04-26 21:05:12 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:05:12.674068493Z 2026-04-26 21:05:12 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 22)
+2026-04-26T21:05:13.410171636Z 2026-04-26 21:05:13 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:05:13.410844339Z 2026-04-26 21:05:13 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:05:15.527516224Z 2026-04-26 21:05:15 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 19)
+2026-04-26T21:05:15.632877472Z 2026-04-26 21:05:15 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:05:15.634495035Z 2026-04-26 21:05:15 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:05:17.905819525Z 2026-04-26 21:05:17 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:05:17.905853177Z 2026-04-26 21:05:17 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:05:17.905959064Z 2026-04-26 21:05:17 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 20)
+2026-04-26T21:05:18.413226968Z 2026-04-26 21:05:18 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:05:23.409640467Z 2026-04-26 21:05:23 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:05:28.410250961Z 2026-04-26 21:05:28 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:05:33.409936516Z 2026-04-26 21:05:33 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:05:38.410066099Z 2026-04-26 21:05:38 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:05:42.673825051Z 2026-04-26 21:05:42 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 22)
+2026-04-26T21:05:42.775185884Z 2026-04-26 21:05:42 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:05:42.776760015Z 2026-04-26 21:05:42 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:05:43.410090994Z 2026-04-26 21:05:43 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:05:43.410764767Z 2026-04-26 21:05:43 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:05:44.377096896Z 2026-04-26 21:05:44 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:05:44.377173231Z 2026-04-26 21:05:44 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:05:44.377326561Z 2026-04-26 21:05:44 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 23)
+2026-04-26T21:05:47.906644226Z 2026-04-26 21:05:47 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 20)
+2026-04-26T21:05:48.006461761Z 2026-04-26 21:05:48 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:05:48.008077324Z 2026-04-26 21:05:48 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:05:48.409811219Z 2026-04-26 21:05:48 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:05:53.213836555Z 2026-04-26 21:05:53 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:05:53.213865687Z 2026-04-26 21:05:53 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:05:53.213946112Z 2026-04-26 21:05:53 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 21)
+2026-04-26T21:05:53.409705064Z 2026-04-26 21:05:53 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:05:58.409984193Z 2026-04-26 21:05:58 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:06:03.409842375Z 2026-04-26 21:06:03 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:06:08.409634452Z 2026-04-26 21:06:08 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:06:13.409762319Z 2026-04-26 21:06:13 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:06:13.410422781Z 2026-04-26 21:06:13 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:06:14.3777063Z 2026-04-26 21:06:14 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 23)
+2026-04-26T21:06:14.469531366Z 2026-04-26 21:06:14 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:06:14.471866584Z 2026-04-26 21:06:14 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:06:17.083777003Z 2026-04-26 21:06:17 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:06:17.083873319Z 2026-04-26 21:06:17 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:06:17.08389112Z 2026-04-26 21:06:17 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 24)
+2026-04-26T21:06:18.410243568Z 2026-04-26 21:06:18 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:06:23.215725702Z 2026-04-26 21:06:23 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 21)
+2026-04-26T21:06:23.40968362Z 2026-04-26 21:06:23 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:06:23.563707265Z 2026-04-26 21:06:23 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:06:23.565807259Z 2026-04-26 21:06:23 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:06:25.500336674Z 2026-04-26 21:06:25 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:06:25.500456371Z 2026-04-26 21:06:25 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:06:25.500510965Z 2026-04-26 21:06:25 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 22)
+2026-04-26T21:06:28.40925569Z 2026-04-26 21:06:28 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:06:33.410167474Z 2026-04-26 21:06:33 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:06:38.409433832Z 2026-04-26 21:06:38 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:06:43.410473113Z 2026-04-26 21:06:43 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:06:43.411235322Z 2026-04-26 21:06:43 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:06:47.085732613Z 2026-04-26 21:06:47 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 24)
+2026-04-26T21:06:47.258595738Z 2026-04-26 21:06:47 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:06:47.30654084Z 2026-04-26 21:06:47 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:06:48.41083263Z 2026-04-26 21:06:48 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:06:52.987324382Z 2026-04-26 21:06:52 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:06:52.987347544Z 2026-04-26 21:06:52 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:06:52.98759734Z 2026-04-26 21:06:52 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 25)
+2026-04-26T21:06:53.409769325Z 2026-04-26 21:06:53 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:06:55.500920079Z 2026-04-26 21:06:55 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 22)
+2026-04-26T21:06:55.606616628Z 2026-04-26 21:06:55 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:06:55.608638667Z 2026-04-26 21:06:55 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:06:58.410594781Z 2026-04-26 21:06:58 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:06:58.97844941Z 2026-04-26 21:06:58 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:06:58.978469412Z 2026-04-26 21:06:58 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:06:58.978576448Z 2026-04-26 21:06:58 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 23)
+2026-04-26T21:07:03.409803942Z 2026-04-26 21:07:03 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:07:08.409827114Z 2026-04-26 21:07:08 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:07:13.41023596Z 2026-04-26 21:07:13 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:07:13.410765524Z 2026-04-26 21:07:13 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:07:18.410312705Z 2026-04-26 21:07:18 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:07:22.988512362Z 2026-04-26 21:07:22 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 25)
+2026-04-26T21:07:23.093022455Z 2026-04-26 21:07:23 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:07:23.094375141Z 2026-04-26 21:07:23 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:07:23.410178145Z 2026-04-26 21:07:23 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:07:25.606372994Z 2026-04-26 21:07:25 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:07:25.606401046Z 2026-04-26 21:07:25 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:07:28.410040804Z 2026-04-26 21:07:28 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:07:28.979173425Z 2026-04-26 21:07:28 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 23)
+2026-04-26T21:07:29.069249939Z 2026-04-26 21:07:29 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:07:29.070986029Z 2026-04-26 21:07:29 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:07:30.705969112Z 2026-04-26 21:07:30 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:07:30.705986623Z 2026-04-26 21:07:30 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:07:30.70609615Z 2026-04-26 21:07:30 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 24)
+2026-04-26T21:07:33.411718638Z 2026-04-26 21:07:33 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:07:38.410313225Z 2026-04-26 21:07:38 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:07:43.410306481Z 2026-04-26 21:07:43 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:07:43.410980434Z 2026-04-26 21:07:43 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:07:48.409778932Z 2026-04-26 21:07:48 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:07:53.409595215Z 2026-04-26 21:07:53 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:07:58.411280186Z 2026-04-26 21:07:58 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:08:00.70655574Z 2026-04-26 21:08:00 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 24)
+2026-04-26T21:08:00.877212484Z 2026-04-26 21:08:00 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:08:00.879198321Z 2026-04-26 21:08:00 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:08:02.527976859Z 2026-04-26 21:08:02 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:08:02.528020542Z 2026-04-26 21:08:02 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:08:02.528210414Z 2026-04-26 21:08:02 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 30000ms (attempt 25)
+2026-04-26T21:08:03.410535502Z 2026-04-26 21:08:03 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:08:08.411400729Z 2026-04-26 21:08:08 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:08:13.409490929Z 2026-04-26 21:08:13 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:08:13.409982701Z 2026-04-26 21:08:13 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:08:18.410161643Z 2026-04-26 21:08:18 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:08:23.409914608Z 2026-04-26 21:08:23 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:08:28.410400648Z 2026-04-26 21:08:28 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:08:32.529003869Z 2026-04-26 21:08:32 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 25)
+2026-04-26T21:08:32.729405555Z 2026-04-26 21:08:32 [info] [wa-auth] no creds doc — initializing new creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-26T21:08:32.731065491Z 2026-04-26 21:08:32 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-26T21:08:33.409460036Z 2026-04-26 21:08:33 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:08:33.865786285Z 2026-04-26 21:08:33 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-26T21:08:33.865806556Z 2026-04-26 21:08:33 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=405, error=Connection Failure
+2026-04-26T21:08:38.410063993Z 2026-04-26 21:08:38 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:08:43.410901773Z 2026-04-26 21:08:43 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:08:43.411607458Z 2026-04-26 21:08:43 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:08:48.40949507Z 2026-04-26 21:08:48 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:08:53.410246054Z 2026-04-26 21:08:53 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:08:58.409650281Z 2026-04-26 21:08:58 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:09:03.409952975Z 2026-04-26 21:09:03 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:09:08.414600474Z 2026-04-26 21:09:08 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:09:13.409727917Z 2026-04-26 21:09:13 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:09:13.41040214Z 2026-04-26 21:09:13 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:09:18.40973873Z 2026-04-26 21:09:18 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:09:23.409985927Z 2026-04-26 21:09:23 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:09:28.410359262Z 2026-04-26 21:09:28 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:09:33.410264116Z 2026-04-26 21:09:33 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:09:38.409781234Z 2026-04-26 21:09:38 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:09:43.410573044Z 2026-04-26 21:09:43 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:09:43.41130315Z 2026-04-26 21:09:43 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:09:48.409900779Z 2026-04-26 21:09:48 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:09:53.410082898Z 2026-04-26 21:09:53 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:09:58.409916994Z 2026-04-26 21:09:58 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:10:03.409679785Z 2026-04-26 21:10:03 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:10:08.410806741Z 2026-04-26 21:10:08 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:10:13.409633921Z 2026-04-26 21:10:13 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:10:13.410299744Z 2026-04-26 21:10:13 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:10:18.409890191Z 2026-04-26 21:10:18 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:10:23.4104577Z 2026-04-26 21:10:23 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:10:28.410270911Z 2026-04-26 21:10:28 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:10:33.410409872Z 2026-04-26 21:10:33 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:10:38.410743764Z 2026-04-26 21:10:38 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:10:43.409608562Z 2026-04-26 21:10:43 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:10:43.41005223Z 2026-04-26 21:10:43 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:10:48.410095103Z 2026-04-26 21:10:48 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:10:53.409375506Z 2026-04-26 21:10:53 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:10:58.412034873Z 2026-04-26 21:10:58 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:11:03.409186768Z 2026-04-26 21:11:03 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:11:08.410015849Z 2026-04-26 21:11:08 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:11:13.409212586Z 2026-04-26 21:11:13 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:11:13.409729849Z 2026-04-26 21:11:13 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:11:18.409200562Z 2026-04-26 21:11:18 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:11:23.409851411Z 2026-04-26 21:11:23 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:11:28.41036128Z 2026-04-26 21:11:28 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:11:33.40964602Z 2026-04-26 21:11:33 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:11:38.410260575Z 2026-04-26 21:11:38 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:11:43.409683093Z 2026-04-26 21:11:43 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:11:43.41058014Z 2026-04-26 21:11:43 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:11:48.409663547Z 2026-04-26 21:11:48 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:11:53.410631693Z 2026-04-26 21:11:53 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:11:58.409466553Z 2026-04-26 21:11:58 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:12:03.410142049Z 2026-04-26 21:12:03 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:12:08.410196516Z 2026-04-26 21:12:08 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:12:13.410447305Z 2026-04-26 21:12:13 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:12:13.411172931Z 2026-04-26 21:12:13 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:12:18.409285983Z 2026-04-26 21:12:18 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:12:23.413411477Z 2026-04-26 21:12:23 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:12:28.412679602Z 2026-04-26 21:12:28 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:12:33.409691533Z 2026-04-26 21:12:33 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:12:38.409781939Z 2026-04-26 21:12:38 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:12:43.409757468Z 2026-04-26 21:12:43 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:12:43.410284682Z 2026-04-26 21:12:43 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:12:48.413121222Z 2026-04-26 21:12:48 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:12:53.4104183Z 2026-04-26 21:12:53 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:12:58.410096168Z 2026-04-26 21:12:58 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:13:03.410130029Z 2026-04-26 21:13:03 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:13:08.409404711Z 2026-04-26 21:13:08 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:13:13.40958048Z 2026-04-26 21:13:13 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:13:13.410229331Z 2026-04-26 21:13:13 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:13:18.409889957Z 2026-04-26 21:13:18 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:13:23.409852452Z 2026-04-26 21:13:23 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:13:28.410137636Z 2026-04-26 21:13:28 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:13:33.409846574Z 2026-04-26 21:13:33 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:13:38.41000175Z 2026-04-26 21:13:38 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:13:43.410405351Z 2026-04-26 21:13:43 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:13:43.411141688Z 2026-04-26 21:13:43 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:13:48.410270737Z 2026-04-26 21:13:48 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:13:53.410036337Z 2026-04-26 21:13:53 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:13:58.409792806Z 2026-04-26 21:13:58 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:14:03.410246578Z 2026-04-26 21:14:03 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:14:08.409708617Z 2026-04-26 21:14:08 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:14:13.409892372Z 2026-04-26 21:14:13 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:14:13.410726465Z 2026-04-26 21:14:13 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:14:18.410359384Z 2026-04-26 21:14:18 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:14:23.410185285Z 2026-04-26 21:14:23 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:14:28.409983304Z 2026-04-26 21:14:28 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:14:33.409571639Z 2026-04-26 21:14:33 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:14:38.409487104Z 2026-04-26 21:14:38 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:14:43.410020769Z 2026-04-26 21:14:43 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:14:43.410886364Z 2026-04-26 21:14:43 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:14:48.410925186Z 2026-04-26 21:14:48 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:14:53.409227798Z 2026-04-26 21:14:53 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:14:58.410262983Z 2026-04-26 21:14:58 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:15:03.409741329Z 2026-04-26 21:15:03 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:15:08.409335082Z 2026-04-26 21:15:08 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:15:13.409874655Z 2026-04-26 21:15:13 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:15:13.410486433Z 2026-04-26 21:15:13 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:15:18.410946Z 2026-04-26 21:15:18 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:15:23.41002246Z 2026-04-26 21:15:23 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:15:28.409677515Z 2026-04-26 21:15:28 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:15:33.409733875Z 2026-04-26 21:15:33 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:15:38.409820327Z 2026-04-26 21:15:38 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:15:43.409742418Z 2026-04-26 21:15:43 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:15:48.409799007Z 2026-04-26 21:15:48 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:15:53.410100791Z 2026-04-26 21:15:53 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:15:58.410027342Z 2026-04-26 21:15:58 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:16:03.411268475Z 2026-04-26 21:16:03 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:16:08.410285906Z 2026-04-26 21:16:08 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:16:13.410398506Z 2026-04-26 21:16:13 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:16:18.410329525Z 2026-04-26 21:16:18 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:16:23.409618192Z 2026-04-26 21:16:23 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:16:28.410147238Z 2026-04-26 21:16:28 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.170"}
+2026-04-26T21:44:56.497927957Z [0;34m[1m==> [0m[1mDeploying...[0m
+2026-04-26T21:44:56.549069053Z [0;34m[1m==> [0m[1mSetting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance[0m
+2026-04-26T21:45:10.153284036Z [32m[1m==>(B[m [1mRunning 'npm start'(B[m
+2026-04-26T21:45:11.25212164Z 
+2026-04-26T21:45:11.252145971Z > whatsapp-ai-agent-backend@1.0.0 start
+2026-04-26T21:45:11.252152751Z > node dist/index.js
+2026-04-26T21:45:11.252155331Z 
+2026-04-26T21:45:16.646880192Z 2026-04-26 21:45:16 [info] [ai] Gemini ready — primary: gemini-2.5-flash, fallbacks: gemini-2.5-flash-preview-05-20 → gemini-2.0-flash → gemini-2.0-flash-lite → gemini-1.5-flash-latest
+2026-04-26T21:45:17.851981374Z 2026-04-26 21:45:17 [info] Firestore initialized successfully
+2026-04-26T21:45:17.94543486Z 2026-04-26 21:45:17 [info] ✅ Server running on http://localhost:10000
+2026-04-26T21:45:17.945562543Z 2026-04-26 21:45:17 [info] Environment: production
+2026-04-26T21:45:17.945718796Z 2026-04-26 21:45:17 [info] API URL: http://localhost:5000
+2026-04-26T21:45:17.94591228Z 2026-04-26 21:45:17 [info] Frontend URL: https://whatsapp-ai-automation.vercel.app
+2026-04-26T21:45:18.738818016Z 2026-04-26 21:45:18 [error] Route / not found
+2026-04-26T21:45:18.738838836Z Error: Route / not found
+2026-04-26T21:45:18.738843956Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-26T21:45:18.738848627Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-26T21:45:18.738854807Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-26T21:45:18.738859167Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-26T21:45:18.738862897Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-26T21:45:18.738866557Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-26T21:45:18.738870467Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-26T21:45:18.738874167Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-26T21:45:18.738877877Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-26T21:45:18.738881577Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-26T21:45:18.74249948Z 2026-04-26 21:45:18 [info] {"method":"HEAD","path":"/","status":404,"duration":"4ms","ip":"::1"}
+2026-04-26T21:45:26.938351764Z 2026-04-26 21:45:26 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.25.134"}
+2026-04-26T21:45:26.93988778Z 2026-04-26 21:45:26 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.25.134"}
+2026-04-26T21:45:27.743974816Z [0;32m[1m==> [0m[1mYour service is live 🎉[0m
+2026-04-26T21:45:27.850330803Z 2026-04-26 21:45:27 [error] Route / not found
+2026-04-26T21:45:27.850357394Z Error: Route / not found
+2026-04-26T21:45:27.850362994Z     at /opt/render/project/src/backend/dist/app.js:62:15
+2026-04-26T21:45:27.850368014Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-26T21:45:27.850372914Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-26T21:45:27.850378115Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-26T21:45:27.850382075Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-26T21:45:27.850386435Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-26T21:45:27.850390295Z     at /opt/render/project/src/backend/dist/app.js:44:9
+2026-04-26T21:45:27.850394195Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-26T21:45:27.850417115Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-26T21:45:27.850419695Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-26T21:45:27.850422076Z 2026-04-26 21:45:27 [info] {"method":"GET","path":"/","status":404,"duration":"2ms","ip":"::1"}
+2026-04-26T21:45:27.918520224Z [0;32m[1m==> [0m[1m[0m
+2026-04-26T21:45:27.941166884Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
+2026-04-26T21:45:27.949631952Z [0;32m[1m==> [0m[1m[0m
+2026-04-26T21:45:27.961952113Z [0;32m[1m==> [0m[1mAvailable at your primary URL https://whatsapp-ai-backend-8ylf.onrender.com[0m
+2026-04-26T21:45:27.981461889Z [0;32m[1m==> [0m[1m[0m
+2026-04-26T21:45:27.987866441Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
 ```
