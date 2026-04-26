@@ -12,7 +12,7 @@ export class MessageService {
     type: string = MESSAGE_TYPE.TEXT,
     isFromAI: boolean = false,
     aiResponse?: any
-  ): Promise<string> {
+  ): Promise<any> {
     try {
       const db = getFirestore()
       const messageId = uuidv4()
@@ -39,7 +39,7 @@ export class MessageService {
         .set(message)
 
       logger.info(`Message saved: ${messageId}`)
-      return messageId
+      return message
     } catch (error) {
       logger.error('Failed to save message:', error)
       throw error
@@ -53,7 +53,7 @@ export class MessageService {
         .collection(COLLECTIONS.MESSAGES)
         .doc(uid)
         .collection('history')
-        .orderBy('timestamp', 'desc')
+        .orderBy('timestamp', 'asc')
         .limit(limit)
         .get()
 

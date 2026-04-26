@@ -26,6 +26,8 @@ const CallsPage: React.FC = () => {
 
   useEffect(() => {
     load()
+    const id = window.setInterval(load, 10000)
+    return () => window.clearInterval(id)
   }, [])
 
   const voiceCalls = calls.filter((c) => !c.isVideo).length

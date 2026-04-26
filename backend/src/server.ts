@@ -58,15 +58,42 @@ export const startServer = async (app: Express): Promise<http.Server> => {
       })
     })
 
-    // Handle uncaught exceptions
+    // Keep process alive — log but do NOT exit on uncaught errors
     process.on('uncaughtException', (error) => {
       logger.error('Uncaught Exception:', error)
-      process.exit(1)
     })
 
     process.on('unhandledRejection', (reason, promise) => {
       logger.error('Unhandled Rejection at:', promise, 'reason:', reason)
     })
+
+    // Self-ping every 13 min to prevent Render free tier from sleeping.
+    // Always ping localhost on the actual PORT — RENDER_EXTERNAL_URL is irrelevant for inbound.
+    const selfUrl = `http://localhost:${CONFIG.PORT}`
+    setInterval(() => {
+      fetch(`${selfUrl}/health`)
+        .then(() => logger.info('[keepalive] ping OK'))
+        .catch((e) => logger.warn(`[keepalive] ping failed: ${(e as Error).message}`))
+    }, 13 * 60 * 1000)
+
+    // Auto-reconnect any WhatsApp session that has stored credentials in Firestore
+    setTimeout(async () => {
+      try {
+        const db = (await import('@modules/database/firestore')).getFirestore()
+        if (!db) return
+        // whatsappAuth/{uid}/state/creds exists = user has paired WhatsApp
+        const snap = await db.collection('whatsappAuth').listDocuments()
+        for (const ref of snap) {
+          const uid = ref.id
+          const credsSnap = await ref.collection('state').doc('creds').get()
+          if (!credsSnap.exists) continue
+          logger.info(`[server] auto-reconnecting WhatsApp for uid=${uid}`)
+          baileyService.start(uid).catch((e) => logger.warn('[server] auto-reconnect failed', e as Error))
+        }
+      } catch (e) {
+        logger.warn('[server] auto-reconnect query failed', e as Error)
+      }
+    }, 3000)
 
     return httpServer
   } catch (error) {

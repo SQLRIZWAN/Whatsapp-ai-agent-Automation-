@@ -3,6 +3,7 @@ import authMiddleware from '@modules/auth/middleware/authMiddleware'
 import baileyService from '../services/baileyService'
 import messageService from '../services/messageService'
 import callService from '../services/callService'
+import aiService from '../services/aiService'
 import { asyncHandler } from '@shared/utils/errorHandler'
 
 const router = Router()
@@ -88,6 +89,22 @@ router.post('/send-message', asyncHandler(async (req: Request, res: Response) =>
     message: sent ? 'Message sent' : 'Failed to send (is WhatsApp connected?)',
     timestamp: new Date().toISOString(),
   })
+}))
+
+// Diagnose Gemini API — tests each model and returns which work/fail
+router.get('/test-ai', asyncHandler(async (req: Request, res: Response) => {
+  const models = aiService.getAvailableModels()
+  const results: Record<string, string> = {}
+  for (const model of [...models.text]) {
+    try {
+      const { text } = await aiService.generateResponse('Say OK in one word', 'Say OK in one word')
+      results[model] = `OK: ${text.substring(0, 30)}`
+      break // stop after first success
+    } catch (e) {
+      results[model] = `FAIL: ${(e as Error).message?.substring(0, 80)}`
+    }
+  }
+  res.json({ success: true, data: { results, models }, timestamp: new Date().toISOString() })
 }))
 
 export default router

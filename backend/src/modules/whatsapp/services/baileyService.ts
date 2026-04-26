@@ -39,6 +39,7 @@ interface SessionRuntime {
 
 class BaileyService {
   private runtimes = new Map<string, SessionRuntime>()
+  private spawning = new Set<string>()   // global lock — prevents connection storms
   private io: unknown
   private waLogger = pino({ level: 'silent' })
 
@@ -61,6 +62,15 @@ class BaileyService {
         lastError: r.lastError,
         connectedAt: r.connectedAt,
       })
+    }
+  }
+
+  private emitNewMessage(uid: string, msg: unknown) {
+    const anyIO = this.io as
+      | { to?: (room: string) => { emit: (event: string, payload: unknown) => void } }
+      | undefined
+    if (anyIO?.to) {
+      anyIO.to(`user_${uid}`).emit('whatsapp:message:new', msg)
     }
   }
 
@@ -145,6 +155,11 @@ class BaileyService {
   }
 
   private async spawn(uid: string, prevAttempts = 0): Promise<void> {
+    if (this.spawning.has(uid)) {
+      logger.warn(`[wa] spawn already in progress for ${uid} — skipping`)
+      return
+    }
+    this.spawning.add(uid)
     logger.info(`[wa] spawning connection for ${uid} (attempt ${prevAttempts + 1})`)
     const { state, saveCreds } = await useFirestoreAuthState(uid)
     const version = await this.getWAVersion()
@@ -173,6 +188,7 @@ class BaileyService {
       connectedAt: null,
     }
     this.runtimes.set(uid, runtime)
+    this.spawning.delete(uid)  // lock released once socket is created
 
     sock.ev.on('creds.update', saveCreds)
 
@@ -214,45 +230,46 @@ class BaileyService {
         logger.warn(`[wa] connection closed for ${uid} (code=${code}, msg=${errMsg})`)
         this.runtimes.delete(uid)
 
-        if (loggedOut) {
-          logger.warn(`[wa] user logged out (${uid}); clearing auth state`)
-          try {
-            const { clear } = await useFirestoreAuthState(uid)
-            await clear()
-          } catch {
-            // ignore
-          }
+        // Clear stale auth for these codes so fresh QR is shown
+        const badAuthCodes = [
+          DisconnectReason.loggedOut,  // 401
+          403, 405, 500,               // forbidden / stale session / bad session
+        ]
+        if (badAuthCodes.includes(code as number)) {
+          logger.warn(`[wa] bad auth code ${code} — clearing creds, fresh QR needed`)
+          try { const { clear } = await useFirestoreAuthState(uid); await clear() } catch { /* ignore */ }
           await this.persistSessionStatus(uid, SESSION_STATUS.DISCONNECTED, null)
+          if (loggedOut) return
+        }
+
+        // 440 = conflict (multiple sessions) — clear and wait before retry
+        if (code === 440) {
+          logger.warn('[wa] conflict (440) — another session active; clearing creds, waiting 15s')
+          try { const { clear } = await useFirestoreAuthState(uid); await clear() } catch { /* ignore */ }
+          await this.persistSessionStatus(uid, SESSION_STATUS.DISCONNECTED, null)
+          setTimeout(() => {
+            this.spawn(uid, 0).catch((e) => logger.error('[wa] respawn after 440 failed', e))
+          }, 15_000)
           return
         }
 
         if (runtime.attempts >= MAX_RECONNECT_ATTEMPTS) {
-          logger.error(`[wa] giving up after ${runtime.attempts} attempts for ${uid}`)
+          logger.error(`[wa] max attempts reached for ${uid} — clearing auth, showing QR`)
+          try { const { clear } = await useFirestoreAuthState(uid); await clear() } catch { /* ignore */ }
           await this.persistSessionStatus(uid, SESSION_STATUS.DISCONNECTED, null)
+          setTimeout(() => {
+            this.spawn(uid, 0).catch((e) => logger.error('[wa] final respawn failed', e))
+          }, 5_000)
           return
         }
 
-        // 405 (methodNotAllowed) often means stale auth — clear it once.
-        if (code === 405 && runtime.attempts === 1) {
-          logger.warn('[wa] got 405; clearing stored creds and retrying fresh')
-          try {
-            const { clear } = await useFirestoreAuthState(uid)
-            await clear()
-          } catch {
-            // ignore
-          }
-        }
-
-        if (!runtime.reconnecting) {
-          runtime.reconnecting = true
-          const delay = Math.min(1000 * 2 ** Math.min(runtime.attempts, 6), 60_000)
-          logger.info(`[wa] reconnecting in ${delay}ms (attempt ${runtime.attempts + 1})`)
-          setTimeout(() => {
-            this.spawn(uid, runtime.attempts).catch((e) =>
-              logger.error('[wa] respawn failed', e)
-            )
-          }, delay)
-        }
+        const delay = Math.min(1000 * 2 ** Math.min(runtime.attempts, 5), 30_000)
+        logger.info(`[wa] reconnecting in ${delay}ms (attempt ${runtime.attempts + 1})`)
+        setTimeout(() => {
+          this.spawn(uid, runtime.attempts).catch((e) =>
+            logger.error('[wa] respawn failed', e)
+          )
+        }, delay)
       }
     })
 
@@ -322,42 +339,24 @@ class BaileyService {
         ? `Agar bahut urgent hai to ${forwardNumber} pe call kar sakte ho.`
         : ''
 
-      // Try AI-generated call rejection message.
-      let spoken: string
+      // AI-generated call rejection — no fallback, silence if AI fails
       try {
         const prompt = buildPromptWithForwarding(systemPrompt, forwardNumber)
         const context = `The user just made a ${callType} call. Reject it politely, explain you can't answer live calls, ask them to send a voice note or text. Keep it under 40 words in Hinglish. ${forwardHint}`
-        const { text } = await aiService.generateResponse(context, context, prompt)
-        spoken = text
-      } catch {
-        spoken =
-          `Main SQL 💉 hoon. Rizwan bhai abhi busy hain. Main live calls support nahi karta. ` +
-          `Please apna message yahaan voice note ya text mein bhej dein, main turant reply karunga. ${forwardHint}`.trim()
-      }
-
-      try {
-        const { ogg, durationSec } = await synthesizeVoiceNote(spoken, { lang: 'hi' })
-        await r.sock.sendMessage(call.from, {
-          audio: ogg,
-          ptt: true,
-          mimetype: 'audio/ogg; codecs=opus',
-          seconds: durationSec,
-        })
-
-        const textLine = forwardNumber
-          ? `Main SQL 💉 — live calls off hain. Urgent ho to ${forwardNumber} par call kar lein, ya yahin message bhej dein — main reply karunga.`
-          : 'Main SQL 💉 — live calls off hain. Apna message yahin bhej dein, main reply karunga.'
-
-        await r.sock.sendMessage(call.from, { text: textLine })
-      } catch (e) {
-        logger.error('[wa] failed to send post-call voice note', e as Error)
+        const { text: spoken } = await aiService.generateResponse(context, context, prompt)
         try {
+          const { ogg, durationSec } = await synthesizeVoiceNote(spoken, { lang: 'hi' })
           await r.sock.sendMessage(call.from, {
-            text: spoken,
+            audio: ogg,
+            ptt: true,
+            mimetype: 'audio/ogg; codecs=opus',
+            seconds: durationSec,
           })
         } catch {
-          // ignore
+          await r.sock.sendMessage(call.from, { text: spoken }).catch(() => undefined)
         }
+      } catch (e) {
+        logger.error('[wa] post-call AI reply failed', e as Error)
       }
     }, 1500)
   }
@@ -379,7 +378,7 @@ class BaileyService {
       m.viewOnceMessageV2Extension?.message ||
       m
 
-    const cfg = await configService.getConfiguration(uid)
+    const cfg = await configService.getConfiguration(uid).catch(() => null)
     const systemPrompt: string = cfg?.systemPrompt || ''
     const forwardingNumber: string = cfg?.callForwarding?.phoneNumber || ''
     const prompt = buildPromptWithForwarding(systemPrompt, forwardingNumber)
@@ -393,6 +392,8 @@ class BaileyService {
 
     // ── Audio → convert OGG→MP3, then Gemini audio reply ──────────────────
     if (content.audioMessage) {
+      const inMsg = await messageService.saveMessage(uid, jid, uid, '[voice message]', 'audio', false).catch(() => null)
+      if (inMsg) this.emitNewMessage(uid, inMsg)
       try {
         await r.sock.sendPresenceUpdate('composing', jid)
         const buf = (await downloadMediaMessage(msg, 'buffer', {})) as Buffer
@@ -400,114 +401,93 @@ class BaileyService {
         const base64 = mp3Buf.toString('base64')
         const { text: replyText } = await aiService.generateFromAudio(base64, prompt)
         await this.sendVoiceReply(uid, jid, replyText)
-        await messageService.saveMessage(uid, jid, uid, '[voice message]', 'audio', false)
-        await messageService.saveMessage(uid, uid, jid, replyText, 'audio', true, {
-          text: replyText,
-          model: 'gemini-audio',
-          tokensUsed: 0,
-          processedAt: Date.now(),
-        })
+        const outMsg = await messageService.saveMessage(uid, uid, jid, replyText, 'audio', true, {
+          text: replyText, model: 'gemini-2.5-flash', tokensUsed: 0, processedAt: Date.now(),
+        }).catch(() => null)
+        if (outMsg) this.emitNewMessage(uid, outMsg)
         return
       } catch (e) {
-        logger.error('[wa] audio handling error', e as Error)
-        await r.sock.sendMessage(jid, {
-          text: 'Voice message sun li — lekin process mein thodi gadbad aayi. Kya aap dobara bhej sakte hain ya text mein likh sakte hain?',
-        })
+        logger.error('[wa] audio handling error:', (e as Error)?.message || e)
         return
       }
     }
 
     // ── Image → vision reply ───────────────────────────────────────────────
     if (content.imageMessage) {
+      const inMsg = await messageService.saveMessage(uid, jid, uid, text || '[image]', 'image', false).catch(() => null)
+      if (inMsg) this.emitNewMessage(uid, inMsg)
       try {
         await r.sock.sendPresenceUpdate('composing', jid)
         const buf = (await downloadMediaMessage(msg, 'buffer', {})) as Buffer
         const base64 = buf.toString('base64')
         const imageMime = content.imageMessage.mimetype || 'image/jpeg'
         const { text: replyText } = await aiService.analyzeImage(
-          base64,
-          text || 'Is image ko dekho aur friendly reply do.',
-          prompt,
-          imageMime
+          base64, text || 'Is image ko dekho aur friendly reply do.', prompt, imageMime
         )
         await r.sock.sendMessage(jid, { text: replyText })
-        await messageService.saveMessage(uid, jid, uid, text || '[image]', 'image', false)
-        await messageService.saveMessage(uid, uid, jid, replyText, 'text', true, {
-          text: replyText,
-          model: 'gemini-vision',
-          tokensUsed: 0,
-          processedAt: Date.now(),
-        })
+        const outMsg = await messageService.saveMessage(uid, uid, jid, replyText, 'text', true, {
+          text: replyText, model: 'gemini-2.5-flash', tokensUsed: 0, processedAt: Date.now(),
+        }).catch(() => null)
+        if (outMsg) this.emitNewMessage(uid, outMsg)
         return
       } catch (e) {
-        logger.error('[wa] image handling error', e as Error)
-        await r.sock.sendMessage(jid, {
-          text: 'Aapki image dekh li — lekin process mein kuch gadbad aayi. Thodi der baad try karein ya kuch aur bataein.',
-        })
+        logger.error('[wa] image handling error:', (e as Error)?.message || e)
         return
       }
     }
 
     // ── Video → vision reply ───────────────────────────────────────────────
     if (content.videoMessage) {
+      const inMsg = await messageService.saveMessage(uid, jid, uid, text || '[video]', 'video', false).catch(() => null)
+      if (inMsg) this.emitNewMessage(uid, inMsg)
       try {
         await r.sock.sendPresenceUpdate('composing', jid)
         const buf = (await downloadMediaMessage(msg, 'buffer', {})) as Buffer
-        // Only send to Gemini if size is reasonable (< 15 MB to stay in free tier).
-        if (buf.byteLength > 15 * 1024 * 1024) {
-          await r.sock.sendMessage(jid, {
-            text: 'Video thodi badi hai, is baar analyze nahi kar paya. Chota clip bhejein ya kuch aur bataein — main reply karunga!',
-          })
-          return
-        }
+        if (buf.byteLength > 15 * 1024 * 1024) return
         const base64 = buf.toString('base64')
         const videoMime = content.videoMessage.mimetype || 'video/mp4'
-        const { text: replyText } = await aiService.analyzeVideo(
-          base64,
-          text || '',
-          prompt,
-          videoMime
-        )
+        const { text: replyText } = await aiService.analyzeVideo(base64, text || '', prompt, videoMime)
         await r.sock.sendMessage(jid, { text: replyText })
-        await messageService.saveMessage(uid, jid, uid, text || '[video]', 'video', false)
-        await messageService.saveMessage(uid, uid, jid, replyText, 'text', true, {
-          text: replyText,
-          model: 'gemini-vision',
-          tokensUsed: 0,
-          processedAt: Date.now(),
-        })
+        const outMsg = await messageService.saveMessage(uid, uid, jid, replyText, 'text', true, {
+          text: replyText, model: 'gemini-2.5-flash', tokensUsed: 0, processedAt: Date.now(),
+        }).catch(() => null)
+        if (outMsg) this.emitNewMessage(uid, outMsg)
         return
       } catch (e) {
-        logger.error('[wa] video handling error', e as Error)
-        await r.sock.sendMessage(jid, {
-          text: 'Video dekh li — lekin process mein kuch gadbad aayi. Thodi der baad try karein.',
-        })
+        logger.error('[wa] video handling error:', (e as Error)?.message || e)
         return
       }
     }
 
     // ── Text ───────────────────────────────────────────────────────────────
     if (!text.trim()) return
+    const inMsg = await messageService.saveMessage(uid, jid, uid, text, 'text', false).catch(() => null)
+    if (inMsg) this.emitNewMessage(uid, inMsg)
     try {
       await r.sock.sendPresenceUpdate('composing', jid)
-      const { text: replyText } = await aiService.generateResponse(text, text, prompt)
-      await r.sock.sendMessage(jid, { text: replyText })
-      await messageService.saveMessage(uid, jid, uid, text, 'text', false)
-      await messageService.saveMessage(uid, uid, jid, replyText, 'text', true, {
-        text: replyText,
-        model: 'gemini-text',
-        tokensUsed: 0,
-        processedAt: Date.now(),
-      })
-    } catch (e) {
-      logger.error('[wa] text reply error', e as Error)
-      try {
-        await r.sock.sendMessage(jid, {
-          text: 'Message mila — reply mein thodi der ho sakti hai. Kripya dobara bhejein ya thodi der intezaar karein.',
-        })
-      } catch {
-        // ignore secondary failure
+      logger.info(`[wa] text from ${jid}: "${text.substring(0, 60)}"`)
+
+      if (isImageRequest(text)) {
+        const img = await aiService.generateImage(text)
+        if (img) {
+          await r.sock.sendMessage(jid, { image: Buffer.from(img.data, 'base64'), mimetype: img.mimeType, caption: '' })
+          const outMsg = await messageService.saveMessage(uid, uid, jid, '[image generated]', 'image', true, {
+            text: '[image generated]', model: 'gemini-image', tokensUsed: 0, processedAt: Date.now(),
+          }).catch(() => null)
+          if (outMsg) this.emitNewMessage(uid, outMsg)
+          return
+        }
       }
+
+      const { text: replyText, model } = await aiService.generateResponse(text, text, prompt)
+      logger.info(`[wa] AI reply via ${model}: "${replyText.substring(0, 50)}"`)
+      await r.sock.sendMessage(jid, { text: replyText })
+      const outMsg = await messageService.saveMessage(uid, uid, jid, replyText, 'text', true, {
+        text: replyText, model, tokensUsed: 0, processedAt: Date.now(),
+      }).catch(() => null)
+      if (outMsg) this.emitNewMessage(uid, outMsg)
+    } catch (e) {
+      logger.error('[wa] text reply error:', (e as Error)?.message || e)
     }
   }
 
@@ -515,16 +495,19 @@ class BaileyService {
     const r = this.runtimes.get(uid)
     if (!r) return
     try {
+      logger.info(`[tts] generating voice for: "${text.substring(0, 60)}"`)
       const { ogg, durationSec } = await synthesizeVoiceNote(text, { lang: 'hi' })
+      logger.info(`[tts] voice ready, ${ogg.length} bytes, ~${durationSec}s`)
       await r.sock.sendMessage(jid, {
         audio: ogg,
         ptt: true,
         mimetype: 'audio/ogg; codecs=opus',
         seconds: durationSec,
       })
+      logger.info('[tts] voice message sent')
     } catch (e) {
-      logger.error('[wa] voice reply failed, falling back to text', e as Error)
-      await r.sock.sendMessage(jid, { text })
+      logger.error(`[tts] voice reply failed: ${(e as Error)?.message} — sending text instead`)
+      await r.sock.sendMessage(jid, { text }).catch(() => undefined)
     }
   }
 
@@ -535,6 +518,17 @@ class BaileyService {
     await r.sock.sendMessage(jid, { text: message })
     return true
   }
+}
+
+function isImageRequest(text: string): boolean {
+  const t = text.toLowerCase()
+  const keywords = [
+    'image banao', 'image bana', 'photo banao', 'photo bana', 'tasveer banao', 'tasveer bana',
+    'generate image', 'create image', 'draw', 'picture banao', 'picture bana',
+    'image generate', 'image create', 'make image', 'make photo',
+    'ek image', 'ek photo', 'ek tasveer',
+  ]
+  return keywords.some(k => t.includes(k))
 }
 
 function normalizeJid(input: string): string {

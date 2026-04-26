@@ -205,8 +205,10 @@ jobs:
           DEPLOY_ID: ${{ steps.resolve.outputs.deploy_id }}
         run: |
           set +e
-          OWNER_ID=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
-            "https://api.render.com/v1/services/$SERVICE_ID" | jq -r '.ownerId')
+          SVCJSON=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
+            "https://api.render.com/v1/services/$SERVICE_ID")
+          OWNER_ID=$(echo "$SVCJSON" | jq -r '.ownerId // empty')
+          echo "ownerId=$OWNER_ID serviceId=$SERVICE_ID"
 
           mkdir -p diagnostics
           {
@@ -219,8 +221,7 @@ jobs:
             echo ""
             echo "## Service details"
             echo '```json'
-            curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
-              "https://api.render.com/v1/services/$SERVICE_ID" | jq '.' || true
+            echo "$SVCJSON" | jq '.' || true
             echo '```'
             echo ""
             echo "## Latest deploy"
@@ -229,22 +230,9 @@ jobs:
               "https://api.render.com/v1/services/$SERVICE_ID/deploys/$DEPLOY_ID" | jq '.' || true
             echo '```'
             echo ""
-            echo "## Build logs (last 4h)"
+            echo "## App logs (last 4h)"
             NOW=$(date -u +%Y-%m-%dT%H:%M:%S.000Z)
             AGO=$(date -u -d '4 hours ago' +%Y-%m-%dT%H:%M:%S.000Z)
-            echo '```'
-            curl -s -G -H "Authorization: Bearer $RENDER_API_KEY" \
-              "https://api.render.com/v1/logs" \
-              --data-urlencode "ownerId=$OWNER_ID" \
-              --data-urlencode "resource=$SERVICE_ID" \
-              --data-urlencode "type=build" \
-              --data-urlencode "startTime=$AGO" \
-              --data-urlencode "endTime=$NOW" \
-              --data-urlencode "limit=1000" \
-              | jq -r '.logs[]? | "\(.timestamp) \(.message)"' || true
-            echo '```'
-            echo ""
-            echo "## App logs (last 4h)"
             echo '```'
             curl -s -G -H "Authorization: Bearer $RENDER_API_KEY" \
               "https://api.render.com/v1/logs" \
@@ -258,25 +246,25 @@ jobs:
             echo '```'
           } > diagnostics/render.md 2>&1
 
-          # Commit via contents API
+          # Commit render.md via Contents API (proven to work for this repo)
           B64=$(base64 -w0 diagnostics/render.md)
-          CUR=$(curl -s -H "Authorization: token $GH_TOKEN" \
-            "https://api.github.com/repos/${{ github.repository }}/contents/diagnostics/render.md?ref=${{ github.ref_name }}")
-          SHA=$(echo "$CUR" | jq -r '.sha // empty')
-          PAYLOAD=$(jq -n --arg msg "diagnostics: render run ${{ github.run_id }}" \
-                         --arg content "$B64" \
-                         --arg branch "${{ github.ref_name }}" \
-                         --arg sha "$SHA" \
-                         'if $sha == "" then
-                            {message:$msg, content:$content, branch:$branch}
-                          else
-                            {message:$msg, content:$content, branch:$branch, sha:$sha}
-                          end')
-          curl -s -X PUT \
+          CUR_SHA=$(curl -sf -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/contents/diagnostics/render.md?ref=${{ github.ref_name }}" \
+            | jq -r '.sha // empty' 2>/dev/null || echo "")
+          echo "render.md current SHA on branch: '${CUR_SHA}'"
+          HTTP=$(curl -s -o /tmp/render_commit.json -w "%{http_code}" -X PUT \
             -H "Authorization: token $GH_TOKEN" \
             -H "Content-Type: application/json" \
             "https://api.github.com/repos/${{ github.repository }}/contents/diagnostics/render.md" \
-            -d "$PAYLOAD" | jq '.commit.sha // .message'
+            -d "$(jq -n \
+              --arg msg "diagnostics: render run ${{ github.run_id }}" \
+              --arg content "$B64" \
+              --arg branch "${{ github.ref_name }}" \
+              --arg sha "$CUR_SHA" \
+              'if $sha == "" then {message:$msg,content:$content,branch:$branch}
+               else {message:$msg,content:$content,branch:$branch,sha:$sha} end')")
+          echo "Contents API PUT: HTTP $HTTP"
+          jq -r '.commit.sha // .message // "no output"' /tmp/render_commit.json 2>/dev/null || cat /tmp/render_commit.json | head -3
 
   deploy-frontend:
     name: Deploy Frontend to Vercel
@@ -313,31 +301,28 @@ jobs:
         run: |
           set -e
           PN="$PROJECT_NAME"
-          CHECK=$(curl -s -o /tmp/proj.json -w "%{http_code}" \
+
+          # Always delete and recreate to ensure clean project state
+          echo "Deleting existing project (if any)..."
+          curl -s -X DELETE \
             -H "Authorization: Bearer $VERCEL_TOKEN" \
-            "https://api.vercel.com/v9/projects/$PN")
-          if [ "$CHECK" != "200" ]; then
-            echo "Creating Vercel project $PN..."
-            curl -s -o /tmp/proj.json -w "create http: %{http_code}\n" \
-              -X POST "https://api.vercel.com/v10/projects" \
-              -H "Authorization: Bearer $VERCEL_TOKEN" \
-              -H "Content-Type: application/json" \
-              -d "$(jq -n --arg name "$PN" --arg api "$BACKEND_URL" '{
-                name: $name,
-                framework: "vite",
-                rootDirectory: "frontend",
-                buildCommand: "npm run build",
-                outputDirectory: "dist",
-                environmentVariables: [
-                  {key:"VITE_API_URL", value:$api, type:"plain", target:["production","preview","development"]}
-                ]
-              }')"
-          else
-            curl -s -X POST "https://api.vercel.com/v10/projects/$PN/env?upsert=true" \
-              -H "Authorization: Bearer $VERCEL_TOKEN" \
-              -H "Content-Type: application/json" \
-              -d "$(jq -n --arg api "$BACKEND_URL" '{key:"VITE_API_URL", value:$api, type:"plain", target:["production","preview","development"]}')" >/dev/null
-          fi
+            "https://api.vercel.com/v9/projects/$PN" || true
+          sleep 3
+
+          echo "Creating fresh Vercel project $PN..."
+          curl -s -o /tmp/proj.json -w "create http: %{http_code}\n" \
+            -X POST "https://api.vercel.com/v10/projects" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n --arg name "$PN" --arg api "$BACKEND_URL" '{
+              name: $name,
+              framework: "vite",
+              buildCommand: "npm run build",
+              outputDirectory: "dist",
+              environmentVariables: [
+                {key:"VITE_API_URL", value:$api, type:"plain", target:["production","preview","development"]}
+              ]
+            }')"
           jq '{id,name,framework,rootDirectory}' /tmp/proj.json || cat /tmp/proj.json
           PROJECT_ID=$(jq -r '.id' /tmp/proj.json)
           echo "project_id=$PROJECT_ID" >> "$GITHUB_OUTPUT"
@@ -353,29 +338,27 @@ jobs:
           PROJECT_NAME: whatsapp-ai-automation
         run: |
           set +e
-          mkdir -p .vercel
-          cat > .vercel/project.json <<EOF
-          {"projectId":"$VERCEL_PROJECT_ID","orgId":"$VERCEL_ORG_ID"}
-          EOF
+          mkdir -p ../diagnostics/vercel
+
+          # Bake backend URL into build
           echo "VITE_API_URL=$BACKEND_URL" > .env.production
 
-          mkdir -p ../diagnostics/vercel
-          vercel pull --yes --environment=production --token "$VERCEL_TOKEN" > ../diagnostics/vercel/pull.log 2>&1
-          PULL_EC=$?
-          echo "pull exit: $PULL_EC"
-
-          vercel build --prod --token "$VERCEL_TOKEN" > ../diagnostics/vercel/build.log 2>&1
+          # Build locally
+          npm install >> ../diagnostics/vercel/build.log 2>&1
+          npm run build >> ../diagnostics/vercel/build.log 2>&1
           BUILD_EC=$?
-          echo "build exit: $BUILD_EC"
-          tail -n 40 ../diagnostics/vercel/build.log
+          tail -n 20 ../diagnostics/vercel/build.log
+          ls -lh dist/ || true
 
           if [ "$BUILD_EC" != "0" ]; then
-            echo "::error::vercel build failed"
-            set -e
+            echo "::error::npm build failed"
+            cat ../diagnostics/vercel/build.log
             exit 1
           fi
 
-          vercel deploy --prebuilt --prod --token "$VERCEL_TOKEN" > ../diagnostics/vercel/deploy.log 2>&1
+          # Deploy source from frontend/ — fresh project has no rootDirectory confusion
+          vercel --prod --yes --token "$VERCEL_TOKEN" \
+            > ../diagnostics/vercel/deploy.log 2>&1
           DEPLOY_EC=$?
           echo "deploy exit: $DEPLOY_EC"
           cat ../diagnostics/vercel/deploy.log
