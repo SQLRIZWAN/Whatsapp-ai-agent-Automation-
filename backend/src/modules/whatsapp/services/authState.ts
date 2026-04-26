@@ -28,6 +28,9 @@ function readJSON<T>(raw: string): T {
   return JSON.parse(raw, BufferJSON.reviver) as T
 }
 
+// In-memory cache for auth state when Firestore fails
+const memoryAuthCache = new Map<string, AuthenticationCreds>()
+
 export async function useFirestoreAuthState(
   uid: string
 ): Promise<{
@@ -36,66 +39,113 @@ export async function useFirestoreAuthState(
   clear: () => Promise<void>
 }> {
   const db = getFirestore()
-  if (!db) {
-    throw new Error('Firestore not initialized — cannot persist WA auth state')
-  }
-
-  const userDoc = db.collection(ROOT).doc(uid)
-  const credsDoc = userDoc.collection('state').doc('creds')
-  const keysCol = userDoc.collection('keys')
-
+  
   // Load or init creds
   let creds: AuthenticationCreds
-  const snap = await credsDoc.get()
-  if (snap.exists) {
-    const data = snap.data() as { json?: string } | undefined
-    if (data?.json) {
-      creds = readJSON<AuthenticationCreds>(data.json)
-      logger.info(`[wa-auth] loaded existing creds for ${uid}`)
-    } else {
-      creds = initAuthCreds()
-      logger.info(`[wa-auth] empty creds doc — initializing new creds for ${uid}`)
+  let useMemoryOnly = false
+
+  if (db) {
+    try {
+      const userDoc = db.collection(ROOT).doc(uid)
+      const credsDoc = userDoc.collection('state').doc('creds')
+      const snap = await Promise.race([
+        credsDoc.get(),
+        new Promise<any>((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 3000))
+      ])
+      
+      if (snap.exists) {
+        const data = snap.data() as { json?: string } | undefined
+        if (data?.json) {
+          creds = readJSON<AuthenticationCreds>(data.json)
+          logger.info(`[wa-auth] loaded existing creds for ${uid}`)
+        } else {
+          creds = initAuthCreds()
+          logger.info(`[wa-auth] empty creds doc — initializing new creds for ${uid}`)
+        }
+      } else {
+        creds = initAuthCreds()
+        logger.info(`[wa-auth] no creds doc — initializing new creds for ${uid}`)
+      }
+      memoryAuthCache.set(uid, creds)
+    } catch (e) {
+      logger.warn(`[wa-auth] Firestore read failed for ${uid}, using memory cache: ${e}`)
+      useMemoryOnly = true
+      creds = memoryAuthCache.get(uid) || initAuthCreds()
+      memoryAuthCache.set(uid, creds)
     }
   } else {
-    creds = initAuthCreds()
-    logger.info(`[wa-auth] no creds doc — initializing new creds for ${uid}`)
+    logger.warn(`[wa-auth] Firestore not initialized, using memory cache for ${uid}`)
+    useMemoryOnly = true
+    creds = memoryAuthCache.get(uid) || initAuthCreds()
+    memoryAuthCache.set(uid, creds)
   }
 
+  const userDoc = db?.collection(ROOT).doc(uid)
+  const credsDoc = userDoc?.collection('state').doc('creds')
+  const keysCol = userDoc?.collection('keys')
+
   const saveCreds = async () => {
-    await credsDoc.set({ json: writeJSON(creds), updatedAt: Date.now() })
+    memoryAuthCache.set(uid, creds)
+    if (!useMemoryOnly && db && credsDoc) {
+      try {
+        await Promise.race([
+          credsDoc.set({ json: writeJSON(creds), updatedAt: Date.now() }),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 3000))
+        ])
+      } catch (e) {
+        logger.warn(`[wa-auth] Failed to save creds to Firestore for ${uid}: ${e}`)
+      }
+    }
   }
 
   async function getKey<T extends keyof SignalDataTypeMap>(
     type: T,
     id: string
   ): Promise<SignalDataTypeMap[T] | null> {
-    const docId = `${type}_${sanitizeId(id)}`
-    const doc = await keysCol.doc(docId).get()
-    if (!doc.exists) return null
-    const data = doc.data() as { json?: string } | undefined
-    if (!data?.json) return null
-    return readJSON<SignalDataTypeMap[T]>(data.json)
+    if (!db || !keysCol || useMemoryOnly) return null
+    try {
+      const docId = `${type}_${sanitizeId(id)}`
+      const doc = await Promise.race([
+        keysCol.doc(docId).get(),
+        new Promise<any>((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 2000))
+      ])
+      if (!doc.exists) return null
+      const data = doc.data() as { json?: string } | undefined
+      if (!data?.json) return null
+      return readJSON<SignalDataTypeMap[T]>(data.json)
+    } catch (e) {
+      logger.warn(`[wa-auth] Failed to get key ${type}/${id}: ${e}`)
+      return null
+    }
   }
 
   async function setKeys(data: SignalDataSet): Promise<void> {
-    // Use batched writes per type for efficiency
-    const ops: Promise<admin.firestore.WriteResult>[] = []
-    for (const [type, records] of Object.entries(data) as [
-      keyof SignalDataTypeMap,
-      Record<string, unknown>
-    ][]) {
-      if (!records) continue
-      for (const [id, value] of Object.entries(records)) {
-        const docId = `${type}_${sanitizeId(id)}`
-        const ref = keysCol.doc(docId)
-        if (value) {
-          ops.push(ref.set({ json: writeJSON(value), updatedAt: Date.now() }))
-        } else {
-          ops.push(ref.delete())
+    if (!db || !keysCol || useMemoryOnly) return
+    try {
+      // Use batched writes per type for efficiency
+      const ops: Promise<admin.firestore.WriteResult>[] = []
+      for (const [type, records] of Object.entries(data) as [
+        keyof SignalDataTypeMap,
+        Record<string, unknown>
+      ][]) {
+        if (!records) continue
+        for (const [id, value] of Object.entries(records)) {
+          const docId = `${type}_${sanitizeId(id)}`
+          const ref = keysCol.doc(docId)
+          if (value) {
+            ops.push(ref.set({ json: writeJSON(value), updatedAt: Date.now() }))
+          } else {
+            ops.push(ref.delete())
+          }
         }
       }
+      await Promise.race([
+        Promise.all(ops),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 5000))
+      ])
+    } catch (e) {
+      logger.warn(`[wa-auth] Failed to set keys for ${uid}: ${e}`)
     }
-    await Promise.all(ops)
   }
 
   const state: AuthenticationState = {
@@ -121,9 +171,16 @@ export async function useFirestoreAuthState(
 
   const clear = async () => {
     logger.warn(`[wa-auth] clearing stored auth for ${uid}`)
-    const keysSnap = await keysCol.listDocuments()
-    await Promise.all(keysSnap.map((d) => d.delete()))
-    await credsDoc.delete().catch(() => undefined)
+    memoryAuthCache.delete(uid)
+    if (db && keysCol && credsDoc) {
+      try {
+        const keysSnap = await keysCol.listDocuments()
+        await Promise.all(keysSnap.map((d) => d.delete()))
+        await credsDoc.delete().catch(() => undefined)
+      } catch (e) {
+        logger.warn(`[wa-auth] Failed to clear Firestore auth for ${uid}: ${e}`)
+      }
+    }
   }
 
   return { state, saveCreds, clear }
