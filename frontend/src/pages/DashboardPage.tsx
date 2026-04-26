@@ -253,7 +253,7 @@ const DashboardPage: React.FC = () => {
                   style={{ width: 280, height: 280, borderRadius: 8, border: '3px solid #25d366' }}
                 />
                 <p style={{ fontSize: 12, color: '#888', marginTop: 6, textAlign: 'center' }}>
-                  Yeh QR aapke account se linked hai — ek baar scan karo, session save ho jayega
+                  Yeh QR aapki UID se linked hai. Ek baar scan karein, session database mein save ho jayega.
                 </p>
               </div>
               <ol style={qrSteps}>
