@@ -462,16 +462,34 @@ class BaileyService {
     if (!text.trim()) return
     try {
       await r.sock.sendPresenceUpdate('composing', jid)
-      logger.info(`[wa] text message from ${jid}: "${text.substring(0, 50)}"`)
+      logger.info(`[wa] text from ${jid}: "${text.substring(0, 60)}"`)
+
+      // Detect image generation request
+      if (isImageRequest(text)) {
+        await r.sock.sendPresenceUpdate('composing', jid)
+        const imgPrompt = text
+        const img = await aiService.generateImage(imgPrompt)
+        if (img) {
+          await r.sock.sendMessage(jid, {
+            image: Buffer.from(img.data, 'base64'),
+            mimetype: img.mimeType,
+            caption: '',
+          })
+          await messageService.saveMessage(uid, jid, uid, text, 'text', false)
+          await messageService.saveMessage(uid, uid, jid, '[image generated]', 'image', true, {
+            text: '[image generated]', model: 'gemini-image', tokensUsed: 0, processedAt: Date.now(),
+          })
+          return
+        }
+        // If image generation fails, fall through to text reply
+      }
+
       const { text: replyText, model } = await aiService.generateResponse(text, text, prompt)
       logger.info(`[wa] AI reply via ${model}: "${replyText.substring(0, 50)}"`)
       await r.sock.sendMessage(jid, { text: replyText })
       await messageService.saveMessage(uid, jid, uid, text, 'text', false)
       await messageService.saveMessage(uid, uid, jid, replyText, 'text', true, {
-        text: replyText,
-        model: 'gemini-text',
-        tokensUsed: 0,
-        processedAt: Date.now(),
+        text: replyText, model: 'gemini-text', tokensUsed: 0, processedAt: Date.now(),
       })
     } catch (e) {
       logger.error('[wa] text reply error:', (e as Error)?.message || e)
@@ -482,16 +500,19 @@ class BaileyService {
     const r = this.runtimes.get(uid)
     if (!r) return
     try {
+      logger.info(`[tts] generating voice for: "${text.substring(0, 60)}"`)
       const { ogg, durationSec } = await synthesizeVoiceNote(text, { lang: 'hi' })
+      logger.info(`[tts] voice ready, ${ogg.length} bytes, ~${durationSec}s`)
       await r.sock.sendMessage(jid, {
         audio: ogg,
         ptt: true,
         mimetype: 'audio/ogg; codecs=opus',
         seconds: durationSec,
       })
+      logger.info('[tts] voice message sent')
     } catch (e) {
-      logger.error('[wa] voice reply failed, falling back to text', e as Error)
-      await r.sock.sendMessage(jid, { text })
+      logger.error(`[tts] voice reply failed: ${(e as Error)?.message} — sending text instead`)
+      await r.sock.sendMessage(jid, { text }).catch(() => undefined)
     }
   }
 
@@ -502,6 +523,17 @@ class BaileyService {
     await r.sock.sendMessage(jid, { text: message })
     return true
   }
+}
+
+function isImageRequest(text: string): boolean {
+  const t = text.toLowerCase()
+  const keywords = [
+    'image banao', 'image bana', 'photo banao', 'photo bana', 'tasveer banao', 'tasveer bana',
+    'generate image', 'create image', 'draw', 'picture banao', 'picture bana',
+    'image generate', 'image create', 'make image', 'make photo',
+    'ek image', 'ek photo', 'ek tasveer',
+  ]
+  return keywords.some(k => t.includes(k))
 }
 
 function normalizeJid(input: string): string {

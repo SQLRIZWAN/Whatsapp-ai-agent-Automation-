@@ -151,6 +151,27 @@ export class AIService {
     return { decision: text, model }
   }
 
+  async generateImage(prompt: string): Promise<{ data: string; mimeType: string } | null> {
+    if (!this.genAI) return null
+    try {
+      const model = this.genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp-image-generation' })
+      const result = await (model as any).generateContent({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        generationConfig: { responseModalities: ['IMAGE', 'TEXT'] },
+      })
+      for (const part of result.response.candidates?.[0]?.content?.parts || []) {
+        if (part.inlineData?.data) {
+          logger.info('[ai] image generated successfully')
+          return { data: part.inlineData.data, mimeType: part.inlineData.mimeType || 'image/jpeg' }
+        }
+      }
+      return null
+    } catch (e) {
+      logger.error(`[ai] image generation failed: ${(e as Error).message}`)
+      return null
+    }
+  }
+
   getAvailableModels() {
     return { text: GEMINI_MODELS, vision: GEMINI_VISION_MODELS }
   }
