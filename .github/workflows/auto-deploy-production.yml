@@ -246,16 +246,19 @@ jobs:
             echo '```'
           } > diagnostics/render.md 2>&1
 
-          # Commit via git (more reliable than Contents API)
-          git config user.email "noreply@anthropic.com"
-          git config user.name "Claude"
-          git fetch origin "${{ github.ref_name }}" --depth=1
-          git checkout "${{ github.ref_name }}"
+          # Commit the newly-generated file via git push
+          # (git fetch+checkout would overwrite the file we just created, so skip it)
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
           git add diagnostics/render.md
-          git diff --cached --quiet && echo "no changes" && exit 0
+          if git diff --cached --quiet; then
+            echo "render.md unchanged, skipping commit"
+            exit 0
+          fi
           git commit -m "diagnostics: render run ${{ github.run_id }}"
           git push "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" \
-            "HEAD:${{ github.ref_name }}" || echo "push failed (non-fatal)"
+            "HEAD:refs/heads/${{ github.ref_name }}" \
+            || echo "render.md push failed (non-fatal)"
 
   deploy-frontend:
     name: Deploy Frontend to Vercel
