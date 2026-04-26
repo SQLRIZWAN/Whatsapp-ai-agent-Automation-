@@ -30,13 +30,13 @@ rendering chunks...
 computing gzip size...
 [2mdist/[22m[32mindex.html                        [39m[1m[2m  0.56 kB[22m[1m[22m[2m │ gzip:  0.34 kB[22m
 [2mdist/[22m[2massets/[22m[35mindex-BM_Qrh1B.css         [39m[1m[2m  2.42 kB[22m[1m[22m[2m │ gzip:  0.92 kB[22m
-[2mdist/[22m[2massets/[22m[36mLoginPage-llOFiHfz.js      [39m[1m[2m  4.64 kB[22m[1m[22m[2m │ gzip:  1.37 kB[22m
-[2mdist/[22m[2massets/[22m[36mRegisterPage-hkKkVBLH.js   [39m[1m[2m  6.25 kB[22m[1m[22m[2m │ gzip:  1.53 kB[22m
-[2mdist/[22m[2massets/[22m[36mAppShell-DjAKNmwD.js       [39m[1m[2m  6.47 kB[22m[1m[22m[2m │ gzip:  2.08 kB[22m
-[2mdist/[22m[2massets/[22m[36mSettingsPage-DW129sM6.js   [39m[1m[2m  6.75 kB[22m[1m[22m[2m │ gzip:  1.99 kB[22m
-[2mdist/[22m[2massets/[22m[36mMessagesPage-DG6NTSC5.js   [39m[1m[2m  7.08 kB[22m[1m[22m[2m │ gzip:  2.45 kB[22m
-[2mdist/[22m[2massets/[22m[36mCallsPage-Dd2ovpfe.js      [39m[1m[2m  9.00 kB[22m[1m[22m[2m │ gzip:  2.26 kB[22m
-[2mdist/[22m[2massets/[22m[36mDashboardPage-CA63vwnZ.js  [39m[1m[2m 14.68 kB[22m[1m[22m[2m │ gzip:  3.70 kB[22m
+[2mdist/[22m[2massets/[22m[36mLoginPage-B6rLmjO8.js      [39m[1m[2m  4.64 kB[22m[1m[22m[2m │ gzip:  1.37 kB[22m
+[2mdist/[22m[2massets/[22m[36mRegisterPage-CAHfFHg-.js   [39m[1m[2m  6.25 kB[22m[1m[22m[2m │ gzip:  1.53 kB[22m
+[2mdist/[22m[2massets/[22m[36mAppShell-0CewClSE.js       [39m[1m[2m  6.47 kB[22m[1m[22m[2m │ gzip:  2.08 kB[22m
+[2mdist/[22m[2massets/[22m[36mSettingsPage-CDW4D114.js   [39m[1m[2m  6.75 kB[22m[1m[22m[2m │ gzip:  1.99 kB[22m
+[2mdist/[22m[2massets/[22m[36mMessagesPage-pDCXfoFI.js   [39m[1m[2m  7.08 kB[22m[1m[22m[2m │ gzip:  2.45 kB[22m
+[2mdist/[22m[2massets/[22m[36mCallsPage-GOSwGbpz.js      [39m[1m[2m  9.00 kB[22m[1m[22m[2m │ gzip:  2.25 kB[22m
+[2mdist/[22m[2massets/[22m[36mDashboardPage-CfFMLemu.js  [39m[1m[2m 14.72 kB[22m[1m[22m[2m │ gzip:  3.71 kB[22m
 [2mdist/[22m[2massets/[22m[36mindex-BtypAtrY.js          [39m[1m[2m 89.66 kB[22m[1m[22m[2m │ gzip: 21.09 kB[22m
-[2mdist/[22m[2massets/[22m[36mindex-CAMN_aSY.js          [39m[1m[2m370.54 kB[22m[1m[22m[2m │ gzip: 93.09 kB[22m
-[32m✓ built in 2.07s[39m
+[2mdist/[22m[2massets/[22m[36mindex-BSK7NPno.js          [39m[1m[2m370.54 kB[22m[1m[22m[2m │ gzip: 93.08 kB[22m
+[32m✓ built in 1.96s[39m
