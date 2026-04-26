@@ -58,15 +58,22 @@ export const startServer = async (app: Express): Promise<http.Server> => {
       })
     })
 
-    // Handle uncaught exceptions
+    // Keep process alive — log but do NOT exit on uncaught errors
     process.on('uncaughtException', (error) => {
       logger.error('Uncaught Exception:', error)
-      process.exit(1)
     })
 
     process.on('unhandledRejection', (reason, promise) => {
       logger.error('Unhandled Rejection at:', promise, 'reason:', reason)
     })
+
+    // Self-ping every 13 min to prevent Render free tier from sleeping
+    const selfUrl = process.env.API_URL || `http://localhost:${CONFIG.PORT}`
+    setInterval(() => {
+      fetch(`${selfUrl}/health`)
+        .then(() => logger.info('[keepalive] ping OK'))
+        .catch(() => logger.warn('[keepalive] ping failed'))
+    }, 13 * 60 * 1000)
 
     return httpServer
   } catch (error) {

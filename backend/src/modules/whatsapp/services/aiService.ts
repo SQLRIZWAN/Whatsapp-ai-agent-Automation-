@@ -41,7 +41,7 @@ async function runWithFallback(
       logger.warn(`[ai] ${tag} — ${model} failed: ${lastErr}`)
       // On quota exceeded, wait before trying next model
       if (lastErr.includes('429') || lastErr.toLowerCase().includes('quota')) {
-        await new Promise(r => setTimeout(r, 8000))
+        await new Promise(r => setTimeout(r, 3000))
       }
     }
   }
