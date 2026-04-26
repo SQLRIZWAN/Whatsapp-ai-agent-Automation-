@@ -39,4 +39,4 @@ computing gzip size...
 [2mdist/[22m[2massets/[22m[36mDashboardPage-CA63vwnZ.js  [39m[1m[2m 14.68 kB[22m[1m[22m[2m │ gzip:  3.70 kB[22m
 [2mdist/[22m[2massets/[22m[36mindex-BtypAtrY.js          [39m[1m[2m 89.66 kB[22m[1m[22m[2m │ gzip: 21.09 kB[22m
 [2mdist/[22m[2massets/[22m[36mindex-CAMN_aSY.js          [39m[1m[2m370.54 kB[22m[1m[22m[2m │ gzip: 93.09 kB[22m
-[32m✓ built in 1.93s[39m
+[32m✓ built in 1.79s[39m
