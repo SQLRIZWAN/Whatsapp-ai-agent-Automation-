@@ -317,7 +317,7 @@ class BaileyService {
   private async handleIncomingCall(uid: string, call: any) {
     const r = this.runtimes.get(uid)
     if (!r) return
-    try { await r.sock.rejectCall(call.id, call.from) } catch {}
+    try { await r.sock.rejectCall(call.id, call.from) } catch (e) { /* ignore */ }
 
     const cfg = await configService.getConfiguration(uid).catch(() => null)
     const forwardNumber = cfg?.callForwarding?.phoneNumber || ''
