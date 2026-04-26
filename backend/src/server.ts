@@ -75,16 +75,19 @@ export const startServer = async (app: Express): Promise<http.Server> => {
         .catch(() => logger.warn('[keepalive] ping failed'))
     }, 13 * 60 * 1000)
 
-    // Auto-reconnect WhatsApp sessions that were connected before restart
+    // Auto-reconnect any WhatsApp session that has stored credentials in Firestore
     setTimeout(async () => {
       try {
         const db = (await import('@modules/database/firestore')).getFirestore()
         if (!db) return
-        const snap = await db.collection('sessions').where('connectionStatus', '==', 'connected').get()
-        for (const doc of snap.docs) {
-          const uid = doc.id
-          logger.info(`[server] auto-reconnecting WhatsApp for ${uid}`)
-          baileyService.start(uid).catch((e) => logger.warn('[server] auto-reconnect failed', e))
+        // whatsappAuth/{uid}/state/creds exists = user has paired WhatsApp
+        const snap = await db.collection('whatsappAuth').listDocuments()
+        for (const ref of snap) {
+          const uid = ref.id
+          const credsSnap = await ref.collection('state').doc('creds').get()
+          if (!credsSnap.exists) continue
+          logger.info(`[server] auto-reconnecting WhatsApp for uid=${uid}`)
+          baileyService.start(uid).catch((e) => logger.warn('[server] auto-reconnect failed', e as Error))
         }
       } catch (e) {
         logger.warn('[server] auto-reconnect query failed', e as Error)
