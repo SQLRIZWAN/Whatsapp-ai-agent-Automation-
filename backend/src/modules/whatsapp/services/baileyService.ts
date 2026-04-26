@@ -214,38 +214,40 @@ class BaileyService {
         logger.warn(`[wa] connection closed for ${uid} (code=${code}, msg=${errMsg})`)
         this.runtimes.delete(uid)
 
-        if (loggedOut) {
-          logger.warn(`[wa] user logged out (${uid}); clearing auth state`)
+        // Auth needs to be cleared for these codes — force fresh QR
+        const badAuthCodes = [
+          DisconnectReason.loggedOut,  // 401
+          403,                          // forbidden
+          405,                          // methodNotAllowed / stale session
+          500,                          // badSession
+        ]
+        if (badAuthCodes.includes(code as number)) {
+          logger.warn(`[wa] bad auth code ${code} — clearing creds, fresh QR needed`)
           try {
             const { clear } = await useFirestoreAuthState(uid)
             await clear()
-          } catch {
-            // ignore
-          }
+          } catch { /* ignore */ }
           await this.persistSessionStatus(uid, SESSION_STATUS.DISCONNECTED, null)
-          return
+          if (loggedOut) return // logged out = don't auto-respawn, wait for user action
         }
 
         if (runtime.attempts >= MAX_RECONNECT_ATTEMPTS) {
-          logger.error(`[wa] giving up after ${runtime.attempts} attempts for ${uid}`)
-          await this.persistSessionStatus(uid, SESSION_STATUS.DISCONNECTED, null)
-          return
-        }
-
-        // 405 (methodNotAllowed) often means stale auth — clear it once.
-        if (code === 405 && runtime.attempts === 1) {
-          logger.warn('[wa] got 405; clearing stored creds and retrying fresh')
+          logger.error(`[wa] giving up after ${runtime.attempts} attempts for ${uid} — clear auth and respawn for QR`)
           try {
             const { clear } = await useFirestoreAuthState(uid)
             await clear()
-          } catch {
-            // ignore
-          }
+          } catch { /* ignore */ }
+          await this.persistSessionStatus(uid, SESSION_STATUS.DISCONNECTED, null)
+          // Respawn once more so user sees QR instead of dead status
+          setTimeout(() => {
+            this.spawn(uid, 0).catch((e) => logger.error('[wa] final respawn failed', e))
+          }, 3000)
+          return
         }
 
         if (!runtime.reconnecting) {
           runtime.reconnecting = true
-          const delay = Math.min(1000 * 2 ** Math.min(runtime.attempts, 6), 60_000)
+          const delay = Math.min(1000 * 2 ** Math.min(runtime.attempts, 5), 30_000)
           logger.info(`[wa] reconnecting in ${delay}ms (attempt ${runtime.attempts + 1})`)
           setTimeout(() => {
             this.spawn(uid, runtime.attempts).catch((e) =>
