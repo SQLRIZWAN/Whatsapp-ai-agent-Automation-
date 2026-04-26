@@ -22,8 +22,8 @@ const MessagesPage: React.FC = () => {
   const bottomRef = useRef<HTMLDivElement>(null)
   const socketRef = useRef<Socket | null>(null)
 
-  const load = async () => {
-    setLoading(true)
+  const load = async (showSpinner = false) => {
+    if (showSpinner) setLoading(true)
     setErr(null)
     try {
       const res = await axiosInstance.get<ApiResponse<{ messages: ChatMessage[] }>>(
@@ -33,28 +33,26 @@ const MessagesPage: React.FC = () => {
     } catch (e: any) {
       setErr(e?.response?.data?.message || 'Failed to load messages')
     } finally {
-      setLoading(false)
+      if (showSpinner) setLoading(false)
     }
   }
 
   useEffect(() => {
-    load()
+    load(true)
   }, [])
 
-  // Live updates via Socket.IO + 8s fallback poll
+  // Live updates via Socket.IO + 5s fallback poll
   useEffect(() => {
     if (!token) return
     const s = io(API_URL, { transports: ['websocket', 'polling'], reconnection: true })
     socketRef.current = s
     s.on('connect', () => s.emit('authenticate', token))
-    // Reload on any new message event
     s.on('whatsapp:message:new', () => load())
     return () => { s.close(); socketRef.current = null }
   }, [token])
 
-  // 8-second auto-refresh as additional fallback
   useEffect(() => {
-    const id = window.setInterval(load, 8000)
+    const id = window.setInterval(() => load(), 5000)
     return () => window.clearInterval(id)
   }, [])
 
@@ -104,13 +102,13 @@ const MessagesPage: React.FC = () => {
             onChange={(e) => setSearch(e.target.value)}
             style={searchInput}
           />
-          <button onClick={load} style={refreshBtn}>
+          <button onClick={() => load(true)} style={refreshBtn}>
             🔄 Refresh
           </button>
         </div>
 
         {err && <div style={errorBox}>{err}</div>}
-        {loading && messages.length === 0 && <p style={{ color: '#666', textAlign: 'center', padding: '40px 0' }}>Loading…</p>}
+        {loading && <p style={{ color: '#666', textAlign: 'center', padding: '40px 0' }}>Loading…</p>}
 
         {!loading && messages.length === 0 && !err && (
           <p style={{ color: '#666', textAlign: 'center', padding: '60px 0' }}>

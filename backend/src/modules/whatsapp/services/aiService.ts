@@ -4,47 +4,27 @@ import logger from '@shared/utils/logger'
 import { AppError } from '@shared/utils/errorHandler'
 import { ErrorCode } from '@shared/types/common.types'
 
-const GEMINI_MODELS = [
-  'gemini-2.5-flash',
-  'gemini-2.0-flash',
-  'gemini-2.0-flash-lite',
-  'gemini-1.5-flash',
-]
-
-const GEMINI_VISION_MODELS = [
-  'gemini-2.5-flash',
-  'gemini-2.0-flash',
-  'gemini-1.5-flash',
-]
+const MODEL = 'gemini-2.5-flash'
 
 type Part = string | { inlineData: { data: string; mimeType: string } }
 
-async function runWithFallback(
+async function callGemini(
   genAI: GoogleGenerativeAI,
-  models: string[],
   parts: Part[],
   tag: string
 ): Promise<{ text: string; model: string }> {
-  let lastErr = ''
-  for (const model of models) {
-    try {
-      const m = genAI.getGenerativeModel({ model })
-      const result = await m.generateContent(parts as never)
-      const text = result.response.text().trim()
-      if (!text) throw new Error('empty response')
-      logger.info(`[ai] ${tag} OK via ${model}`)
-      return { text, model }
-    } catch (e) {
-      lastErr = (e as Error).message || String(e)
-      logger.warn(`[ai] ${tag} — ${model} failed: ${lastErr}`)
-      // On quota exceeded, wait before trying next model
-      if (lastErr.includes('429') || lastErr.toLowerCase().includes('quota')) {
-        await new Promise(r => setTimeout(r, 3000))
-      }
-    }
+  try {
+    const m = genAI.getGenerativeModel({ model: MODEL })
+    const result = await m.generateContent(parts as never)
+    const text = result.response.text().trim()
+    if (!text) throw new Error('empty response')
+    logger.info(`[ai] ${tag} OK via ${MODEL}`)
+    return { text, model: MODEL }
+  } catch (e) {
+    const msg = (e as Error).message || String(e)
+    logger.error(`[ai] ${tag} failed: ${msg}`)
+    throw new AppError(ErrorCode.INTERNAL_ERROR, `AI unavailable (${tag}): ${msg}`, 500)
   }
-  logger.error(`[ai] ALL models failed for ${tag}. Last: ${lastErr}`)
-  throw new AppError(ErrorCode.INTERNAL_ERROR, `AI unavailable (${tag}): ${lastErr}`, 500)
 }
 
 export class AIService {
@@ -53,24 +33,9 @@ export class AIService {
   constructor() {
     if (CONFIG.GEMINI_API_KEY) {
       this.genAI = new GoogleGenerativeAI(CONFIG.GEMINI_API_KEY)
-      logger.info(`[ai] Gemini ready. Primary: ${GEMINI_MODELS[0]}`)
+      logger.info(`[ai] Gemini ready — model: ${MODEL}`)
     } else {
       logger.error('[ai] ❌ GEMINI_API_KEY missing — AI disabled!')
-    }
-  }
-
-  private async selfTest(): Promise<void> {
-    if (!this.genAI) return
-    try {
-      const { model } = await runWithFallback(
-        this.genAI,
-        GEMINI_MODELS,
-        ['Reply with exactly one word: OK'],
-        'self-test'
-      )
-      logger.info(`[ai] ✅ Self-test PASSED — working model: ${model}`)
-    } catch (e) {
-      logger.error(`[ai] ❌ Self-test FAILED: ${(e as Error).message}`)
     }
   }
 
@@ -87,7 +52,7 @@ export class AIService {
     const fullPrompt = systemPrompt
       ? `${systemPrompt}\n\nUser Message: ${userMessage}`
       : userMessage
-    const { text, model } = await runWithFallback(this.client(), GEMINI_MODELS, [fullPrompt], 'text')
+    const { text, model } = await callGemini(this.client(), [fullPrompt], 'text')
     return { text, tokensUsed: 0, model }
   }
 
@@ -101,8 +66,8 @@ export class AIService {
     const base = mimeType.split(';')[0].trim()
     const safeMime = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(base)
       ? base : 'image/jpeg'
-    const { text, model } = await runWithFallback(
-      this.client(), GEMINI_VISION_MODELS,
+    const { text, model } = await callGemini(
+      this.client(),
       [{ inlineData: { data: imageData, mimeType: safeMime } }, fullPrompt],
       'image'
     )
@@ -120,8 +85,8 @@ export class AIService {
       ? base : 'video/mp4'
     const instruction = (systemPrompt ? `${systemPrompt}\n\n` : '') +
       `User sent a video${caption ? ` with caption: "${caption}"` : ''}. Describe what you see and reply in Hinglish.`
-    return runWithFallback(
-      this.client(), GEMINI_VISION_MODELS,
+    return callGemini(
+      this.client(),
       [{ inlineData: { data: videoData, mimeType: safeMime } }, instruction],
       'video'
     )
@@ -133,8 +98,8 @@ export class AIService {
   ): Promise<{ text: string; model: string }> {
     const instruction = systemPrompt +
       '\n\nUser sent a voice message (MP3). Understand it and reply in short natural Hinglish. No transcription labels.'
-    return runWithFallback(
-      this.client(), GEMINI_VISION_MODELS,
+    return callGemini(
+      this.client(),
       [{ inlineData: { data: audioBase64, mimeType: 'audio/mp3' } }, instruction],
       'audio'
     )
@@ -144,8 +109,8 @@ export class AIService {
     context: string,
     systemPrompt: string
   ): Promise<{ decision: string; model: string }> {
-    const { text, model } = await runWithFallback(
-      this.client(), GEMINI_MODELS,
+    const { text, model } = await callGemini(
+      this.client(),
       [`${systemPrompt}\n\nContext: ${context}\n\nMake a decision.`],
       'decision'
     )
@@ -174,7 +139,7 @@ export class AIService {
   }
 
   getAvailableModels() {
-    return { text: GEMINI_MODELS, vision: GEMINI_VISION_MODELS }
+    return { text: [MODEL], vision: [MODEL] }
   }
 }
 

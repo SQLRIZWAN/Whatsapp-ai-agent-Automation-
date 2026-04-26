@@ -65,6 +65,15 @@ class BaileyService {
     }
   }
 
+  private emitNewMessage(uid: string, msg: unknown) {
+    const anyIO = this.io as
+      | { to?: (room: string) => { emit: (event: string, payload: unknown) => void } }
+      | undefined
+    if (anyIO?.to) {
+      anyIO.to(`user_${uid}`).emit('whatsapp:message:new', msg)
+    }
+  }
+
   getStatusSnapshot(uid: string) {
     const r = this.runtimes.get(uid)
     return {
@@ -383,7 +392,8 @@ class BaileyService {
 
     // ── Audio → convert OGG→MP3, then Gemini audio reply ──────────────────
     if (content.audioMessage) {
-      await messageService.saveMessage(uid, jid, uid, '[voice message]', 'audio', false).catch(() => undefined)
+      const inMsg = await messageService.saveMessage(uid, jid, uid, '[voice message]', 'audio', false).catch(() => null)
+      if (inMsg) this.emitNewMessage(uid, inMsg)
       try {
         await r.sock.sendPresenceUpdate('composing', jid)
         const buf = (await downloadMediaMessage(msg, 'buffer', {})) as Buffer
@@ -391,12 +401,10 @@ class BaileyService {
         const base64 = mp3Buf.toString('base64')
         const { text: replyText } = await aiService.generateFromAudio(base64, prompt)
         await this.sendVoiceReply(uid, jid, replyText)
-        await messageService.saveMessage(uid, uid, jid, replyText, 'audio', true, {
-          text: replyText,
-          model: 'gemini-audio',
-          tokensUsed: 0,
-          processedAt: Date.now(),
-        })
+        const outMsg = await messageService.saveMessage(uid, uid, jid, replyText, 'audio', true, {
+          text: replyText, model: 'gemini-2.5-flash', tokensUsed: 0, processedAt: Date.now(),
+        }).catch(() => null)
+        if (outMsg) this.emitNewMessage(uid, outMsg)
         return
       } catch (e) {
         logger.error('[wa] audio handling error:', (e as Error)?.message || e)
@@ -406,25 +414,21 @@ class BaileyService {
 
     // ── Image → vision reply ───────────────────────────────────────────────
     if (content.imageMessage) {
-      await messageService.saveMessage(uid, jid, uid, text || '[image]', 'image', false).catch(() => undefined)
+      const inMsg = await messageService.saveMessage(uid, jid, uid, text || '[image]', 'image', false).catch(() => null)
+      if (inMsg) this.emitNewMessage(uid, inMsg)
       try {
         await r.sock.sendPresenceUpdate('composing', jid)
         const buf = (await downloadMediaMessage(msg, 'buffer', {})) as Buffer
         const base64 = buf.toString('base64')
         const imageMime = content.imageMessage.mimetype || 'image/jpeg'
         const { text: replyText } = await aiService.analyzeImage(
-          base64,
-          text || 'Is image ko dekho aur friendly reply do.',
-          prompt,
-          imageMime
+          base64, text || 'Is image ko dekho aur friendly reply do.', prompt, imageMime
         )
         await r.sock.sendMessage(jid, { text: replyText })
-        await messageService.saveMessage(uid, uid, jid, replyText, 'text', true, {
-          text: replyText,
-          model: 'gemini-vision',
-          tokensUsed: 0,
-          processedAt: Date.now(),
-        })
+        const outMsg = await messageService.saveMessage(uid, uid, jid, replyText, 'text', true, {
+          text: replyText, model: 'gemini-2.5-flash', tokensUsed: 0, processedAt: Date.now(),
+        }).catch(() => null)
+        if (outMsg) this.emitNewMessage(uid, outMsg)
         return
       } catch (e) {
         logger.error('[wa] image handling error:', (e as Error)?.message || e)
@@ -434,29 +438,20 @@ class BaileyService {
 
     // ── Video → vision reply ───────────────────────────────────────────────
     if (content.videoMessage) {
-      await messageService.saveMessage(uid, jid, uid, text || '[video]', 'video', false).catch(() => undefined)
+      const inMsg = await messageService.saveMessage(uid, jid, uid, text || '[video]', 'video', false).catch(() => null)
+      if (inMsg) this.emitNewMessage(uid, inMsg)
       try {
         await r.sock.sendPresenceUpdate('composing', jid)
         const buf = (await downloadMediaMessage(msg, 'buffer', {})) as Buffer
-        // Only send to Gemini if size is reasonable (< 15 MB to stay in free tier).
-        if (buf.byteLength > 15 * 1024 * 1024) {
-          return
-        }
+        if (buf.byteLength > 15 * 1024 * 1024) return
         const base64 = buf.toString('base64')
         const videoMime = content.videoMessage.mimetype || 'video/mp4'
-        const { text: replyText } = await aiService.analyzeVideo(
-          base64,
-          text || '',
-          prompt,
-          videoMime
-        )
+        const { text: replyText } = await aiService.analyzeVideo(base64, text || '', prompt, videoMime)
         await r.sock.sendMessage(jid, { text: replyText })
-        await messageService.saveMessage(uid, uid, jid, replyText, 'text', true, {
-          text: replyText,
-          model: 'gemini-vision',
-          tokensUsed: 0,
-          processedAt: Date.now(),
-        })
+        const outMsg = await messageService.saveMessage(uid, uid, jid, replyText, 'text', true, {
+          text: replyText, model: 'gemini-2.5-flash', tokensUsed: 0, processedAt: Date.now(),
+        }).catch(() => null)
+        if (outMsg) this.emitNewMessage(uid, outMsg)
         return
       } catch (e) {
         logger.error('[wa] video handling error:', (e as Error)?.message || e)
@@ -466,35 +461,31 @@ class BaileyService {
 
     // ── Text ───────────────────────────────────────────────────────────────
     if (!text.trim()) return
-    // Save incoming message immediately so frontend count updates even if AI fails
-    await messageService.saveMessage(uid, jid, uid, text, 'text', false).catch(() => undefined)
+    const inMsg = await messageService.saveMessage(uid, jid, uid, text, 'text', false).catch(() => null)
+    if (inMsg) this.emitNewMessage(uid, inMsg)
     try {
       await r.sock.sendPresenceUpdate('composing', jid)
       logger.info(`[wa] text from ${jid}: "${text.substring(0, 60)}"`)
 
-      // Detect image generation request
       if (isImageRequest(text)) {
         const img = await aiService.generateImage(text)
         if (img) {
-          await r.sock.sendMessage(jid, {
-            image: Buffer.from(img.data, 'base64'),
-            mimetype: img.mimeType,
-            caption: '',
-          })
-          await messageService.saveMessage(uid, uid, jid, '[image generated]', 'image', true, {
+          await r.sock.sendMessage(jid, { image: Buffer.from(img.data, 'base64'), mimetype: img.mimeType, caption: '' })
+          const outMsg = await messageService.saveMessage(uid, uid, jid, '[image generated]', 'image', true, {
             text: '[image generated]', model: 'gemini-image', tokensUsed: 0, processedAt: Date.now(),
-          })
+          }).catch(() => null)
+          if (outMsg) this.emitNewMessage(uid, outMsg)
           return
         }
-        // If image generation fails, fall through to text reply
       }
 
       const { text: replyText, model } = await aiService.generateResponse(text, text, prompt)
       logger.info(`[wa] AI reply via ${model}: "${replyText.substring(0, 50)}"`)
       await r.sock.sendMessage(jid, { text: replyText })
-      await messageService.saveMessage(uid, uid, jid, replyText, 'text', true, {
-        text: replyText, model: 'gemini-text', tokensUsed: 0, processedAt: Date.now(),
-      })
+      const outMsg = await messageService.saveMessage(uid, uid, jid, replyText, 'text', true, {
+        text: replyText, model, tokensUsed: 0, processedAt: Date.now(),
+      }).catch(() => null)
+      if (outMsg) this.emitNewMessage(uid, outMsg)
     } catch (e) {
       logger.error('[wa] text reply error:', (e as Error)?.message || e)
     }
