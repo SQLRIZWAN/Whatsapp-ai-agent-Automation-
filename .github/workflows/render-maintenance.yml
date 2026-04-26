@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: "list or delete"
+        description: "list, delete, or logs"
         required: true
         default: "list"
       service_name:
@@ -23,7 +23,7 @@ jobs:
         run: |
           set -e
           ACTION="${{ github.event.inputs.action }}"
-          if [[ "$ACTION" != "list" && "$ACTION" != "delete" ]]; then
+          if [[ "$ACTION" != "list" && "$ACTION" != "delete" && "$ACTION" != "logs" ]]; then
             echo "Invalid action: $ACTION"
             exit 1
           fi
@@ -35,6 +35,32 @@ jobs:
           set -e
           RESP=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" "https://api.render.com/v1/services?limit=100")
           echo "$RESP" | jq -r '.[] | "\(.service.name) | \(.service.id) | \(.service.type) | \(.service.autoDeploy // "n/a")"'
+
+      - name: Show recent app logs (optional)
+        if: ${{ github.event.inputs.action == 'logs' }}
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          SERVICE_NAME: ${{ github.event.inputs.service_name }}
+        run: |
+          set -e
+          RESP=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" "https://api.render.com/v1/services?limit=100")
+          SID=$(echo "$RESP" | jq -r --arg n "$SERVICE_NAME" '[.[] | select(.service.name==$n)] | .[0].service.id // empty')
+          OWNER_ID=$(echo "$RESP" | jq -r '[.[] | select(.service.name==$n)] | .[0].service.ownerId // empty' --arg n "$SERVICE_NAME")
+          if [[ -z "$SID" || -z "$OWNER_ID" ]]; then
+            echo "Service not found: $SERVICE_NAME"
+            exit 1
+          fi
+          NOW=$(date -u +%Y-%m-%dT%H:%M:%S.000Z)
+          AGO=$(date -u -d '30 minutes ago' +%Y-%m-%dT%H:%M:%S.000Z)
+          curl -s -G -H "Authorization: Bearer $RENDER_API_KEY" \
+            "https://api.render.com/v1/logs" \
+            --data-urlencode "ownerId=$OWNER_ID" \
+            --data-urlencode "resource=$SID" \
+            --data-urlencode "type=app" \
+            --data-urlencode "startTime=$AGO" \
+            --data-urlencode "endTime=$NOW" \
+            --data-urlencode "limit=500" \
+            | jq -r '.logs[]? | "\(.timestamp) \(.message)"'
 
       - name: Delete service (optional)
         if: ${{ github.event.inputs.action == 'delete' && github.event.inputs.service_name != '' }}
