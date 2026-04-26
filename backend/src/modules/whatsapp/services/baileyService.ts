@@ -15,6 +15,7 @@ import logger from '@shared/utils/logger'
 import { getFirestore } from '../../database/firestore'
 import { COLLECTIONS, SESSION_STATUS } from '@shared/constants/config'
 import { useFirestoreAuthState } from './authState'
+import qrService from './qrService'
 import { synthesizeVoiceNote, convertToMp3 } from './ttsService'
 import aiService from './aiService'
 import configService from '../../config/services/configService'
@@ -90,6 +91,26 @@ class BaileyService {
     if (this.runtimes.has(uid)) {
       return this.getStatusSnapshot(uid)
     }
+
+    // Check for existing QR in database if not connected
+    // This allows users to see the same QR code across page refreshes or multiple devices
+    const cachedQR = await qrService.getQRCode(uid)
+    if (cachedQR) {
+      logger.info(`[wa] Found cached QR in Firestore for ${uid}`)
+      // Spawn connection in background to listen for the scan event
+      this.spawn(uid).catch(e => logger.error('[wa] background spawn error', e))
+      
+      // Return the cached QR immediately to the frontend for a seamless experience
+      return {
+        status: 'qr' as Status,
+        qrCode: cachedQR,
+        phone: null,
+        attempts: 0,
+        lastError: null,
+        connectedAt: null,
+      }
+    }
+
     await this.spawn(uid)
     return this.getStatusSnapshot(uid)
   }
@@ -201,6 +222,7 @@ class BaileyService {
           runtime.status = 'qr'
           logger.info(`[wa] QR generated for ${uid}`)
           this.emitStatus(uid)
+          await qrService.saveQRCode(uid, dataUrl)
           await this.persistSessionStatus(uid, SESSION_STATUS.CONNECTING, null)
         } catch (e) {
           logger.error('[wa] QR encode error', e as Error)
@@ -216,6 +238,7 @@ class BaileyService {
         runtime.attempts = 0
         logger.info(`[wa] connected as ${runtime.phone} for ${uid}`)
         this.emitStatus(uid)
+        await qrService.markQRAsScanned(uid)
         await this.persistSessionStatus(uid, SESSION_STATUS.CONNECTED, runtime.phone)
       }
 

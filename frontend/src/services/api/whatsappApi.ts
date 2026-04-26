@@ -5,6 +5,9 @@ export interface WhatsappSnapshot {
   status: 'disconnected' | 'connecting' | 'qr' | 'connected'
   qrCode: string | null
   phone: string | null
+  attempts: number
+  lastError: string | null
+  connectedAt: number | null
 }
 
 export const getStatus = () =>

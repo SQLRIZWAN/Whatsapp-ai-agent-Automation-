@@ -6,7 +6,7 @@ import * as whatsappApi from '@services/api/whatsappApi'
 import type { WhatsappSnapshot } from '@services/api/whatsappApi'
 import axiosInstance from '@services/api/apiClient'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+const API_URL = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:5000' : window.location.origin)
 
 interface Stats {
   messages: number
@@ -21,7 +21,8 @@ const DashboardPage: React.FC = () => {
     phone: null,
     attempts: 0,
     lastError: null,
-  } as any)
+    connectedAt: null,
+  })
   const [loading, setLoading] = useState(true)
   const [err, setErr] = useState<string | null>(null)
   const [stats, setStats] = useState<Stats>({ messages: 0, calls: 0 })
@@ -38,8 +39,8 @@ const DashboardPage: React.FC = () => {
       try {
         const res = await whatsappApi.getStatus()
         if (cancelled) return
-        setSnap(res.data.data as any)
-        const connAt = (res.data.data as any)?.connectedAt
+        setSnap(res.data.data)
+        const connAt = res.data.data.connectedAt
         if (connAt) connectedAtRef.current = connAt
       } catch (e: any) {
         if (!cancelled) setErr(e?.response?.data?.message || 'Failed to load status')
@@ -99,7 +100,7 @@ const DashboardPage: React.FC = () => {
     pollRef.current = window.setInterval(async () => {
       try {
         const res = await whatsappApi.getStatus()
-        setSnap(res.data.data as any)
+        setSnap(res.data.data)
       } catch { /* swallow */ }
     }, 4000)
     return () => { if (pollRef.current) window.clearInterval(pollRef.current); pollRef.current = null }
@@ -129,7 +130,7 @@ const DashboardPage: React.FC = () => {
   const handleWhatsappLogout = async () => {
     try {
       await whatsappApi.logoutWhatsapp()
-      setSnap({ status: 'disconnected', qrCode: null, phone: null, attempts: 0, lastError: null } as any)
+      setSnap({ status: 'disconnected', qrCode: null, phone: null, attempts: 0, lastError: null, connectedAt: null })
       await whatsappApi.connect()
     } catch (e: any) {
       setErr(e?.response?.data?.message || 'Failed to logout of WhatsApp')
@@ -141,7 +142,7 @@ const DashboardPage: React.FC = () => {
     try {
       await whatsappApi.disconnect()
       const res = await whatsappApi.connect()
-      setSnap(res.data.data as any)
+      setSnap(res.data.data)
     } catch (e: any) {
       setErr(e?.response?.data?.message || 'Failed to restart')
     }
@@ -195,10 +196,10 @@ const DashboardPage: React.FC = () => {
             {statusLabel}
           </div>
 
-          {(snap as any).attempts > 1 && snap.status !== 'connected' && (
+          {snap.attempts > 1 && snap.status !== 'connected' && (
             <div style={{ color: '#92400e', fontSize: 12, marginBottom: 8 }}>
-              Reconnect attempt {(snap as any).attempts} / 25
-              {(snap as any).lastError ? ` — last error: ${(snap as any).lastError}` : ''}
+              Reconnect attempt {snap.attempts} / 25
+              {snap.lastError ? ` — last error: ${snap.lastError}` : ''}
             </div>
           )}
 
