@@ -204,12 +204,8 @@ class BaileyService {
 
   private async getWAVersion(): Promise<[number, number, number]> {
     if (this.cachedWAVersion) return this.cachedWAVersion
-    try {
-      const { version } = await fetchLatestBaileysVersion()
-      this.cachedWAVersion = version as [number, number, number]
-    } catch (e) {
-      this.cachedWAVersion = [2, 3000, 1015901307]
-    }
+    // Use stable known version to avoid compatibility issues
+    this.cachedWAVersion = [2, 3000, 1015901307]
     return this.cachedWAVersion
   }
 
@@ -226,11 +222,11 @@ class BaileyService {
         auth: state,
         printQRInTerminal: false,
         logger: this.waLogger as never,
-        browser: Browsers.ubuntu('Chrome'),
+        browser: Browsers.windows('Chrome'),
         syncFullHistory: false,
         markOnlineOnConnect: true,
-        connectTimeoutMs: 60_000,
-        defaultQueryTimeoutMs: 60_000,
+        connectTimeoutMs: 120_000,
+        defaultQueryTimeoutMs: 120_000,
         keepAliveIntervalMs: 30_000,
       })
 
