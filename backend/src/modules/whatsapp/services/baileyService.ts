@@ -239,10 +239,7 @@ class BaileyService {
         },
         { merge: true }
       )
-      await Promise.race([
-        batch.commit(),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 5000))
-      ])
+      await batch.commit()
     } catch (e) {
       logger.warn('[wa] persistSessionStatus failed', e as Error)
     }
@@ -445,23 +442,38 @@ class BaileyService {
       await r.sock.sendPresenceUpdate('composing', jid)
       const buf = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
       const mp3Buf = await convertToMp3(buf, 'ogg')
-      const { text: replyText } = await aiService.generateFromAudio(mp3Buf.toString('base64'), prompt)
-      await this.sendVoiceReply(uid, jid, replyText)
+      try {
+        const { text: replyText } = await aiService.generateFromAudio(mp3Buf.toString('base64'), prompt)
+        await this.sendVoiceReply(uid, jid, replyText)
+      } catch (e) {
+        logger.warn('[wa] audio AI failed, sending fallback', e as Error)
+        await r.sock.sendMessage(jid, { text: 'Network issue aa gaya. Aap phir se bhejo, main reply karta hoon.' }).catch(() => {})
+      }
       return
     }
 
     if (content.imageMessage) {
       await r.sock.sendPresenceUpdate('composing', jid)
       const buf = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
-      const { text: replyText } = await aiService.analyzeImage(buf.toString('base64'), text || 'Describe', prompt)
-      await r.sock.sendMessage(jid, { text: replyText })
+      try {
+        const { text: replyText } = await aiService.analyzeImage(buf.toString('base64'), text || 'Describe', prompt)
+        await r.sock.sendMessage(jid, { text: replyText })
+      } catch (e) {
+        logger.warn('[wa] image AI failed, sending fallback', e as Error)
+        await r.sock.sendMessage(jid, { text: 'Image mil gayi, lekin analysis fail hua. Dobara try karo.' }).catch(() => {})
+      }
       return
     }
 
     if (!text.trim()) return
     await r.sock.sendPresenceUpdate('composing', jid)
-    const { text: replyText, model } = await aiService.generateResponse(text, text, prompt)
-    await r.sock.sendMessage(jid, { text: replyText })
+    try {
+      const { text: replyText } = await aiService.generateResponse(text, text, prompt)
+      await r.sock.sendMessage(jid, { text: replyText })
+    } catch (e) {
+      logger.warn('[wa] text AI failed, sending fallback', e as Error)
+      await r.sock.sendMessage(jid, { text: 'Thoda network issue hai. Aapka message mil gaya, 1 min me fir try karo.' }).catch(() => {})
+    }
   }
 
   private async sendVoiceReply(uid: string, jid: string, text: string) {

@@ -30,6 +30,7 @@ function readJSON<T>(raw: string): T {
 
 // In-memory cache for auth state when Firestore fails
 const memoryAuthCache = new Map<string, AuthenticationCreds>()
+const memoryKeyCache = new Map<string, Map<string, unknown>>()
 
 export async function useFirestoreAuthState(
   uid: string
@@ -39,6 +40,8 @@ export async function useFirestoreAuthState(
   clear: () => Promise<void>
 }> {
   const db = getFirestore()
+  if (!memoryKeyCache.has(uid)) memoryKeyCache.set(uid, new Map())
+  const userKeyCache = memoryKeyCache.get(uid)!
   
   // Load or init creds
   let creds: AuthenticationCreds
@@ -96,14 +99,19 @@ export async function useFirestoreAuthState(
     type: T,
     id: string
   ): Promise<SignalDataTypeMap[T] | null> {
+    const docId = `${type}_${sanitizeId(id)}`
+    if (userKeyCache.has(docId)) {
+      return userKeyCache.get(docId) as SignalDataTypeMap[T]
+    }
     if (!db || !keysCol || useMemoryOnly) return null
     try {
-      const docId = `${type}_${sanitizeId(id)}`
       const doc = await keysCol.doc(docId).get()
       if (!doc.exists) return null
       const data = doc.data() as { json?: string } | undefined
       if (!data?.json) return null
-      return readJSON<SignalDataTypeMap[T]>(data.json)
+      const parsed = readJSON<SignalDataTypeMap[T]>(data.json)
+      userKeyCache.set(docId, parsed)
+      return parsed
     } catch (e) {
       logger.warn(`[wa-auth] Failed to get key ${type}/${id}: ${e}`)
       return null
@@ -124,8 +132,10 @@ export async function useFirestoreAuthState(
           const docId = `${type}_${sanitizeId(id)}`
           const ref = keysCol.doc(docId)
           if (value) {
+            userKeyCache.set(docId, value)
             ops.push(ref.set({ json: writeJSON(value), updatedAt: Date.now() }))
           } else {
+            userKeyCache.delete(docId)
             ops.push(ref.delete())
           }
         }
@@ -160,6 +170,7 @@ export async function useFirestoreAuthState(
   const clear = async () => {
     logger.warn(`[wa-auth] clearing stored auth for ${uid}`)
     memoryAuthCache.delete(uid)
+    memoryKeyCache.delete(uid)
     if (db && keysCol && credsDoc) {
       try {
         const keysSnap = await keysCol.listDocuments()

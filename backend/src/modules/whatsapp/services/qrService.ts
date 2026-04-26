@@ -37,10 +37,7 @@ export class QRService {
 
       const batch = db.batch()
       batch.set(db.collection(COLLECTIONS.QR_CODES).doc(uid), qrDoc, { merge: true })
-      await Promise.race([
-        batch.commit(),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 3000))
-      ])
+      await batch.commit()
       logger.info(`QR code saved for user ${uid}, expires in ${QR_EXPIRY_MS/1000}s`)
     } catch (error) {
       logger.warn('Failed to save QR code:', error)
@@ -51,10 +48,7 @@ export class QRService {
     try {
       const db = getFirestore()
       if (!db) return null
-      const doc = await Promise.race([
-        db.collection(COLLECTIONS.QR_CODES).doc(uid).get(),
-        new Promise<any>((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 3000))
-      ])
+      const doc = await db.collection(COLLECTIONS.QR_CODES).doc(uid).get()
 
       if (!doc.exists) return null
 
@@ -85,10 +79,7 @@ export class QRService {
         'currentQR.scannedAt': Date.now(),
         'lastScannedAt': Date.now()
       })
-      await Promise.race([
-        batch.commit(),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 3000))
-      ])
+      await batch.commit()
     } catch (error) {
       logger.warn('Failed to mark QR as scanned:', error)
     }

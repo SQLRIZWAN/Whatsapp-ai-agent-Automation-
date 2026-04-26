@@ -1,0 +1,53 @@
+name: Render Maintenance
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "list or delete"
+        required: true
+        default: "list"
+      service_name:
+        description: "Render service name (exact)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  manage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate input
+        run: |
+          set -e
+          ACTION="${{ github.event.inputs.action }}"
+          if [[ "$ACTION" != "list" && "$ACTION" != "delete" ]]; then
+            echo "Invalid action: $ACTION"
+            exit 1
+          fi
+
+      - name: List services
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        run: |
+          set -e
+          RESP=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" "https://api.render.com/v1/services?limit=100")
+          echo "$RESP" | jq -r '.[] | "\(.service.name) | \(.service.id) | \(.service.type) | \(.service.autoDeploy // "n/a")"'
+
+      - name: Delete service (optional)
+        if: ${{ github.event.inputs.action == 'delete' && github.event.inputs.service_name != '' }}
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          SERVICE_NAME: ${{ github.event.inputs.service_name }}
+        run: |
+          set -e
+          RESP=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" "https://api.render.com/v1/services?limit=100")
+          SID=$(echo "$RESP" | jq -r --arg n "$SERVICE_NAME" '[.[] | select(.service.name==$n)] | .[0].service.id // empty')
+          if [[ -z "$SID" ]]; then
+            echo "Service not found: $SERVICE_NAME"
+            exit 0
+          fi
+          echo "Deleting service: $SERVICE_NAME ($SID)"
+          curl -s -X DELETE -H "Authorization: Bearer $RENDER_API_KEY" "https://api.render.com/v1/services/$SID" | jq '.'
