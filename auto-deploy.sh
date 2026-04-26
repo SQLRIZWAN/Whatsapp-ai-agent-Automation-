@@ -1,154 +1,140 @@
 #!/bin/bash
 
-# WhatsApp AI Agent - Complete Auto-Deployment Script
-# This script handles BOTH Render and Vercel deployment via APIs
+# Secure auto-deploy helper for Render + Vercel
+set -euo pipefail
 
-set -e
+RENDER_TOKEN="${RENDER_API_TOKEN:-}"
+VERCEL_TOKEN="${VERCEL_API_TOKEN:-}"
+GITHUB_REPO="${GITHUB_REPO:-SQLRIZWAN/Whatsapp-ai-agent-Automation-}"
+BRANCH="${BRANCH:-main}"
+RENDER_SERVICE_NAME="${RENDER_SERVICE_NAME:-whatsapp-ai-backend}"
+VERCEL_PROJECT_NAME="${VERCEL_PROJECT_NAME:-whatsapp-ai-automation}"
+FRONTEND_URL="${FRONTEND_URL:-https://${VERCEL_PROJECT_NAME}.vercel.app}"
+BACKEND_URL="${BACKEND_URL:-https://${RENDER_SERVICE_NAME}.onrender.com}"
 
-echo "🚀 WhatsApp AI Automation - Full Stack Auto-Deploy"
-echo "===================================================="
-echo ""
-
-# Configuration
-RENDER_TOKEN="${RENDER_API_TOKEN:-rnd_2SelzueR3PwG3dDruXeO0Vli7jZf}"
-VERCEL_TOKEN="${VERCEL_API_TOKEN:-vcp_3AnEqHNnVDBRn7hPCtUFwlNt6jIAqXLk4KOLQwiZPkUcbrHvlJ0UmcRh}"
-GITHUB_REPO="SQLRIZWAN/Whatsapp-ai-agent-Automation-"
-BRANCH="claude/whatsapp-ai-automation-MBek3"
-
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
-
-print_step() {
-  echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-  echo -e "${BLUE}▶ $1${NC}"
-  echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-}
-
-print_success() {
-  echo -e "${GREEN}✅ $1${NC}"
-}
-
-print_error() {
-  echo -e "${RED}❌ $1${NC}"
-}
-
-print_warning() {
-  echo -e "${YELLOW}⚠️  $1${NC}"
-}
-
-# ============================================
-# STEP 1: Deploy Backend to Render
-# ============================================
-print_step "STEP 1: Deploying Backend to Render.com"
-
-echo "Creating web service..."
-RENDER_RESPONSE=$(curl -s -X POST https://api.render.com/v1/services \
-  -H "Authorization: Bearer $RENDER_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d @- <<RENDER_PAYLOAD
-{
-  "type": "web_service",
-  "name": "whatsapp-ai-backend",
-  "repo": "https://github.com/$GITHUB_REPO",
-  "branch": "$BRANCH",
-  "rootDir": "backend",
-  "buildCommand": "npm install && npm run build",
-  "startCommand": "npm start",
-  "envVars": [
-    {"key": "NODE_ENV", "value": "production"},
-    {"key": "PORT", "value": "5000"},
-    {"key": "API_URL", "value": "https://whatsapp-ai-backend.onrender.com"},
-    {"key": "JWT_SECRET", "value": "sql_rrr_secure_jwt_token_2026_xyz"},
-    {"key": "FIREBASE_PROJECT_ID", "value": "whatsapp-ai-agent-fed73"},
-    {"key": "FIREBASE_CLIENT_EMAIL", "value": "firebase-adminsdk-fbsvc@whatsapp-ai-agent-fed73.iam.gserviceaccount.com"},
-    {"key": "FIREBASE_PRIVATE_KEY", "value": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDVjYcg5g3QTeo3\n9g9Y+a64aL1bz0gzmv3xOH+gR6/nDAXTfUkKc6eXMrmv6OlBObDnGytoN0LBMvoE\nnBaMytYkdcjpHKpUn0Hhl7KnoGEMl7zoswUxKqulNobNSdGv5vXQNuuann7NOMll1\nn9ttZ0lG7a3G9n83asVjaqlvkeG08C+ofWk70NI7Utt+SBKA9SGXjfIfLhzzElY+0\nnOoBUyXzayWbKgPo7g4vQgxp6SvtMd3N+/i5BjMBssFUNYlBq5yZHGHWAmxDjflCp\nng5XZ70BpV2Po1P9BWmPjs6NiDCnMOPu5sK8H1lrPXwiptngFhIEmkw62s1tkUTF3\nnYu+GQHQ3AgMBAAECggEATKHIW1RioZzMDz/TmxSiD5e6V79GxAn61Xx2Q/BlnW4R\nniyZ6tu7wtU+lFYxm4IwQwKXdyjyGTmj6EcZqHVDKftAWPKl5urtS8RRfliNary5y\nn/EtzEpplNSvw+wY/FvPWuPSYP4+N2uGSuCOY7B5tpUk1nBvD1ZXtci2oYZibbj+a\nnWbEojdluLRLn9x/jbAeEnMPl3/MGLVRw8SG6VbjO6p3UnbtNlcYLjoSnjmtElyqe\nnaMMMo/gSaJ543tzRWJyhfHt63kpRjKKfcMByp3Yu/VgDDEhN7luzSmeGyDcEQLDp\nnnrpS41hngCWu4B1X9H7ODofQQw55o54h1IlhLlP0QuQKBgQDzAj8qb2DckHt9p1l/\nnfUk4Sow1ThTaGROd2iiDbvYyw/grZlDDycSE84rpPri6WMkUF1/b5Jn999Guufhc\nnnnKZF1mc1qg7lmqMl6TFMF6QFjBb+Q/Khb/8sCREWKHbGpaVlKRlr85Sp1q1NX6ra\nnnjW0Y19q+Nhbzc+Aml80KT+LLGQKBgQDg+CeyR/SQr0d4bXWgCQBlceYhwimnCx6D\nnndgk4T7k2L5AVzlkAxcIrS9jV9luTNBqlA3HqVH5NYt8wS8lZyCsuSsoWFtX0DfKC\nnnmUPz8xAOjl6ndy7bTHsccXSpaQvrhEQsnb8+0yWMQWgdCmA2WT2KjFictFN9OfmF\nn76zTZ/lzzwKBgQC+Q1QRdYLxLm6BwzVfjEh3umZsleXdnSSuwtBVl9tLhAQadXKi\nn2Kb1MXnhhSo9PKazBFoZYLLxFccmdpTubfgBVg0ZBzzsvBZg6GOgoCHb9gNKsQiX\nnnPYkcgTzPjH7yqV8GBVfSHbSYBW1K10x+MZzphpfNtavikSc/EDuJh2KagQKBgQCT\nncRBTP+WBjd8Bhnu4zy1o9UUmiulRoG/3KL0SMu3oHXQlVWvVHccMKUGLuVJ7P4LW\nn81MNiSLeBRbRyFnGhflG/O1FXOlMebee8GQg1gSlBlbaKrqC77UgBxu2jCpLyPwF\nnnYb2dpzTMn3Fk1xAHjqVO0Hyi92xgfkaTCWnzhATa8QKBgEMXUwQPQ1p1q/Neb8Wp\nnnntS6+1EgFN9s2ZAP8YpWV7N7Y2rslt2cSBH3z6eKPD0L/mQgOCz7p5lKtgpnaUWs8\nnn9D6X+MO5EZgZE5p0+y4UaoXTxDckE9BOjjiBZCuwlQfPx1QsWMaZ3yEesVUDldi1\nnlscF2AbWESj1bOiv3HHONUzc\n-----END PRIVATE KEY-----\n"},
-    {"key": "FIREBASE_DATABASE_URL", "value": "https://whatsapp-ai-agent-fed73.firebaseio.com"},
-    {"key": "GEMINI_API_KEY", "value": "AIzaSyCh03ZDm1lflX595rVHwsBD3l43nn5azyg"},
-    {"key": "LOG_LEVEL", "value": "info"},
-    {"key": "USE_FIRESTORE_EMULATOR", "value": "false"}
-  ],
-  "plan": "free"
-}
-RENDER_PAYLOAD
-)
-
-RENDER_SERVICE_ID=$(echo "$RENDER_RESPONSE" | grep -o '"id":"[^"]*' | head -1 | cut -d'"' -f4)
-
-if [ -z "$RENDER_SERVICE_ID" ] || echo "$RENDER_RESPONSE" | grep -q "error"; then
-  print_error "Failed to create Render service"
-  print_warning "Response: $RENDER_RESPONSE"
-  print_warning "You may need to manually create the service. See PRODUCTION_DEPLOYMENT_READY.md"
-else
-  print_success "Render service created: $RENDER_SERVICE_ID"
-  print_warning "Build may take 5-10 minutes. Check Render dashboard for progress."
+if [[ -z "$RENDER_TOKEN" || -z "$VERCEL_TOKEN" ]]; then
+  echo "Missing required tokens. Set RENDER_API_TOKEN and VERCEL_API_TOKEN."
+  exit 1
 fi
 
-echo ""
-
-# ============================================
-# STEP 2: Deploy Frontend to Vercel
-# ============================================
-print_step "STEP 2: Deploying Frontend to Vercel"
-
-echo "Importing project to Vercel..."
-VERCEL_RESPONSE=$(curl -s -X POST https://api.vercel.com/v9/projects \
-  -H "Authorization: Bearer $VERCEL_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d @- <<VERCEL_PAYLOAD
-{
-  "gitRepository": {
-    "repo": "$GITHUB_REPO",
-    "type": "github"
-  },
-  "name": "whatsapp-ai-automation",
-  "rootDirectory": "frontend",
-  "buildCommand": "npm run build",
-  "framework": "vite",
-  "env": [
-    {"key": "VITE_API_URL", "value": "https://whatsapp-ai-backend.onrender.com"},
-    {"key": "VITE_APP_NAME", "value": "WhatsApp AI Automation"},
-    {"key": "VITE_APP_VERSION", "value": "1.0.0"}
-  ]
-}
-VERCEL_PAYLOAD
-)
-
-VERCEL_PROJECT_ID=$(echo "$VERCEL_RESPONSE" | grep -o '"id":"[^"]*' | head -1 | cut -d'"' -f4)
-
-if [ -z "$VERCEL_PROJECT_ID" ] || echo "$VERCEL_RESPONSE" | grep -q "error"; then
-  print_error "Failed to create Vercel project"
-  print_warning "Response: $VERCEL_RESPONSE"
-  print_warning "You may need to manually create the project. See PRODUCTION_DEPLOYMENT_READY.md"
-else
-  print_success "Vercel project created: $VERCEL_PROJECT_ID"
-  print_warning "Build may take 3-5 minutes. Check Vercel dashboard for progress."
+if [[ -z "${JWT_SECRET:-}" || -z "${FIREBASE_PROJECT_ID:-}" || -z "${FIREBASE_CLIENT_EMAIL:-}" || -z "${FIREBASE_PRIVATE_KEY:-}" || -z "${GEMINI_API_KEY:-}" ]]; then
+  echo "Missing required backend env vars."
+  echo "Required: JWT_SECRET FIREBASE_PROJECT_ID FIREBASE_CLIENT_EMAIL FIREBASE_PRIVATE_KEY GEMINI_API_KEY"
+  exit 1
 fi
 
-echo ""
+echo "Deploying backend to Render service: ${RENDER_SERVICE_NAME}"
+echo "Deploying frontend to Vercel project: ${VERCEL_PROJECT_NAME}"
+echo "GitHub repo: ${GITHUB_REPO} (branch: ${BRANCH})"
 
-# ============================================
-# STEP 3: Provide Deployment Information
-# ============================================
-print_step "DEPLOYMENT INFORMATION"
+# Render service upsert
+RENDER_EXISTING=$(curl -s -H "Authorization: Bearer ${RENDER_TOKEN}" "https://api.render.com/v1/services?name=${RENDER_SERVICE_NAME}&limit=20")
+RENDER_SERVICE_ID=$(echo "$RENDER_EXISTING" | jq -r --arg n "$RENDER_SERVICE_NAME" '[.[] | select(.service.name==$n)] | .[0].service.id // empty')
 
-echo "📋 Service IDs:"
-echo "  Render Backend Service ID: $RENDER_SERVICE_ID"
-echo "  Vercel Frontend Project ID: $VERCEL_PROJECT_ID"
-echo ""
+if [[ -z "$RENDER_SERVICE_ID" ]]; then
+  OWNER_ID=$(curl -s -H "Authorization: Bearer ${RENDER_TOKEN}" "https://api.render.com/v1/owners?limit=1" | jq -r '.[0].owner.id')
+  CREATE_PAYLOAD=$(jq -n \
+    --arg owner "$OWNER_ID" \
+    --arg name "$RENDER_SERVICE_NAME" \
+    --arg repo "https://github.com/${GITHUB_REPO}" \
+    --arg branch "$BRANCH" \
+    --arg frontend "$FRONTEND_URL" \
+    --arg jwt "$JWT_SECRET" \
+    --arg fpid "$FIREBASE_PROJECT_ID" \
+    --arg fem "$FIREBASE_CLIENT_EMAIL" \
+    --arg fpk "$FIREBASE_PRIVATE_KEY" \
+    --arg gem "$GEMINI_API_KEY" \
+    '{
+      type:"web_service",
+      name:$name,
+      ownerId:$owner,
+      repo:$repo,
+      branch:$branch,
+      rootDir:"backend",
+      autoDeploy:"yes",
+      serviceDetails:{
+        env:"node",
+        region:"oregon",
+        plan:"free",
+        runtime:"node",
+        healthCheckPath:"/health",
+        envSpecificDetails:{
+          buildCommand:"npm install --include=dev && npm run build",
+          startCommand:"npm start"
+        }
+      },
+      envVars:[
+        {key:"NODE_ENV",value:"production"},
+        {key:"FRONTEND_URL",value:$frontend},
+        {key:"JWT_SECRET",value:$jwt},
+        {key:"FIREBASE_PROJECT_ID",value:$fpid},
+        {key:"FIREBASE_CLIENT_EMAIL",value:$fem},
+        {key:"FIREBASE_PRIVATE_KEY",value:$fpk},
+        {key:"GEMINI_API_KEY",value:$gem}
+      ]
+    }')
+  RENDER_CREATE_RESP=$(curl -s -X POST "https://api.render.com/v1/services" \
+    -H "Authorization: Bearer ${RENDER_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d "$CREATE_PAYLOAD")
+  RENDER_SERVICE_ID=$(echo "$RENDER_CREATE_RESP" | jq -r '.service.id // empty')
+fi
 
-echo "🌐 Expected Live URLs (after build completes):"
-echo "  Backend: https://whatsapp-ai-backend.onrender.com"
-echo "  Frontend: https://whatsapp-ai-automation.vercel.app"
-echo ""
+if [[ -z "$RENDER_SERVICE_ID" ]]; then
+  echo "Render service create/resolve failed."
+  exit 1
+fi
 
-print_warning "⏳ Deployments are in progress (5-10 minutes total)"
-print_warning "📊 Monitor progress:"
-echo "  • Render: https://dashboard.render.com"
-echo "  • Vercel: https://vercel.com/dashboard"
-echo ""
+echo "Render service id: ${RENDER_SERVICE_ID}"
 
-print_success "Setup complete! Check dashboards for deployment status."
+# Trigger fresh deploy
+curl -s -X POST "https://api.render.com/v1/services/${RENDER_SERVICE_ID}/deploys" \
+  -H "Authorization: Bearer ${RENDER_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{"clearCache":"do_not_clear"}' >/dev/null
+
+# Vercel project upsert
+VERCEL_LIST=$(curl -s -H "Authorization: Bearer ${VERCEL_TOKEN}" "https://api.vercel.com/v9/projects")
+VERCEL_PROJECT_ID=$(echo "$VERCEL_LIST" | jq -r --arg n "$VERCEL_PROJECT_NAME" '.projects[]? | select(.name==$n) | .id' | head -n1)
+
+if [[ -z "$VERCEL_PROJECT_ID" ]]; then
+  VERCEL_CREATE=$(curl -s -X POST "https://api.vercel.com/v9/projects" \
+    -H "Authorization: Bearer ${VERCEL_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d "$(jq -n \
+      --arg repo "$GITHUB_REPO" \
+      --arg name "$VERCEL_PROJECT_NAME" \
+      '{
+        name:$name,
+        framework:"vite",
+        gitRepository:{type:"github",repo:$repo},
+        rootDirectory:"frontend"
+      }')")
+  VERCEL_PROJECT_ID=$(echo "$VERCEL_CREATE" | jq -r '.id // empty')
+fi
+
+if [[ -z "$VERCEL_PROJECT_ID" ]]; then
+  echo "Vercel project create/resolve failed."
+  exit 1
+fi
+
+echo "Vercel project id: ${VERCEL_PROJECT_ID}"
+
+# Set frontend env and trigger deployment
+curl -s -X POST "https://api.vercel.com/v10/projects/${VERCEL_PROJECT_ID}/env" \
+  -H "Authorization: Bearer ${VERCEL_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d "$(jq -n --arg key "VITE_API_URL" --arg value "$BACKEND_URL" '{key:$key,value:$value,target:["production"]}')" >/dev/null || true
+
+curl -s -X POST "https://api.vercel.com/v13/deployments" \
+  -H "Authorization: Bearer ${VERCEL_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d "$(jq -n \
+    --arg name "$VERCEL_PROJECT_NAME" \
+    --arg repo "$GITHUB_REPO" \
+    --arg branch "$BRANCH" \
+    '{name:$name,gitSource:{type:"github",repo:$repo,ref:$branch}}')" >/dev/null
+
+echo "Deployment triggers sent."
+echo "Backend expected URL: ${BACKEND_URL}"
+echo "Frontend expected URL: ${FRONTEND_URL}"

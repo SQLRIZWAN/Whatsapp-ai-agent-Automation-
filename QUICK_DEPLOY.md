@@ -12,10 +12,10 @@ I've created automated deployment scripts. Choose your method:
 
 ```
 Name: RENDER_API_KEY
-Value: rnd_2SelzueR3PwG3dDruXeO0Vli7jZf
+Value: <RENDER_API_TOKEN>
 
 Name: VERCEL_TOKEN
-Value: vcp_3AnEqHNnVDBRn7hPCtUFwlNt6jIAqXLk4KOLQwiZPkUcbrHvlJ0UmcRh
+Value: <VERCEL_API_TOKEN>
 
 Name: JWT_SECRET
 Value: sql_rrr_secure_jwt_token_2026_xyz
@@ -24,16 +24,16 @@ Name: FIREBASE_PROJECT_ID
 Value: whatsapp-ai-agent-fed73
 
 Name: FIREBASE_CLIENT_EMAIL
-Value: firebase-adminsdk-fbsvc@whatsapp-ai-agent-fed73.iam.gserviceaccount.com
+Value: <FIREBASE_CLIENT_EMAIL>
 
 Name: FIREBASE_PRIVATE_KEY
-Value: -----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDVjYcg5g3QTeo3\n9g9Y+a64aL1bz0gzmv3xOH+gR6/nDAXTfUkKc6eXMrmv6OlBObDnGytoN0LBMvoE\nnBaMytYkdcjpHKpUn0Hhl7KnoGEMl7zoswUxKqulNobNSdGv5vXQNuuann7NOMll1\nn9ttZ0lG7a3G9n83asVjaqlvkeG08C+ofWk70NI7Utt+SBKA9SGXjfIfLhzzElY+0\nnOoBUyXzayWbKgPo7g4vQgxp6SvtMd3N+/i5BjMBssFUNYlBq5yZHGHWAmxDjflCp\nng5XZ70BpV2Po1P9BWmPjs6NiDCnMOPu5sK8H1lrPXwiptngFhIEmkw62s1tkUTF3\nnYu+GQHQ3AgMBAAECggEATKHIW1RioZzMDz/TmxSiD5e6V79GxAn61Xx2Q/BlnW4R\nniyZ6tu7wtU+lFYxm4IwQwKXdyjyGTmj6EcZqHVDKftAWPKl5urtS8RRfliNary5y\nn/EtzEpplNSvw+wY/FvPWuPSYP4+N2uGSuCOY7B5tpUk1nBvD1ZXtci2oYZibbj+a\nnWbEojdluLRLn9x/jbAeEnMPl3/MGLVRw8SG6VbjO6p3UnbtNlcYLjoSnjmtElyqe\nnaMMMo/gSaJ543tzRWJyhfHt63kpRjKKfcMByp3Yu/VgDDEhN7luzSmeGyDcEQLDp\nnnrpS41hngCWu4B1X9H7ODofQQw55o54h1IlhLlP0QuQKBgQDzAj8qb2DckHt9p1l/\nnfUk4Sow1ThTaGROd2iiDbvYyw/grZlDDycSE84rpPri6WMkUF1/b5Jn999Guufhc\nnnnKZF1mc1qg7lmqMl6TFMF6QFjBb+Q/Khb/8sCREWKHbGpaVlKRlr85Sp1q1NX6ra\nnnjW0Y19q+Nhbzc+Aml80KT+LLGQKBgQDg+CeyR/SQr0d4bXWgCQBlceYhwimnCx6D\nnndgk4T7k2L5AVzlkAxcIrS9jV9luTNBqlA3HqVH5NYt8wS8lZyCsuSsoWFtX0DfKC\nnnmUPz8xAOjl6ndy7bTHsccXSpaQvrhEQsnb8+0yWMQWgdCmA2WT2KjFictFN9OfmF\nn76zTZ/lzzwKBgQC+Q1QRdYLxLm6BwzVfjEh3umZsleXdnSSuwtBVl9tLhAQadXKi\nn2Kb1MXnhhSo9PKazBFoZYLLxFccmdpTubfgBVg0ZBzzsvBZg6GOgoCHb9gNKsQiX\nnnPYkcgTzPjH7yqV8GBVfSHbSYBW1K10x+MZzphpfNtavikSc/EDuJh2KagQKBgQCT\nncRBTP+WBjd8Bhnu4zy1o9UUmiulRoG/3KL0SMu3oHXQlVWvVHccMKUGLuVJ7P4LW\n81MNiSLeBRbRyFnGhflG/O1FXOlMebee8GQg1gSlBlbaKrqC77UgBxu2jCpLyPwF\nnnYb2dpzTMn3Fk1xAHjqVO0Hyi92xgfkaTCWnzhATa8QKBgEMXUwQPQ1p1q/Neb8Wp\nnnntS6+1EgFN9s2ZAP8YpWV7N7Y2rslt2cSBH3z6eKPD0L/mQgOCz7p5lKtgpnaUWs8\nnn9D6X+MO5EZgZE5p0+y4UaoXTxDckE9BOjjiBZCuwlQfPx1QsWMaZ3yEesVUDldi1\nnlscF2AbWESj1bOiv3HHONUzc\n-----END PRIVATE KEY-----\n
+Value: <FIREBASE_PRIVATE_KEY>\n
 
 Name: FIREBASE_DATABASE_URL
 Value: https://whatsapp-ai-agent-fed73.firebaseio.com
 
 Name: GEMINI_API_KEY
-Value: AIzaSyCh03ZDm1lflX595rVHwsBD3l43nn5azyg
+Value: <GEMINI_API_KEY>
 ```
 
 ### Step 2: Trigger Deployment
@@ -64,8 +64,8 @@ Or simply go to **Actions** tab and re-run the workflow manually.
 cd /path/to/Whatsapp-ai-agent-Automation-
 
 # Set environment variables
-export RENDER_API_TOKEN="rnd_2SelzueR3PwG3dDruXeO0Vli7jZf"
-export VERCEL_API_TOKEN="vcp_3AnEqHNnVDBRn7hPCtUFwlNt6jIAqXLk4KOLQwiZPkUcbrHvlJ0UmcRh"
+export RENDER_API_TOKEN="<RENDER_API_TOKEN>"
+export VERCEL_API_TOKEN="<VERCEL_API_TOKEN>"
 
 # Run deployment
 ./auto-deploy.sh

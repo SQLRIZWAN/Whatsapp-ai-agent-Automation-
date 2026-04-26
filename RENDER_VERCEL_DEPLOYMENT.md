@@ -30,11 +30,11 @@ These are from your Firebase service account. Get them from:
 
 ### 3. Render Account
 - Signup at: https://render.com
-- API Token: `rnd_2SelzueR3PwG3dDruXeO0Vli7jZf` (already provided)
+- API Token: `<RENDER_API_TOKEN>` (already provided)
 
 ### 4. Vercel Account  
 - Signup at: https://vercel.com
-- API Token: `vcp_3AnEqHNnVDBRn7hPCtUFwlNt6jIAqXLk4KOLQwiZPkUcbrHvlJ0UmcRh` (already provided)
+- API Token: `<VERCEL_API_TOKEN>` (already provided)
 
 ---
 
@@ -220,8 +220,8 @@ curl -X POST https://whatsapp-ai-backend-xxxx.onrender.com/api/auth/login \
 6. ✅ Test WhatsApp QR connection and messaging
 
 7. ⚠️ **DELETE TOKENS** after deployment:
-   - Render API token: `rnd_2SelzueR3PwG3dDruXeO0Vli7jZf`
-   - Vercel API token: `vcp_3AnEqHNnVDBRn7hPCtUFwlNt6jIAqXLk4KOLQwiZPkUcbrHvlJ0UmcRh`
+   - Render API token: `<RENDER_API_TOKEN>`
+   - Vercel API token: `<VERCEL_API_TOKEN>`
 
 ---
 

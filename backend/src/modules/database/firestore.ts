@@ -41,10 +41,7 @@ export const initializeFirestore = async (): Promise<admin.firestore.Firestore |
   }
 }
 
-export const getFirestore = (): admin.firestore.Firestore => {
-  if (!db) {
-    throw new Error('Firestore not initialized. Call initializeFirestore first.')
-  }
+export const getFirestore = (): admin.firestore.Firestore | null => {
   return db
 }
 

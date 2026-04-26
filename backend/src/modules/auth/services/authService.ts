@@ -7,6 +7,7 @@ import { ErrorCode } from '@shared/types/common.types'
 import { AppError } from '@shared/utils/errorHandler'
 import logger from '@shared/utils/logger'
 import { MESSAGES } from '@shared/constants/config'
+import { getFirestore } from '@modules/database/firestore'
 
 export class AuthService {
   async register(payload: RegisterPayload): Promise<AuthResponse> {
@@ -47,7 +48,14 @@ export class AuthService {
       })
 
       // Store password hash in separate field
-      const db = require('../../database/firestore').getFirestore()
+      const db = getFirestore()
+      if (!db) {
+        throw new AppError(
+          ErrorCode.INTERNAL_ERROR,
+          'Database is not configured. Set Firebase credentials and restart.',
+          503
+        )
+      }
       await db.collection('users').doc(uid).update({ passwordHash })
 
       // Generate token
@@ -95,7 +103,14 @@ export class AuthService {
       }
 
       // Get password hash from database
-      const db = require('../../database/firestore').getFirestore()
+      const db = getFirestore()
+      if (!db) {
+        throw new AppError(
+          ErrorCode.INTERNAL_ERROR,
+          'Database is not configured. Set Firebase credentials and restart.',
+          503
+        )
+      }
       const userDoc = await db.collection('users').doc(user.uid).get()
       const passwordHash = userDoc.data()?.passwordHash
 

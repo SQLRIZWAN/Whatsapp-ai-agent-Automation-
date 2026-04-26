@@ -1,10 +1,24 @@
 import { getFirestore } from '../firestore'
 import { COLLECTIONS } from '@shared/constants/config'
 import { User } from '@shared/types/common.types'
+import { AppError } from '@shared/utils/errorHandler'
+import { ErrorCode } from '@shared/types/common.types'
+
+const requireDb = () => {
+  const db = getFirestore()
+  if (!db) {
+    throw new AppError(
+      ErrorCode.INTERNAL_ERROR,
+      'Database is not configured. Set Firebase credentials and restart.',
+      503
+    )
+  }
+  return db
+}
 
 export class UserRepository {
   async createUser(uid: string, userData: Partial<User>): Promise<User> {
-    const db = getFirestore()
+    const db = requireDb()
     const user: User = {
       uid,
       email: userData.email!,
@@ -24,7 +38,7 @@ export class UserRepository {
   }
 
   async getUserByEmail(email: string): Promise<User | null> {
-    const db = getFirestore()
+    const db = requireDb()
     const snapshot = await db
       .collection(COLLECTIONS.USERS)
       .where('email', '==', email)
@@ -39,7 +53,7 @@ export class UserRepository {
   }
 
   async getUserByUid(uid: string): Promise<User | null> {
-    const db = getFirestore()
+    const db = requireDb()
     const doc = await db.collection(COLLECTIONS.USERS).doc(uid).get()
 
     if (!doc.exists) {
@@ -50,7 +64,7 @@ export class UserRepository {
   }
 
   async updateUser(uid: string, updates: Partial<User>): Promise<User> {
-    const db = getFirestore()
+    const db = requireDb()
     const updateData = {
       ...updates,
       updatedAt: new Date()
@@ -61,7 +75,7 @@ export class UserRepository {
   }
 
   async deleteUser(uid: string): Promise<void> {
-    const db = getFirestore()
+    const db = requireDb()
     await db.collection(COLLECTIONS.USERS).doc(uid).delete()
   }
 

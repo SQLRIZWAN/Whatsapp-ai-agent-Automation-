@@ -10,13 +10,13 @@ echo "=================================================="
 
 PROJECT_ID="${1:?Please provide Google Cloud Project ID}"
 REGION="${2:-us-central1}"
-GITHUB_TOKEN="${3:?Please provide GitHub token}"
+GITHUB_TOKEN="${3:-}"
 
 echo ""
 echo "📋 Configuration:"
 echo "  - Project ID: $PROJECT_ID"
 echo "  - Region: $REGION"
-echo "  - Branch: claude/whatsapp-ai-automation-MBek3"
+echo "  - Branch: ${BRANCH:-main}"
 echo ""
 
 # Build backend
@@ -62,6 +62,6 @@ echo ""
 echo "Backend URL: $BACKEND_URL"
 echo "Frontend URL: https://$PROJECT_ID.firebaseapp.com"
 echo ""
-echo "⚠️  IMPORTANT: Delete the GitHub token when done!"
-echo "   Token: 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"
-echo ""
+if [ -n "$GITHUB_TOKEN" ]; then
+  echo "GitHub token was provided and used only for this run."
+fi

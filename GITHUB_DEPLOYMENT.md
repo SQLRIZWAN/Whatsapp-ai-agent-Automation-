@@ -429,7 +429,7 @@ All documentation files are in the repository:
 
 ⚠️ **GitHub Token provided:**
 ```
-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
+<GITHUB_TOKEN>
 ```
 
 **Delete this token after deployment!**

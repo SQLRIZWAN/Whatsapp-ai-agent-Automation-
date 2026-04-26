@@ -208,12 +208,22 @@ class BaileyService {
   }
 
   private cachedWAVersion: [number, number, number] | null = null
+  private waVersionFetchedAt: number | null = null
 
-  private async getWAVersion(): Promise<[number, number, number]> {
-    if (this.cachedWAVersion) return this.cachedWAVersion
-    // Use stable known version to avoid compatibility issues
-    this.cachedWAVersion = [2, 3000, 1015901307]
-    return this.cachedWAVersion
+  private async getWAVersion(): Promise<[number, number, number] | undefined> {
+    const now = Date.now()
+    if (this.cachedWAVersion && this.waVersionFetchedAt && now - this.waVersionFetchedAt < 10 * 60_000) {
+      return this.cachedWAVersion
+    }
+    try {
+      const latest = await fetchLatestBaileysVersion()
+      this.cachedWAVersion = latest.version
+      this.waVersionFetchedAt = now
+      return this.cachedWAVersion
+    } catch (e) {
+      logger.warn('[wa] unable to fetch latest WA version, using package defaults', e as Error)
+      return this.cachedWAVersion || undefined
+    }
   }
 
   private async spawn(uid: string, prevAttempts = 0): Promise<void> {
@@ -229,7 +239,7 @@ class BaileyService {
       const version = await this.getWAVersion()
 
       const sock = makeWASocket({
-        version,
+        ...(version ? { version } : {}),
         auth: state,
         printQRInTerminal: false,
         logger: this.waLogger as never,
@@ -261,14 +271,19 @@ class BaileyService {
         logger.info(`[wa] connection.update for ${uid}: connection=${connection}, qr=${!!qr}, lastDisconnect=${!!lastDisconnect}`)
 
         if (qr) {
-          logger.info(`[wa] QR code received for ${uid}`)
-          const dataUrl = await QRCode.toDataURL(qr, { margin: 1, width: 360 })
-          runtime.qrDataUrl = dataUrl
-          runtime.qrGeneratedAt = Date.now()
-          runtime.status = 'qr'
-          this.emitStatus(uid)
-          await qrService.saveQRCode(uid, dataUrl)
-          logger.info(`[wa] QR code saved and emitted for ${uid}`)
+          try {
+            logger.info(`[wa] QR code received for ${uid}`)
+            const dataUrl = await QRCode.toDataURL(qr, { margin: 1, width: 360 })
+            runtime.qrDataUrl = dataUrl
+            runtime.qrGeneratedAt = Date.now()
+            runtime.status = 'qr'
+            this.emitStatus(uid)
+            await qrService.saveQRCode(uid, dataUrl)
+            logger.info(`[wa] QR code saved and emitted for ${uid}`)
+          } catch (e) {
+            runtime.lastError = (e as Error).message
+            logger.error(`[wa] QR generation failed for ${uid}`, e as Error)
+          }
         }
 
         if (connection === 'open') {
@@ -293,6 +308,7 @@ class BaileyService {
           runtime.lastError = errMsg
           this.emitStatus(uid)
           this.runtimes.delete(uid)
+          await this.persistSessionStatus(uid, SESSION_STATUS.DISCONNECTED, runtime.phone)
 
           if (code === DisconnectReason.loggedOut) {
             logger.info(`[wa] User logged out: ${uid}`)
