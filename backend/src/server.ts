@@ -67,12 +67,13 @@ export const startServer = async (app: Express): Promise<http.Server> => {
       logger.error('Unhandled Rejection at:', promise, 'reason:', reason)
     })
 
-    // Self-ping every 13 min to prevent Render free tier from sleeping
-    const selfUrl = process.env.API_URL || `http://localhost:${CONFIG.PORT}`
+    // Self-ping every 13 min to prevent Render free tier from sleeping.
+    // Always ping localhost on the actual PORT — RENDER_EXTERNAL_URL is irrelevant for inbound.
+    const selfUrl = `http://localhost:${CONFIG.PORT}`
     setInterval(() => {
       fetch(`${selfUrl}/health`)
         .then(() => logger.info('[keepalive] ping OK'))
-        .catch(() => logger.warn('[keepalive] ping failed'))
+        .catch((e) => logger.warn(`[keepalive] ping failed: ${(e as Error).message}`))
     }, 13 * 60 * 1000)
 
     // Auto-reconnect any WhatsApp session that has stored credentials in Firestore
