@@ -383,6 +383,7 @@ class BaileyService {
 
     // ── Audio → convert OGG→MP3, then Gemini audio reply ──────────────────
     if (content.audioMessage) {
+      await messageService.saveMessage(uid, jid, uid, '[voice message]', 'audio', false).catch(() => undefined)
       try {
         await r.sock.sendPresenceUpdate('composing', jid)
         const buf = (await downloadMediaMessage(msg, 'buffer', {})) as Buffer
@@ -390,7 +391,6 @@ class BaileyService {
         const base64 = mp3Buf.toString('base64')
         const { text: replyText } = await aiService.generateFromAudio(base64, prompt)
         await this.sendVoiceReply(uid, jid, replyText)
-        await messageService.saveMessage(uid, jid, uid, '[voice message]', 'audio', false)
         await messageService.saveMessage(uid, uid, jid, replyText, 'audio', true, {
           text: replyText,
           model: 'gemini-audio',
@@ -406,6 +406,7 @@ class BaileyService {
 
     // ── Image → vision reply ───────────────────────────────────────────────
     if (content.imageMessage) {
+      await messageService.saveMessage(uid, jid, uid, text || '[image]', 'image', false).catch(() => undefined)
       try {
         await r.sock.sendPresenceUpdate('composing', jid)
         const buf = (await downloadMediaMessage(msg, 'buffer', {})) as Buffer
@@ -418,7 +419,6 @@ class BaileyService {
           imageMime
         )
         await r.sock.sendMessage(jid, { text: replyText })
-        await messageService.saveMessage(uid, jid, uid, text || '[image]', 'image', false)
         await messageService.saveMessage(uid, uid, jid, replyText, 'text', true, {
           text: replyText,
           model: 'gemini-vision',
@@ -434,6 +434,7 @@ class BaileyService {
 
     // ── Video → vision reply ───────────────────────────────────────────────
     if (content.videoMessage) {
+      await messageService.saveMessage(uid, jid, uid, text || '[video]', 'video', false).catch(() => undefined)
       try {
         await r.sock.sendPresenceUpdate('composing', jid)
         const buf = (await downloadMediaMessage(msg, 'buffer', {})) as Buffer
@@ -450,7 +451,6 @@ class BaileyService {
           videoMime
         )
         await r.sock.sendMessage(jid, { text: replyText })
-        await messageService.saveMessage(uid, jid, uid, text || '[video]', 'video', false)
         await messageService.saveMessage(uid, uid, jid, replyText, 'text', true, {
           text: replyText,
           model: 'gemini-vision',
@@ -466,22 +466,21 @@ class BaileyService {
 
     // ── Text ───────────────────────────────────────────────────────────────
     if (!text.trim()) return
+    // Save incoming message immediately so frontend count updates even if AI fails
+    await messageService.saveMessage(uid, jid, uid, text, 'text', false).catch(() => undefined)
     try {
       await r.sock.sendPresenceUpdate('composing', jid)
       logger.info(`[wa] text from ${jid}: "${text.substring(0, 60)}"`)
 
       // Detect image generation request
       if (isImageRequest(text)) {
-        await r.sock.sendPresenceUpdate('composing', jid)
-        const imgPrompt = text
-        const img = await aiService.generateImage(imgPrompt)
+        const img = await aiService.generateImage(text)
         if (img) {
           await r.sock.sendMessage(jid, {
             image: Buffer.from(img.data, 'base64'),
             mimetype: img.mimeType,
             caption: '',
           })
-          await messageService.saveMessage(uid, jid, uid, text, 'text', false)
           await messageService.saveMessage(uid, uid, jid, '[image generated]', 'image', true, {
             text: '[image generated]', model: 'gemini-image', tokensUsed: 0, processedAt: Date.now(),
           })
@@ -493,7 +492,6 @@ class BaileyService {
       const { text: replyText, model } = await aiService.generateResponse(text, text, prompt)
       logger.info(`[wa] AI reply via ${model}: "${replyText.substring(0, 50)}"`)
       await r.sock.sendMessage(jid, { text: replyText })
-      await messageService.saveMessage(uid, jid, uid, text, 'text', false)
       await messageService.saveMessage(uid, uid, jid, replyText, 'text', true, {
         text: replyText, model: 'gemini-text', tokensUsed: 0, processedAt: Date.now(),
       })
