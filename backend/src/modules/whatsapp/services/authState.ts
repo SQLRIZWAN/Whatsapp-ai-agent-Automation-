@@ -31,6 +31,14 @@ function readJSON<T>(raw: string): T {
 // In-memory cache for auth state when Firestore fails
 const memoryAuthCache = new Map<string, AuthenticationCreds>()
 const memoryKeyCache = new Map<string, Map<string, unknown>>()
+const FIRESTORE_OP_TIMEOUT_MS = 4000
+
+async function withTimeout<T>(promise: Promise<T>, ms = FIRESTORE_OP_TIMEOUT_MS): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) => setTimeout(() => reject(new Error(`Firestore timeout after ${ms}ms`)), ms)),
+  ])
+}
 
 export async function useFirestoreAuthState(
   uid: string
@@ -51,7 +59,7 @@ export async function useFirestoreAuthState(
     try {
       const userDoc = db.collection(ROOT).doc(uid)
       const credsDoc = userDoc.collection('state').doc('creds')
-      const snap = await credsDoc.get()
+      const snap = await withTimeout(credsDoc.get())
       
       if (snap.exists) {
         const data = snap.data() as { json?: string } | undefined
@@ -88,7 +96,7 @@ export async function useFirestoreAuthState(
     memoryAuthCache.set(uid, creds)
     if (!useMemoryOnly && db && credsDoc) {
       try {
-        await credsDoc.set({ json: writeJSON(creds), updatedAt: Date.now() })
+        await withTimeout(credsDoc.set({ json: writeJSON(creds), updatedAt: Date.now() }))
       } catch (e) {
         logger.warn(`[wa-auth] Failed to save creds to Firestore for ${uid}: ${e}`)
       }
@@ -105,7 +113,7 @@ export async function useFirestoreAuthState(
     }
     if (!db || !keysCol || useMemoryOnly) return null
     try {
-      const doc = await keysCol.doc(docId).get()
+      const doc = await withTimeout(keysCol.doc(docId).get())
       if (!doc.exists) return null
       const data = doc.data() as { json?: string } | undefined
       if (!data?.json) return null
@@ -140,7 +148,7 @@ export async function useFirestoreAuthState(
           }
         }
       }
-      await Promise.all(ops)
+      await withTimeout(Promise.all(ops))
     } catch (e) {
       logger.warn(`[wa-auth] Failed to set keys for ${uid}: ${e}`)
     }

@@ -25,6 +25,7 @@ import callService from './callService'
 type Status = 'disconnected' | 'connecting' | 'qr' | 'connected'
 
 const MAX_RECONNECT_ATTEMPTS = 25
+const FIRESTORE_OP_TIMEOUT_MS = 5000
 
 interface SessionRuntime {
   sock: WASocket
@@ -239,7 +240,10 @@ class BaileyService {
         },
         { merge: true }
       )
-      await batch.commit()
+      await Promise.race([
+        batch.commit(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error(`Firestore timeout after ${FIRESTORE_OP_TIMEOUT_MS}ms`)), FIRESTORE_OP_TIMEOUT_MS)),
+      ])
     } catch (e) {
       logger.warn('[wa] persistSessionStatus failed', e as Error)
     }
