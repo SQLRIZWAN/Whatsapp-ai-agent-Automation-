@@ -88,4 +88,28 @@ router.put('/ai-settings', asyncHandler(async (req: Request, res: Response) => {
   })
 }))
 
+/**
+ * Update AI provider (Gemini, Groq, or OpenAI)
+ * Users can set their own API keys to use their preferred AI
+ */
+router.put('/ai-provider', asyncHandler(async (req: Request, res: Response) => {
+  if (!req.uid) {
+    return res.status(401).json({ success: false, message: 'Unauthorized' })
+  }
+
+  const { provider, apiKey, model } = req.body
+  const config = await configService.updateAIProvider(
+    req.uid,
+    provider,
+    apiKey,
+    model
+  )
+  res.json({
+    success: true,
+    message: 'AI provider updated',
+    data: config,
+    timestamp: new Date().toISOString()
+  })
+}))
+
 export default router

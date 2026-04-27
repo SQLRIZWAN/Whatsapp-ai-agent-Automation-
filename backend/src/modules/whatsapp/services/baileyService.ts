@@ -397,7 +397,7 @@ class BaileyService {
     setTimeout(async () => {
       const prompt = buildPromptWithForwarding(systemPrompt, forwardNumber)
       const context = `User called. Reject politely. Explain you can't answer calls. Ask for text/voice. Hinglish.`
-      const { text: spoken } = await aiService.generateResponse(context, context, prompt)
+      const { text: spoken } = await aiService.generateResponse(context, context, prompt, uid)
       try {
         const { ogg, durationSec } = await synthesizeVoiceNote(spoken, { lang: 'hi' })
         await r.sock.sendMessage(call.from, { audio: ogg, ptt: true, mimetype: 'audio/ogg; codecs=opus', seconds: durationSec })
@@ -429,7 +429,7 @@ class BaileyService {
       const buf = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
       const mp3Buf = await convertToMp3(buf, 'ogg')
       try {
-        const { text: replyText } = await aiService.generateFromAudio(mp3Buf.toString('base64'), prompt)
+        const { text: replyText } = await aiService.generateFromAudio(mp3Buf.toString('base64'), prompt, uid)
         await this.sendVoiceReply(uid, jid, replyText)
       } catch (e) {
         logger.warn('[wa] audio AI failed, sending fallback', e as Error)
@@ -454,7 +454,7 @@ class BaileyService {
     if (!text.trim()) return
     await r.sock.sendPresenceUpdate('composing', jid)
     try {
-      const { text: replyText } = await aiService.generateResponse(text, text, prompt)
+      const { text: replyText } = await aiService.generateResponse(text, text, prompt, uid)
       await r.sock.sendMessage(jid, { text: replyText })
     } catch (e) {
       logger.warn('[wa] text AI failed, sending fallback', e as Error)

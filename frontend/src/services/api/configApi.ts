@@ -15,3 +15,14 @@ export const updateForwarding = (enabled: boolean, phoneNumber: string) =>
     enabled,
     phoneNumber,
   })
+
+export const updateAIProvider = (
+  provider: string,
+  apiKey?: string,
+  model?: string
+) =>
+  axiosInstance.put<ApiResponse<Configuration>>('/api/config/ai-provider', {
+    provider,
+    apiKey,
+    model,
+  })

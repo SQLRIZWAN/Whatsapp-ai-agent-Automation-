@@ -177,6 +177,68 @@ export class ConfigService {
     }
   }
 
+  /**
+   * Update AI provider configuration (API key, provider type, model)
+   * This allows users to use their own API keys (Gemini, Groq, OpenAI)
+   */
+  async updateAIProvider(
+    uid: string,
+    provider: string,
+    apiKey?: string,
+    model?: string
+  ): Promise<any> {
+    try {
+      const validProviders = ['gemini', 'groq', 'openai']
+      if (!validProviders.includes(provider)) {
+        throw new AppError(
+          ErrorCode.VALIDATION_ERROR,
+          'Invalid AI provider. Must be: gemini, groq, or openai',
+          400
+        )
+      }
+
+      // Validate API key is provided for groq and openai
+      if ((provider === 'groq' || provider === 'openai') && !apiKey) {
+        throw new AppError(
+          ErrorCode.VALIDATION_ERROR,
+          `API key is required for ${provider.toUpperCase()}`,
+          400
+        )
+      }
+
+      const db = getFirestore()
+      const updateData: any = {
+        aiProvider: provider,
+        updatedAt: Date.now()
+      }
+
+      // Only update API key if provided (allows clearing it)
+      if (apiKey !== undefined) {
+        updateData.aiApiKey = apiKey
+      }
+
+      if (model) {
+        updateData.aiModel = model
+      }
+
+      await db
+        .collection(COLLECTIONS.CONFIGURATIONS)
+        .doc(uid)
+        .set(updateData, { merge: true })
+
+      logger.info(`AI provider updated for user ${uid}: ${provider}`)
+
+      return this.getConfiguration(uid)
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      throw new AppError(
+        ErrorCode.DATABASE_ERROR,
+        'Failed to update AI provider',
+        500
+      )
+    }
+  }
+
   private getDefaultConfiguration(uid: string): any {
     return {
       uid,
