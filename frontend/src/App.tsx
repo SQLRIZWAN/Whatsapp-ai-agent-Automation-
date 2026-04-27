@@ -41,7 +41,7 @@ const App: React.FC = () => {
   }, [token])
 
   return (
-    <Router>
+    <Router basename={import.meta.env.BASE_URL}>
       <React.Suspense fallback={<div className="loading">Loading...</div>}>
         <Routes>
           <Route

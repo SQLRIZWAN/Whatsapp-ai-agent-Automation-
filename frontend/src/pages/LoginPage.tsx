@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@store/authStore'
 import { LoginCredentials } from '@type/common.types'
 
@@ -81,9 +81,9 @@ const LoginPage: React.FC = () => {
 
         <p style={styles.toggleText}>
           Don't have an account?{' '}
-          <a href="/register" style={styles.link}>
+          <Link to="/register" style={styles.link}>
             Register here
-          </a>
+          </Link>
         </p>
       </div>
     </div>
