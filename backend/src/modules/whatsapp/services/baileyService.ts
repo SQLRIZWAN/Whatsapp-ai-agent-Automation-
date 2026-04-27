@@ -70,7 +70,7 @@ class BaileyService {
         anyIO.to(`user_${uid}`).emit('qr-code', { qr: r.qrDataUrl })
       }
       if (r.status === 'connected') {
-        anyIO.to(`user_${uid}`).emit('whatsapp-connected')
+        anyIO.to(`user_${uid}`).emit('whatsapp-connected', { connected: true })
       }
     }
   }
