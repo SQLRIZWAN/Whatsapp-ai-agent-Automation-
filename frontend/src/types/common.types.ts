@@ -49,7 +49,9 @@ export interface Session {
 export interface Configuration {
   uid: string
   systemPrompt: string
-  aiModel: 'gemini-pro' | 'gemini-pro-vision'
+  aiProvider?: 'gemini' | 'groq' | 'openai'
+  aiApiKey?: string
+  aiModel?: string
   temperature: number
   maxOutputTokens: number
   callForwarding: {

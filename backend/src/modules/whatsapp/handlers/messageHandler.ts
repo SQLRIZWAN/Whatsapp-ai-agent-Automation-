@@ -32,7 +32,8 @@ export class MessageHandler {
       const { text, model } = await aiService.generateResponse(
         content,
         content,
-        config?.systemPrompt
+        config?.systemPrompt,
+        uid
       )
 
       // Send response
@@ -104,7 +105,9 @@ export class MessageHandler {
       const { text, model } = await aiService.analyzeImage(
         imageUrl,
         prompt,
-        config?.systemPrompt
+        config?.systemPrompt,
+        'image/jpeg',
+        uid
       )
 
       // Send response

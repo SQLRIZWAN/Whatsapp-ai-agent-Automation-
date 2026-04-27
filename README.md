@@ -1,12 +1,13 @@
 # WhatsApp AI Automation System
 
-A comprehensive WhatsApp automation platform powered by Google Gemini AI that handles messages, calls, images, and videos with intelligent responses and call forwarding capabilities.
+A comprehensive WhatsApp automation platform powered by Multi-Provider AI (Gemini, Groq, OpenAI) that handles messages, calls, images, and videos with intelligent responses and call forwarding capabilities.
 
 ## Features
 
 ✨ **Message Automation**
-- Automatic text message responses powered by Gemini AI
-- Image and video understanding with AI analysis
+- Automatic text message responses powered by **Multi-Provider AI** (Gemini, Groq, OpenAI)
+- **User-provided API Keys**: Users can use their own Gemini, Groq, or OpenAI keys
+- Image and video understanding with AI analysis (via Gemini)
 - Configurable system prompts for custom AI behavior
 
 📞 **Call Management**
@@ -19,8 +20,8 @@ A comprehensive WhatsApp automation platform powered by Google Gemini AI that ha
 - Live QR code for WhatsApp connection
 - Real-time chat interface
 - Call history and statistics
-- System configuration editor
-- User-friendly settings panel
+- **Multi-tab Settings Panel**: Organized UI for AI, Persona, and Calls
+- **Smart API Routing**: Automatically uses user API keys if provided, else falls back to backend defaults
 
 🔐 **Security & Authentication**
 - Email/password user registration and login
@@ -45,7 +46,7 @@ A comprehensive WhatsApp automation platform powered by Google Gemini AI that ha
 ### Backend
 - **Framework:** Node.js + Express (TypeScript)
 - **WhatsApp Integration:** Baileys (free, no API costs)
-- **AI:** Google Gemini API
+- **AI Providers:** Google Gemini, Groq (Llama 3), OpenAI (GPT-4o)
 - **Database:** Google Firestore
 - **Real-time:** Socket.IO
 - **Authentication:** JWT tokens
@@ -232,4 +233,4 @@ For issues, feature requests, or questions:
 
 ---
 
-**Last Updated:** 2026-04-22
+**Last Updated:** 2026-04-27

@@ -89,6 +89,8 @@ const SettingsPage: React.FC = () => {
 
   const selectedProvider = AI_PROVIDERS.find(p => p.value === aiProvider)
 
+  const [activeTab, setActiveTab] = useState('ai')
+
   return (
     <div>
       <header style={{ marginBottom: 18 }}>
@@ -104,169 +106,197 @@ const SettingsPage: React.FC = () => {
         </div>
       ) : (
         <>
-          {/* AI Provider Section */}
-          <div style={styles.card}>
-            <h2 style={styles.sectionTitle}>🤖 AI Provider Settings</h2>
-            <p style={styles.helpText}>
-              Apna khud ka AI API use karein ya Backend ka free Gemini use karein.
-              Agar aap apna API denge to messages mein wo use hoga.
-            </p>
+          {/* Tabs Navigation */}
+          <div style={styles.tabsContainer}>
+            <button 
+              style={{...styles.tab, ...(activeTab === 'ai' ? styles.activeTab : {})}} 
+              onClick={() => setActiveTab('ai')}
+            >
+              🤖 AI Provider
+            </button>
+            <button 
+              style={{...styles.tab, ...(activeTab === 'persona' ? styles.activeTab : {})}} 
+              onClick={() => setActiveTab('persona')}
+            >
+              💬 Persona
+            </button>
+            <button 
+              style={{...styles.tab, ...(activeTab === 'calls' ? styles.activeTab : {})}} 
+              onClick={() => setActiveTab('calls')}
+            >
+              📞 Calls
+            </button>
+          </div>
 
-            <div style={styles.field}>
-              <label style={styles.label}>AI Provider</label>
-              <div style={styles.providerGrid}>
-                {AI_PROVIDERS.map((provider) => (
-                  <div
-                    key={provider.value}
-                    style={{
-                      ...styles.providerOption,
-                      ...(aiProvider === provider.value ? styles.providerSelected : {}),
-                    }}
-                    onClick={() => handleProviderChange(provider.value)}
-                  >
-                    <div style={styles.providerRadio}>
-                      <div style={{
-                        width: 16,
-                        height: 16,
-                        borderRadius: '50%',
-                        border: `2px solid ${aiProvider === provider.value ? '#25d366' : '#ccc'}`,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>
+          {/* AI Provider Tab */}
+          {activeTab === 'ai' && (
+            <div style={styles.card}>
+              <h2 style={styles.sectionTitle}>🤖 AI Provider Settings</h2>
+              <p style={styles.helpText}>
+                Apna khud ka AI API use karein ya Backend ka free Gemini use karein.
+                Agar aap apna API denge to messages mein wo use hoga.
+              </p>
+
+              <div style={styles.field}>
+                <label style={styles.label}>AI Provider</label>
+                <div style={styles.providerGrid}>
+                  {AI_PROVIDERS.map((provider) => (
+                    <div
+                      key={provider.value}
+                      style={{
+                        ...styles.providerOption,
+                        ...(aiProvider === provider.value ? styles.providerSelected : {}),
+                      }}
+                      onClick={() => handleProviderChange(provider.value)}
+                    >
+                      <div style={styles.providerRadio}>
+                        <div style={{
+                          width: 16,
+                          height: 16,
+                          borderRadius: '50%',
+                          border: `2px solid ${aiProvider === provider.value ? '#25d366' : '#ccc'}`,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                          {aiProvider === provider.value && (
+                            <div style={{
+                              width: 8,
+                              height: 8,
+                              borderRadius: '50%',
+                              backgroundColor: '#25d366',
+                            }} />
+                          )}
+                        </div>
+                      </div>
+                      <div style={styles.providerInfo}>
+                        <div style={styles.providerName}>{provider.label}</div>
                         {aiProvider === provider.value && (
-                          <div style={{
-                            width: 8,
-                            height: 8,
-                            borderRadius: '50%',
-                            backgroundColor: '#25d366',
-                          }} />
+                          <div style={styles.providerModels}>
+                            {provider.models.length} models available
+                          </div>
                         )}
                       </div>
                     </div>
-                    <div style={styles.providerInfo}>
-                      <div style={styles.providerName}>{provider.label}</div>
-                      {aiProvider === provider.value && (
-                        <div style={styles.providerModels}>
-                          {provider.models.length} models available
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* API Key (required for Groq and OpenAI) */}
-            {aiProvider !== 'gemini' && (
+              {/* API Key (required for Groq and OpenAI) */}
               <div style={styles.field}>
                 <label style={styles.label}>
-                  API Key <span style={styles.required}>*Required</span>
+                  API Key {aiProvider !== 'gemini' && <span style={styles.required}>*Required</span>}
                 </label>
                 <input
                   type="password"
                   value={aiApiKey}
                   onChange={(e) => setAiApiKey(e.target.value)}
                   style={styles.input}
-                  placeholder={aiProvider === 'groq' ? 'gsk_xxxxxxx' : 'sk-xxxxxxx'}
+                  placeholder={aiProvider === 'groq' ? 'gsk_xxxxxxx' : aiProvider === 'openai' ? 'sk-xxxxxxx' : 'Gemini API Key (Optional)'}
                 />
                 <div style={styles.help}>
                   {aiProvider === 'groq'
                     ? 'Groq Console se API key lein: console.groq.com'
-                    : 'OpenAI Platform se API key lein: platform.openai.com'
+                    : aiProvider === 'openai'
+                    ? 'OpenAI Platform se API key lein: platform.openai.com'
+                    : 'Google AI Studio se API key lein: aistudio.google.com (Optional)'
                   }
                 </div>
               </div>
-            )}
 
-            {/* Model Selection */}
-            <div style={styles.field}>
-              <label style={styles.label}>
-                Model
-                {aiProvider === 'gemini' && <span style={styles.optional}>(Optional - Default auto-selects)</span>}
-              </label>
-              <select
-                value={aiModel}
-                onChange={(e) => setAiModel(e.target.value)}
-                style={styles.select}
-              >
-                <option value="">Default (Recommended)</option>
-                {selectedProvider?.models.map((model) => (
-                  <option key={model} value={model}>{model}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Clear API Key button */}
-            {aiApiKey && (
-              <button
-                type="button"
-                style={styles.clearBtn}
-                onClick={() => {
-                  if (confirm('API key remove karein? Backend ka free Gemini use hoga.')) {
-                    setAiApiKey('')
-                  }
-                }}
-              >
-                Clear API Key
-              </button>
-            )}
-          </div>
-
-          {/* System Prompt Section */}
-          <div style={styles.card}>
-            <h2 style={styles.sectionTitle}>💬 System Prompt</h2>
-            <div style={styles.field}>
-              <label style={styles.label}>AI Personality</label>
-              <div style={styles.help}>
-                Ye AI ki persona define karta hai. Default SQL 💉 persona pre-filled hai.
+              {/* Model Selection */}
+              <div style={styles.field}>
+                <label style={styles.label}>
+                  Model
+                  {aiProvider === 'gemini' && <span style={styles.optional}>(Optional - Default auto-selects)</span>}
+                </label>
+                <select
+                  value={aiModel}
+                  onChange={(e) => setAiModel(e.target.value)}
+                  style={styles.select}
+                >
+                  <option value="">Default (Recommended)</option>
+                  {selectedProvider?.models.map((model) => (
+                    <option key={model} value={model}>{model}</option>
+                  ))}
+                </select>
               </div>
-              <textarea
-                value={systemPrompt}
-                onChange={(e) => setSystemPrompt(e.target.value)}
-                rows={6}
-                style={styles.textarea}
-                placeholder={DEFAULT_PROMPT}
-              />
-              <button
-                type="button"
-                style={styles.resetBtn}
-                onClick={() => setSystemPrompt(DEFAULT_PROMPT)}
-              >
-                Reset to default
-              </button>
-            </div>
-          </div>
 
-          {/* Call Forwarding Section */}
-          <div style={styles.card}>
-            <h2 style={styles.sectionTitle}>📞 Smart Call Forwarding</h2>
-            <div style={styles.field}>
-              <label style={styles.label}>
-                <input
-                  type="checkbox"
-                  checked={forwardingEnabled}
-                  onChange={(e) => setForwardingEnabled(e.target.checked)}
-                  style={{ marginRight: 8 }}
+              {/* Clear API Key button */}
+              {aiApiKey && (
+                <button
+                  type="button"
+                  style={styles.clearBtn}
+                  onClick={() => {
+                    if (confirm('API key remove karein? Backend ka free Gemini use hoga.')) {
+                      setAiApiKey('')
+                    }
+                  }}
+                >
+                  Clear API Key
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Persona Tab */}
+          {activeTab === 'persona' && (
+            <div style={styles.card}>
+              <h2 style={styles.sectionTitle}>💬 System Prompt</h2>
+              <div style={styles.field}>
+                <label style={styles.label}>AI Personality</label>
+                <div style={styles.help}>
+                  Ye AI ki persona define karta hai. Default SQL 💉 persona pre-filled hai.
+                </div>
+                <textarea
+                  value={systemPrompt}
+                  onChange={(e) => setSystemPrompt(e.target.value)}
+                  rows={10}
+                  style={styles.textarea}
+                  placeholder={DEFAULT_PROMPT}
                 />
-                Enable smart call forwarding
-              </label>
-              <div style={styles.help}>
-                Jab koi "urgent / emergency / zaroori" mention kare, AI is number ko suggest karega.
+                <button
+                  type="button"
+                  style={styles.resetBtn}
+                  onClick={() => setSystemPrompt(DEFAULT_PROMPT)}
+                >
+                  Reset to default
+                </button>
               </div>
-              <input
-                type="tel"
-                value={forwardingNumber}
-                onChange={(e) => setForwardingNumber(e.target.value)}
-                disabled={!forwardingEnabled}
-                style={{
-                  ...styles.input,
-                  opacity: forwardingEnabled ? 1 : 0.5,
-                }}
-                placeholder="+92XXXXXXXXXX"
-              />
             </div>
-          </div>
+          )}
+
+          {/* Calls Tab */}
+          {activeTab === 'calls' && (
+            <div style={styles.card}>
+              <h2 style={styles.sectionTitle}>📞 Smart Call Forwarding</h2>
+              <div style={styles.field}>
+                <label style={styles.label}>
+                  <input
+                    type="checkbox"
+                    checked={forwardingEnabled}
+                    onChange={(e) => setForwardingEnabled(e.target.checked)}
+                    style={{ marginRight: 8 }}
+                  />
+                  Enable smart call forwarding
+                </label>
+                <div style={styles.help}>
+                  Jab koi "urgent / emergency / zaroori" mention kare, AI is number ko suggest karega.
+                </div>
+                <input
+                  type="tel"
+                  value={forwardingNumber}
+                  onChange={(e) => setForwardingNumber(e.target.value)}
+                  disabled={!forwardingEnabled}
+                  style={{
+                    ...styles.input,
+                    opacity: forwardingEnabled ? 1 : 0.5,
+                  }}
+                  placeholder="+92XXXXXXXXXX"
+                />
+              </div>
+            </div>
+          )}
 
           {/* Message */}
           {msg && (
@@ -282,28 +312,55 @@ const SettingsPage: React.FC = () => {
           )}
 
           {/* Save Button */}
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            style={{ ...styles.saveBtn, opacity: saving ? 0.6 : 1 }}
-          >
-            {saving ? 'Saving...' : 'Save All Settings'}
-          </button>
+          <div style={{ marginTop: 20, display: 'flex', justifyContent: 'flex-end' }}>
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              style={{ ...styles.saveBtn, opacity: saving ? 0.6 : 1 }}
+            >
+              {saving ? 'Saving All Settings...' : '💾 Save All Settings'}
+            </button>
+          </div>
         </>
       )}
     </div>
   )
 }
 
-const styles: { [key: string]: React.CSSProperties } = {
-  card: {
+const styles: { [key: string]: React.CSSProperties } =  card: {
     backgroundColor: 'white',
     padding: 22,
-    borderRadius: 8,
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)',
-    maxWidth: 720,
+    borderRadius: '0 0 12px 12px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
     marginBottom: 20,
-  } as React.CSSProperties,
+    border: '1px solid #eee',
+    borderTop: 'none',
+  },
+  tabsContainer: {
+    display: 'flex',
+    gap: 2,
+    backgroundColor: '#f3f4f6',
+    padding: '8px 8px 0',
+    borderRadius: '12px 12px 0 0',
+    border: '1px solid #eee',
+    borderBottom: 'none',
+  },
+  tab: {
+    padding: '10px 20px',
+    border: 'none',
+    background: 'transparent',
+    cursor: 'pointer',
+    fontSize: 14,
+    fontWeight: 500,
+    color: '#666',
+    borderRadius: '8px 8px 0 0',
+    transition: 'all 0.2s',
+  },
+  activeTab: {
+    background: 'white',
+    color: '#0e3b35',
+    boxShadow: '0 -2px 4px rgba(0,0,0,0.02)',
+  },act.CSSProperties,
   sectionTitle: {
     fontSize: 18,
     fontWeight: 600,

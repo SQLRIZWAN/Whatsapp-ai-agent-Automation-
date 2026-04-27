@@ -254,6 +254,16 @@ export class AIService {
           return { text: result.text, tokensUsed: 0, model: result.model }
         }
 
+        if (aiConfig.provider === 'gemini' && aiConfig.apiKey) {
+          const userGenAI = new GoogleGenerativeAI(aiConfig.apiKey)
+          const result = await callGeminiWithFallback(
+            userGenAI,
+            [fullPrompt],
+            'text'
+          )
+          return { text: result.text, tokensUsed: 0, model: result.model }
+        }
+
         // If user chose Gemini but no API key, fall back to backend
         if (aiConfig.provider === 'gemini' && !aiConfig.apiKey) {
           logger.info('[ai] User chose Gemini with no API key, using backend Gemini')

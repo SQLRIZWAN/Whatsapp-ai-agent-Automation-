@@ -102,7 +102,7 @@ router.post('/send-message', asyncHandler(async (req: Request, res: Response) =>
 router.get('/test-ai', asyncHandler(async (req: Request, res: Response) => {
   const models = aiService.getAvailableModels()
   const results: Record<string, string> = {}
-  for (const model of [...models.text]) {
+  for (const model of [...models.gemini]) {
     try {
       const { text } = await aiService.generateResponse('Say OK in one word', 'Say OK in one word')
       results[model] = `OK: ${text.substring(0, 30)}`

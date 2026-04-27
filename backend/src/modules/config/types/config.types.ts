@@ -1,7 +1,9 @@
 export interface Configuration {
   uid: string
   systemPrompt: string
-  aiModel: 'gemini-pro' | 'gemini-pro-vision'
+  aiProvider?: 'gemini' | 'groq' | 'openai'
+  aiApiKey?: string
+  aiModel?: string
   temperature: number
   maxOutputTokens: number
   callForwarding: {
@@ -29,6 +31,9 @@ export interface UpdateConfigPayload {
   systemPrompt?: string
   temperature?: number
   maxOutputTokens?: number
+  aiProvider?: 'gemini' | 'groq' | 'openai'
+  aiApiKey?: string
+  aiModel?: string
   callForwarding?: Partial<Configuration['callForwarding']>
   messageProcessing?: Partial<Configuration['messageProcessing']>
   responseSettings?: Partial<Configuration['responseSettings']>
