@@ -327,7 +327,8 @@ const SettingsPage: React.FC = () => {
   )
 }
 
-const styles: { [key: string]: React.CSSProperties } =  card: {
+const styles: { [key: string]: React.CSSProperties } = {
+  card: {
     backgroundColor: 'white',
     padding: 22,
     borderRadius: '0 0 12px 12px',
@@ -360,7 +361,7 @@ const styles: { [key: string]: React.CSSProperties } =  card: {
     background: 'white',
     color: '#0e3b35',
     boxShadow: '0 -2px 4px rgba(0,0,0,0.02)',
-  },act.CSSProperties,
+  },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 600,
@@ -369,38 +370,38 @@ const styles: { [key: string]: React.CSSProperties } =  card: {
     marginBottom: 12,
     paddingBottom: 8,
     borderBottom: '2px solid #e5e7eb',
-  } as React.CSSProperties,
+  },
   helpText: {
     color: '#666',
     fontSize: 14,
     marginTop: 0,
     marginBottom: 16,
-  } as React.CSSProperties,
-  field: { marginBottom: 20 } as React.CSSProperties,
+  },
+  field: { marginBottom: 20 },
   label: {
     display: 'block',
     fontWeight: 600,
     color: '#222',
     marginBottom: 6,
-  } as React.CSSProperties,
+  },
   required: {
     color: '#dc2626',
     fontWeight: 400,
     fontSize: 12,
     marginLeft: 8,
-  } as React.CSSProperties,
+  },
   optional: {
     color: '#666',
     fontWeight: 400,
     fontSize: 12,
     marginLeft: 8,
-  } as React.CSSProperties,
-  help: { color: '#666', fontSize: 13, marginBottom: 8 } as React.CSSProperties,
+  },
+  help: { color: '#666', fontSize: 13, marginBottom: 8 },
   providerGrid: {
     display: 'flex',
-    flexDirection: 'column' as const,
+    flexDirection: 'column',
     gap: 10,
-  } as React.CSSProperties,
+  },
   providerOption: {
     display: 'flex',
     alignItems: 'center',
@@ -409,33 +410,33 @@ const styles: { [key: string]: React.CSSProperties } =  card: {
     border: '2px solid #e5e7eb',
     cursor: 'pointer',
     transition: 'all 0.2s',
-  } as React.CSSProperties,
+  },
   providerSelected: {
     borderColor: '#25d366',
     backgroundColor: '#f0fdf4',
-  } as React.CSSProperties,
+  },
   providerRadio: {
     marginRight: 12,
-  } as React.CSSProperties,
+  },
   providerInfo: {
     flex: 1,
-  } as React.CSSProperties,
+  },
   providerName: {
     fontWeight: 600,
     color: '#222',
-  } as React.CSSProperties,
+  },
   providerModels: {
     fontSize: 12,
     color: '#666',
     marginTop: 2,
-  } as React.CSSProperties,
+  },
   input: {
     width: '100%',
     padding: 10,
     border: '1px solid #ddd',
     borderRadius: 4,
     fontSize: 14,
-  } as React.CSSProperties,
+  },
   select: {
     width: '100%',
     padding: 10,
@@ -444,7 +445,7 @@ const styles: { [key: string]: React.CSSProperties } =  card: {
     fontSize: 14,
     backgroundColor: 'white',
     cursor: 'pointer',
-  } as React.CSSProperties,
+  },
   textarea: {
     width: '100%',
     padding: 10,
@@ -452,8 +453,8 @@ const styles: { [key: string]: React.CSSProperties } =  card: {
     borderRadius: 4,
     fontSize: 14,
     fontFamily: 'inherit',
-    resize: 'vertical' as const,
-  } as React.CSSProperties,
+    resize: 'vertical',
+  },
   resetBtn: {
     marginTop: 8,
     background: 'transparent',
@@ -462,7 +463,7 @@ const styles: { [key: string]: React.CSSProperties } =  card: {
     padding: '6px 12px',
     borderRadius: 4,
     cursor: 'pointer',
-  } as React.CSSProperties,
+  },
   clearBtn: {
     marginTop: 8,
     background: '#fee2e2',
@@ -471,7 +472,7 @@ const styles: { [key: string]: React.CSSProperties } =  card: {
     padding: '6px 12px',
     borderRadius: 4,
     cursor: 'pointer',
-  } as React.CSSProperties,
+  },
   saveBtn: {
     padding: '14px 28px',
     background: '#25d366',
@@ -482,13 +483,13 @@ const styles: { [key: string]: React.CSSProperties } =  card: {
     fontWeight: 600,
     fontSize: 16,
     maxWidth: 720,
-  } as React.CSSProperties,
+  },
   msgBox: {
     padding: 12,
     borderRadius: 6,
     marginBottom: 16,
     maxWidth: 720,
-  } as React.CSSProperties,
+  },
 }
 
 export default SettingsPage
