@@ -98,20 +98,20 @@ const AIConfigPage: React.FC = () => {
   )
 }
 
-const page = { display: 'grid', gap: 24 }
-const hero = { display: 'grid', gap: 6 }
-const title = { margin: 0, color: '#123d35' }
-const subtitle = { color: '#537067', margin: 0 }
-const card = { background: '#fff', borderRadius: 24, padding: 24, boxShadow: '0 20px 40px rgba(15, 54, 46, 0.08)', display: 'grid', gap: 14 }
-const sectionTitle = { margin: 0, color: '#123d35' }
-const grid = { display: 'grid', gap: 20, gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))' }
-const radioRow = { display: 'flex', gap: 12, flexWrap: 'wrap' }
-const radioCard = { display: 'flex', gap: 8, alignItems: 'center', padding: '10px 14px', borderRadius: 999, background: '#eef5f1' }
-const input = { width: '100%', padding: '12px 14px', borderRadius: 14, border: '1px solid #c9ddd4' }
-const textarea = { width: '100%', padding: '14px', borderRadius: 18, border: '1px solid #c9ddd4', minHeight: 140 }
-const actions = { display: 'flex', gap: 10, flexWrap: 'wrap' }
-const buttonPrimary = { background: '#123d35', color: '#fff', border: 'none', padding: '11px 16px', borderRadius: 999, cursor: 'pointer' }
-const buttonSecondary = { background: '#fff', color: '#123d35', border: '1px solid #c9ddd4', padding: '11px 16px', borderRadius: 999, cursor: 'pointer' }
+const page: React.CSSProperties = { display: 'grid', gap: 24 }
+const hero: React.CSSProperties = { display: 'grid', gap: 6 }
+const title: React.CSSProperties = { margin: 0, color: '#123d35' }
+const subtitle: React.CSSProperties = { color: '#537067', margin: 0 }
+const card: React.CSSProperties = { background: '#fff', borderRadius: 24, padding: 24, boxShadow: '0 20px 40px rgba(15, 54, 46, 0.08)', display: 'grid', gap: 14 }
+const sectionTitle: React.CSSProperties = { margin: 0, color: '#123d35' }
+const grid: React.CSSProperties = { display: 'grid', gap: 20, gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))' }
+const radioRow: React.CSSProperties = { display: 'flex', gap: 12, flexWrap: 'wrap' }
+const radioCard: React.CSSProperties = { display: 'flex', gap: 8, alignItems: 'center', padding: '10px 14px', borderRadius: 999, background: '#eef5f1' }
+const input: React.CSSProperties = { width: '100%', padding: '12px 14px', borderRadius: 14, border: '1px solid #c9ddd4' }
+const textarea: React.CSSProperties = { width: '100%', padding: '14px', borderRadius: 18, border: '1px solid #c9ddd4', minHeight: 140 }
+const actions: React.CSSProperties = { display: 'flex', gap: 10, flexWrap: 'wrap' }
+const buttonPrimary: React.CSSProperties = { background: '#123d35', color: '#fff', border: 'none', padding: '11px 16px', borderRadius: 999, cursor: 'pointer' }
+const buttonSecondary: React.CSSProperties = { background: '#fff', color: '#123d35', border: '1px solid #c9ddd4', padding: '11px 16px', borderRadius: 999, cursor: 'pointer' }
 const badge = (color: string): React.CSSProperties => ({ display: 'inline-flex', width: 'fit-content', background: `${color}16`, color, padding: '6px 10px', borderRadius: 999, fontSize: 12, fontWeight: 700 })
 
 export default AIConfigPage

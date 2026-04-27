@@ -25,8 +25,8 @@ const AnalyticsPage: React.FC = () => {
   )
 }
 
-const page = { display: 'grid', gap: 24 }
-const grid = { display: 'grid', gap: 20, gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }
-const tile = { background: '#fff', borderRadius: 24, padding: 24, boxShadow: '0 20px 40px rgba(15, 54, 46, 0.08)' }
+const page: React.CSSProperties = { display: 'grid', gap: 24 }
+const grid: React.CSSProperties = { display: 'grid', gap: 20, gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }
+const tile: React.CSSProperties = { background: '#fff', borderRadius: 24, padding: 24, boxShadow: '0 20px 40px rgba(15, 54, 46, 0.08)' }
 
 export default AnalyticsPage

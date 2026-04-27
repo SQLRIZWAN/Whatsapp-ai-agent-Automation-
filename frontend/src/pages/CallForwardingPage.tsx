@@ -40,12 +40,12 @@ const CallForwardingPage: React.FC = () => {
   )
 }
 
-const wrapper = { display: 'grid' }
-const card = { background: '#fff', borderRadius: 24, padding: 28, boxShadow: '0 20px 40px rgba(15, 54, 46, 0.08)', gap: 16, display: 'grid' }
-const title = { margin: 0, color: '#123d35' }
-const subtitle = { margin: 0, color: '#537067' }
-const field = { display: 'grid', gap: 8, color: '#24463f' }
-const input = { padding: '12px 14px', borderRadius: 14, border: '1px solid #c9ddd4' }
-const button = { background: '#123d35', color: '#fff', border: 'none', padding: '12px 16px', borderRadius: 999, cursor: 'pointer' }
+const wrapper: React.CSSProperties = { display: 'grid' }
+const card: React.CSSProperties = { background: '#fff', borderRadius: 24, padding: 28, boxShadow: '0 20px 40px rgba(15, 54, 46, 0.08)', gap: 16, display: 'grid' }
+const title: React.CSSProperties = { margin: 0, color: '#123d35' }
+const subtitle: React.CSSProperties = { margin: 0, color: '#537067' }
+const field: React.CSSProperties = { display: 'grid', gap: 8, color: '#24463f' }
+const input: React.CSSProperties = { padding: '12px 14px', borderRadius: 14, border: '1px solid #c9ddd4' }
+const button: React.CSSProperties = { background: '#123d35', color: '#fff', border: 'none', padding: '12px 16px', borderRadius: 999, cursor: 'pointer' }
 
 export default CallForwardingPage

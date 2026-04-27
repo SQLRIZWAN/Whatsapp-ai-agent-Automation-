@@ -42,13 +42,13 @@ const ConnectPage: React.FC = () => {
   )
 }
 
-const page = { display: 'grid', gap: 24 }
-const card = { background: '#fff', borderRadius: 24, padding: 28, boxShadow: '0 20px 40px rgba(15, 54, 46, 0.08)' }
-const title = { margin: 0, color: '#123d35' }
-const subtitle = { color: '#537067' }
-const statusBox = { padding: 14, borderRadius: 16, background: '#eef5f1', color: '#24463f' }
-const actions = { display: 'flex', gap: 12, flexWrap: 'wrap' }
-const buttonPrimary = { background: '#123d35', color: '#fff', border: 'none', padding: '12px 18px', borderRadius: 999, cursor: 'pointer' }
-const buttonSecondary = { background: '#fff', color: '#123d35', border: '1px solid #c9ddd4', padding: '12px 18px', borderRadius: 999, cursor: 'pointer' }
+const page: React.CSSProperties = { display: 'grid', gap: 24 }
+const card: React.CSSProperties = { background: '#fff', borderRadius: 24, padding: 28, boxShadow: '0 20px 40px rgba(15, 54, 46, 0.08)' }
+const title: React.CSSProperties = { margin: 0, color: '#123d35' }
+const subtitle: React.CSSProperties = { color: '#537067' }
+const statusBox: React.CSSProperties = { padding: 14, borderRadius: 16, background: '#eef5f1', color: '#24463f' }
+const actions: React.CSSProperties = { display: 'flex', gap: 12, flexWrap: 'wrap' }
+const buttonPrimary: React.CSSProperties = { background: '#123d35', color: '#fff', border: 'none', padding: '12px 18px', borderRadius: 999, cursor: 'pointer' }
+const buttonSecondary: React.CSSProperties = { background: '#fff', color: '#123d35', border: '1px solid #c9ddd4', padding: '12px 18px', borderRadius: 999, cursor: 'pointer' }
 
 export default ConnectPage
