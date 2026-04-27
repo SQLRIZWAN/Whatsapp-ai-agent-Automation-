@@ -1,9 +1,9 @@
 # Render Deploy Diagnostics
 
-Run: 24985533812
-Commit: 3f95ab674bd337967b9e2486278c430756e9e947
+Run: 24985578116
+Commit: 08b47c3f8cab402de3ed8c3451c1f2f3949e7b99
 Service ID: srv-d7kkne0sfn5c73b9t5cg
-Deploy ID: dep-d7ni6lrrjlhs73agagag
+Deploy ID: dep-d7ni7lgk1i2s739m5gd0
 
 ## Service details
 ```json
@@ -63,18 +63,18 @@ Deploy ID: dep-d7ni6lrrjlhs73agagag
 ## Latest deploy
 ```json
 {
-  "id": "dep-d7ni6lrrjlhs73agagag",
+  "id": "dep-d7ni7lgk1i2s739m5gd0",
   "commit": {
-    "id": "3f95ab674bd337967b9e2486278c430756e9e947",
-    "message": "feat: Add multi-provider AI support (Gemini, Groq, OpenAI)\n\n- Updated AI service to support Gemini, Groq, and OpenAI providers\n- Added user-configurable API key storage in Firestore\n- Updated config service with updateAIProvider method\n- Updated frontend Settings page with AI provider selection UI\n- Modified baileyService to pass uid to AI service for user-specific config\n- Users can now use their own API keys or fall back to backend Gemini",
-    "createdAt": "2026-04-27T08:45:38Z"
+    "id": "08b47c3f8cab402de3ed8c3451c1f2f3949e7b99",
+    "message": "fix: Update auto-deploy workflow to only trigger on main branch\n\n- Removed old claude branches from trigger\n- Workflow now only runs on main branch push and workflow_dispatch",
+    "createdAt": "2026-04-27T08:51:08Z"
   },
   "status": "build_failed",
   "trigger": "api",
-  "createdAt": "2026-04-27T08:50:31.84639Z",
-  "updatedAt": "2026-04-27T08:52:06.251445Z",
-  "startedAt": "2026-04-27T08:50:31.784269Z",
-  "finishedAt": "2026-04-27T08:52:06.250895Z"
+  "createdAt": "2026-04-27T08:52:41.240328Z",
+  "updatedAt": "2026-04-27T08:54:16.194713Z",
+  "startedAt": "2026-04-27T08:52:41.089264Z",
+  "finishedAt": "2026-04-27T08:54:16.194094Z"
 }
 ```
 
