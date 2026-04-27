@@ -49,7 +49,7 @@ export interface Session {
 export interface Configuration {
   uid: string
   systemPrompt: string
-  aiProvider?: 'gemini' | 'groq' | 'openai'
+  aiProvider?: 'default' | 'gemini' | 'grok' | 'openai'
   aiApiKey?: string
   aiModel?: string
   temperature: number

@@ -5,6 +5,7 @@ import { AppError } from '@shared/utils/errorHandler'
 import { ErrorCode } from '@shared/types/common.types'
 import logger from '@shared/utils/logger'
 import { v4 as uuidv4 } from 'uuid'
+import configRepository, { AIProvider } from '@modules/database/repositories/configRepository'
 
 export class ConfigService {
   async getConfiguration(uid: string): Promise<any> {
@@ -188,17 +189,16 @@ export class ConfigService {
     model?: string
   ): Promise<any> {
     try {
-      const validProviders = ['gemini', 'groq', 'openai']
+      const validProviders = ['default', 'gemini', 'grok', 'openai']
       if (!validProviders.includes(provider)) {
         throw new AppError(
           ErrorCode.VALIDATION_ERROR,
-          'Invalid AI provider. Must be: gemini, groq, or openai',
+          'Invalid AI provider. Must be: default, gemini, grok, or openai',
           400
         )
       }
 
-      // Validate API key is provided for groq and openai
-      if ((provider === 'groq' || provider === 'openai') && !apiKey) {
+      if ((provider === 'grok' || provider === 'openai') && !apiKey) {
         throw new AppError(
           ErrorCode.VALIDATION_ERROR,
           `API key is required for ${provider.toUpperCase()}`,
@@ -212,7 +212,6 @@ export class ConfigService {
         updatedAt: Date.now()
       }
 
-      // Only update API key if provided (allows clearing it)
       if (apiKey !== undefined) {
         updateData.aiApiKey = apiKey
       }
@@ -237,6 +236,40 @@ export class ConfigService {
         500
       )
     }
+  }
+
+  async saveUserAPIKey(
+    uid: string,
+    provider: AIProvider,
+    apiKey: string,
+    model?: string
+  ) {
+    await configRepository.saveUserAPIKey(uid, provider, apiKey, model)
+    await this.updateConfiguration(uid, {
+      aiProvider: provider,
+      aiModel: model || null,
+    })
+    return this.listUserAPIKeys(uid)
+  }
+
+  async listUserAPIKeys(uid: string) {
+    return configRepository.listUserAPIKeys(uid)
+  }
+
+  async deleteUserAPIKey(uid: string, provider: AIProvider) {
+    await configRepository.deleteUserAPIKey(uid, provider)
+    const config = await this.getConfiguration(uid)
+    if (config?.aiProvider === provider) {
+      await this.updateConfiguration(uid, {
+        aiProvider: 'default',
+        aiModel: null,
+      })
+    }
+    return this.listUserAPIKeys(uid)
+  }
+
+  async getUserAIConfig(uid: string) {
+    return configRepository.getActiveUserAIConfig(uid)
   }
 
   private getDefaultConfiguration(uid: string): any {

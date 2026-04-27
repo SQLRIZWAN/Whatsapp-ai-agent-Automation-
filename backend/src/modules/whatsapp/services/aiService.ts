@@ -30,7 +30,7 @@ type ModelName = typeof GEMINI_FALLBACK_MODELS[number]
 
 type Part = string | { inlineData: { data: string; mimeType: string } }
 
-export type AIProvider = 'gemini' | 'groq' | 'openai'
+export type AIProvider = 'gemini' | 'grok' | 'openai'
 
 export interface AIConfig {
   provider: AIProvider
@@ -200,12 +200,12 @@ export class AIService {
    */
   async getAIConfig(uid: string): Promise<AIConfig> {
     try {
-      const config = await configService.getConfiguration(uid)
-      if (config?.aiProvider && config?.aiApiKey) {
+      const stored = await configService.getUserAIConfig(uid)
+      if (stored?.apiKey) {
         return {
-          provider: config.aiProvider as AIProvider,
-          apiKey: config.aiApiKey,
-          model: config.aiModel || undefined,
+          provider: stored.provider as AIProvider,
+          apiKey: stored.apiKey,
+          model: stored.model || undefined,
         }
       }
     } catch (e) {
@@ -234,7 +234,7 @@ export class AIService {
       try {
         const aiConfig = await this.getAIConfig(uid)
 
-        if (aiConfig.provider === 'groq' && aiConfig.apiKey) {
+        if (aiConfig.provider === 'grok' && aiConfig.apiKey) {
           const result = await callGroqAPI(
             aiConfig.apiKey,
             aiConfig.model || 'llama-3.3-70b-versatile',
@@ -369,7 +369,7 @@ export class AIService {
   getAvailableModels() {
     return {
       gemini: [...GEMINI_FALLBACK_MODELS],
-      groq: ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'mixtral-8x7b-32768'],
+      grok: ['grok-beta'],
       openai: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-3.5-turbo'],
       fallbackChain: GEMINI_FALLBACK_MODELS.join(' → '),
     }

@@ -10,6 +10,10 @@ const DashboardPage = React.lazy(() => import('@pages/DashboardPage'))
 const SettingsPage = React.lazy(() => import('@pages/SettingsPage'))
 const MessagesPage = React.lazy(() => import('@pages/MessagesPage'))
 const CallsPage = React.lazy(() => import('@pages/CallsPage'))
+const ConnectPage = React.lazy(() => import('@pages/ConnectPage'))
+const AIConfigPage = React.lazy(() => import('@pages/AIConfigPage'))
+const CallForwardingPage = React.lazy(() => import('@pages/CallForwardingPage'))
+const AnalyticsPage = React.lazy(() => import('@pages/AnalyticsPage'))
 const AppShell = React.lazy(() => import('./components/AppShell'))
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -24,7 +28,7 @@ const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
 const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated } = useAuthStore()
-  return !isAuthenticated ? <>{children}</> : <Navigate to="/dashboard" replace />
+  return !isAuthenticated ? <>{children}</> : <Navigate to="/" replace />
 }
 
 const App: React.FC = () => {
@@ -65,13 +69,17 @@ const App: React.FC = () => {
               </PrivateRoute>
             }
           >
+            <Route path="/" element={<DashboardPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/connect" element={<ConnectPage />} />
             <Route path="/messages" element={<MessagesPage />} />
             <Route path="/calls" element={<CallsPage />} />
+            <Route path="/ai-config" element={<AIConfigPage />} />
+            <Route path="/call-forwarding" element={<CallForwardingPage />} />
             <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/analytics" element={<AnalyticsPage />} />
           </Route>
 
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </React.Suspense>

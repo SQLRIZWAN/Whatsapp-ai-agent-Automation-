@@ -11,13 +11,25 @@ import configRoutes from '@modules/config/routes/configRoutes'
 
 export const createApp = (): Express => {
   const app = express()
+  const allowedOrigins = Array.from(new Set([
+    CONFIG.FRONTEND_URL,
+    'https://sqlrizwan.github.io',
+    'https://sqlrizwan.github.io/Whatsapp-ai-agent-Automation-',
+    'http://localhost:5173',
+  ].filter(Boolean)))
 
   // Security middleware
   app.use(helmet())
 
   // CORS configuration
   app.use(cors({
-    origin: CONFIG.FRONTEND_URL,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true)
+        return
+      }
+      callback(new Error(`Origin ${origin} not allowed by CORS`))
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']

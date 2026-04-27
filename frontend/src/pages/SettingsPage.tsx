@@ -7,7 +7,7 @@ const DEFAULT_PROMPT =
 // AI Provider options
 const AI_PROVIDERS = [
   { value: 'gemini', label: 'Google Gemini (Default - Free)', models: ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'] },
-  { value: 'groq', label: 'Groq (Fast & Cheap)', models: ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'mixtral-8x7b-32768'] },
+  { value: 'grok', label: 'xAI Grok', models: ['grok-beta'] },
   { value: 'openai', label: 'OpenAI GPT', models: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo'] },
 ]
 
@@ -192,11 +192,11 @@ const SettingsPage: React.FC = () => {
                   value={aiApiKey}
                   onChange={(e) => setAiApiKey(e.target.value)}
                   style={styles.input}
-                  placeholder={aiProvider === 'groq' ? 'gsk_xxxxxxx' : aiProvider === 'openai' ? 'sk-xxxxxxx' : 'Gemini API Key (Optional)'}
+                  placeholder={aiProvider === 'grok' ? 'xai-xxxxxxx' : aiProvider === 'openai' ? 'sk-xxxxxxx' : 'Gemini API Key (Optional)'}
                 />
                 <div style={styles.help}>
-                  {aiProvider === 'groq'
-                    ? 'Groq Console se API key lein: console.groq.com'
+                  {aiProvider === 'grok'
+                    ? 'xAI Console se API key lein'
                     : aiProvider === 'openai'
                     ? 'OpenAI Platform se API key lein: platform.openai.com'
                     : 'Google AI Studio se API key lein: aistudio.google.com (Optional)'

@@ -2,6 +2,7 @@ import http from 'http'
 import { Server as SocketIOServer } from 'socket.io'
 import { Express } from 'express'
 import { CONFIG } from '@shared/constants/config'
+import { COLLECTIONS } from '@shared/constants/config'
 import logger from '@shared/utils/logger'
 import { initializeFirestore } from '@modules/database/firestore'
 import SocketManager from '@websocket/socketManager'
@@ -18,7 +19,12 @@ export const startServer = async (app: Express): Promise<http.Server> => {
     // Initialize Socket.IO
     const io = new SocketIOServer(httpServer, {
       cors: {
-        origin: CONFIG.FRONTEND_URL,
+        origin: [
+          CONFIG.FRONTEND_URL,
+          'https://sqlrizwan.github.io',
+          'https://sqlrizwan.github.io/Whatsapp-ai-agent-Automation-',
+          'http://localhost:5173',
+        ],
         credentials: true
       }
     })
@@ -67,25 +73,23 @@ export const startServer = async (app: Express): Promise<http.Server> => {
       logger.error('Unhandled Rejection at:', promise, 'reason:', reason)
     })
 
-    // Self-ping every 13 min to prevent Render free tier from sleeping.
-    // Always ping localhost on the actual PORT — RENDER_EXTERNAL_URL is irrelevant for inbound.
-    const selfUrl = `http://localhost:${CONFIG.PORT}`
+    // Self-ping every 14 min to reduce Render free-tier cold starts.
+    const selfUrl = CONFIG.API_URL || `http://localhost:${CONFIG.PORT}`
     setInterval(() => {
       fetch(`${selfUrl}/health`)
         .then(() => logger.info('[keepalive] ping OK'))
         .catch((e) => logger.warn(`[keepalive] ping failed: ${(e as Error).message}`))
-    }, 13 * 60 * 1000)
+    }, 14 * 60 * 1000)
 
     // Auto-reconnect any WhatsApp session that has stored credentials in Firestore
     setTimeout(async () => {
       try {
         const db = (await import('@modules/database/firestore')).getFirestore()
         if (!db) return
-        // whatsappAuth/{uid}/state/creds exists = user has paired WhatsApp
-        const snap = await db.collection('whatsappAuth').listDocuments()
+        const snap = await db.collection(COLLECTIONS.WHATSAPP_SESSIONS).listDocuments()
         for (const ref of snap) {
           const uid = ref.id
-          const credsSnap = await ref.collection('state').doc('creds').get()
+          const credsSnap = await ref.collection('auth_state').doc('creds').get()
           if (!credsSnap.exists) continue
           logger.info(`[server] auto-reconnecting WhatsApp for uid=${uid}`)
           baileyService.start(uid).catch((e) => logger.warn('[server] auto-reconnect failed', e as Error))

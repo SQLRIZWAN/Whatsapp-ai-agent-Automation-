@@ -112,4 +112,47 @@ router.put('/ai-provider', asyncHandler(async (req: Request, res: Response) => {
   })
 }))
 
+router.post('/api-keys', asyncHandler(async (req: Request, res: Response) => {
+  if (!req.uid) {
+    return res.status(401).json({ success: false, message: 'Unauthorized' })
+  }
+
+  const { provider, apiKey, model } = req.body
+  const keys = await configService.saveUserAPIKey(req.uid, provider, apiKey, model)
+  res.json({
+    success: true,
+    message: 'API key saved',
+    data: { keys },
+    timestamp: new Date().toISOString()
+  })
+}))
+
+router.get('/api-keys', asyncHandler(async (req: Request, res: Response) => {
+  if (!req.uid) {
+    return res.status(401).json({ success: false, message: 'Unauthorized' })
+  }
+
+  const keys = await configService.listUserAPIKeys(req.uid)
+  res.json({
+    success: true,
+    message: 'API keys retrieved',
+    data: { keys },
+    timestamp: new Date().toISOString()
+  })
+}))
+
+router.delete('/api-keys/:provider', asyncHandler(async (req: Request, res: Response) => {
+  if (!req.uid) {
+    return res.status(401).json({ success: false, message: 'Unauthorized' })
+  }
+
+  const keys = await configService.deleteUserAPIKey(req.uid, req.params.provider as any)
+  res.json({
+    success: true,
+    message: 'API key deleted',
+    data: { keys },
+    timestamp: new Date().toISOString()
+  })
+}))
+
 export default router

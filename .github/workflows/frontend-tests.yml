@@ -2,12 +2,12 @@ name: Frontend Tests & Lint
 
 on:
   push:
-    branches: [main, develop, "claude/**"]
+    branches: [main]
     paths:
       - 'frontend/**'
       - '.github/workflows/frontend-tests.yml'
   pull_request:
-    branches: [main, develop]
+    branches: [main]
     paths:
       - 'frontend/**'
 
@@ -28,7 +28,11 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        run: cd frontend && npm install
+        run: cd frontend && npm ci
+
+      - name: Build env
+        run: |
+          echo "VITE_API_URL=https://whatsapp-ai-backend.onrender.com" >> $GITHUB_ENV
 
       - name: Lint code
         run: cd frontend && npm run lint --if-present

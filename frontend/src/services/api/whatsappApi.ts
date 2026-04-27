@@ -13,6 +13,9 @@ export interface WhatsappSnapshot {
 export const getStatus = () =>
   axiosInstance.get<ApiResponse<WhatsappSnapshot>>('/api/whatsapp/status')
 
+export const getQR = () =>
+  axiosInstance.get<ApiResponse<{ qrCode: string | null; status: WhatsappSnapshot['status'] }>>('/api/whatsapp/qr')
+
 export const connect = () =>
   axiosInstance.post<ApiResponse<WhatsappSnapshot>>('/api/whatsapp/connect')
 
@@ -24,3 +27,9 @@ export const logoutWhatsapp = () =>
 
 export const sendMessage = (to: string, message: string) =>
   axiosInstance.post<ApiResponse<null>>('/api/whatsapp/send-message', { to, message })
+
+export const getMessages = () =>
+  axiosInstance.get<ApiResponse<{ messages: any[] }>>('/api/whatsapp/messages')
+
+export const getCalls = () =>
+  axiosInstance.get<ApiResponse<{ calls: any[] }>>('/api/whatsapp/calls')

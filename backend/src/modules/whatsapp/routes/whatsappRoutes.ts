@@ -5,6 +5,7 @@ import messageService from '../services/messageService'
 import callService from '../services/callService'
 import aiService from '../services/aiService'
 import { asyncHandler } from '@shared/utils/errorHandler'
+import qrService from '../services/qrService'
 
 const router = Router()
 
@@ -34,6 +35,24 @@ router.get('/status', asyncHandler(async (req: Request, res: Response) => {
     success: true,
     message: 'Status',
     data: snap,
+    timestamp: new Date().toISOString(),
+  })
+}))
+
+router.get('/qr', asyncHandler(async (req: Request, res: Response) => {
+  if (!req.uid) return res.status(401).json({ success: false, message: 'Unauthorized' })
+  let qrCode = await qrService.getQRCode(req.uid)
+  if (!qrCode) {
+    await baileyService.start(req.uid)
+    qrCode = await qrService.getQRCode(req.uid)
+  }
+  res.json({
+    success: true,
+    message: 'QR status',
+    data: {
+      qrCode,
+      status: baileyService.getStatusSnapshot(req.uid).status,
+    },
     timestamp: new Date().toISOString(),
   })
 }))

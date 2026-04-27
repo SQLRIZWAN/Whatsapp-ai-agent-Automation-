@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting…</title>
+    <script>
+      const base = '/Whatsapp-ai-agent-Automation-/';
+      const path = window.location.pathname.replace(base, '');
+      const target = base + '?redirect=' + encodeURIComponent(path + window.location.search + window.location.hash);
+      window.location.replace(target);
+    </script>
+  </head>
+  <body></body>
+</html>

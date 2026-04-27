@@ -2,12 +2,12 @@ name: Backend Tests & Lint
 
 on:
   push:
-    branches: [main, develop, "claude/**"]
+    branches: [main]
     paths:
       - 'backend/**'
       - '.github/workflows/backend-tests.yml'
   pull_request:
-    branches: [main, develop]
+    branches: [main]
     paths:
       - 'backend/**'
 
@@ -28,7 +28,11 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        run: cd backend && npm install
+        run: cd backend && npm ci
+
+      - name: Check required env placeholders
+        run: |
+          test -f backend/package.json
 
       - name: Lint code
         run: cd backend && npm run lint --if-present

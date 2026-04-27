@@ -1,18 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { io, Socket } from 'socket.io-client'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@store/authStore'
-
-const API_URL = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:5000' : window.location.origin)
+import { Socket } from 'socket.io-client'
+import Sidebar from './Sidebar'
+import { createSocket } from '@services/socket'
 
 type ConnStatus = 'connected' | 'qr' | 'connecting' | 'disconnected'
-
-const navItems = [
-  { to: '/dashboard', label: 'Dashboard', icon: '📡' },
-  { to: '/messages', label: 'Messages', icon: '💬' },
-  { to: '/calls', label: 'Calls', icon: '📞' },
-  { to: '/settings', label: 'Settings', icon: '⚙️' },
-]
 
 const AppShell: React.FC = () => {
   const navigate = useNavigate()
@@ -22,9 +15,8 @@ const AppShell: React.FC = () => {
 
   useEffect(() => {
     if (!token) return
-    const s = io(API_URL, { transports: ['websocket', 'polling'], reconnection: true })
+    const s = createSocket(token)
     socketRef.current = s
-    s.on('connect', () => s.emit('authenticate', token))
     s.on('whatsapp:status', (payload: { status: ConnStatus }) => {
       setConnStatus(payload.status)
     })
@@ -52,44 +44,7 @@ const AppShell: React.FC = () => {
 
   return (
     <div className="app-shell">
-      <aside className="app-sidebar">
-        <div className="brand">
-          <div className="brand-logo">SQL 💉</div>
-          <div className="brand-sub">WhatsApp AI Agent</div>
-        </div>
-
-        {/* Live status indicator */}
-        <div className="conn-status-bar" style={{ borderColor: `${statusDotColor}44` }}>
-          <span className={`status-dot ${connStatus === 'connected' ? 'dot-pulse' : ''}`}
-                style={{ background: statusDotColor }} />
-          <span style={{ fontSize: 12, color: statusDotColor, fontWeight: 600 }}>
-            {statusLabel}
-          </span>
-        </div>
-
-        <nav className="app-nav">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                'app-nav-link' + (isActive ? ' is-active' : '')
-              }
-            >
-              <span className="app-nav-icon">{item.icon}</span>
-              <span>{item.label}</span>
-            </NavLink>
-          ))}
-        </nav>
-
-        <div className="user-box">
-          <div className="user-name">{user?.displayName || 'User'}</div>
-          <div className="user-email">{user?.email}</div>
-          <button onClick={handleSignOut} className="sign-out">
-            Sign out
-          </button>
-        </div>
-      </aside>
+      <Sidebar connectionLabel={statusLabel} connectionColor={statusDotColor} onLogout={handleSignOut} />
 
       <main className="app-main">
         <Outlet />
@@ -116,6 +71,59 @@ const appShellCss = `
     flex-direction: column;
     gap: 14px;
     flex-shrink: 0;
+  }
+  .sidebar {
+    width: 280px;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #102f2c 0%, #1f574f 100%);
+    color: #d8ede6;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    flex-shrink: 0;
+  }
+  .sidebar-brand { display: grid; gap: 4px; }
+  .sidebar-title { font-size: 28px; font-weight: 800; color: white; letter-spacing: 0.02em; }
+  .sidebar-subtitle { color: #9fd0c0; font-size: 12px; }
+  .sidebar-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    padding: 8px 12px;
+    border: 1px solid;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.06);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .sidebar-status-dot { width: 8px; height: 8px; border-radius: 999px; }
+  .sidebar-nav { display: grid; gap: 8px; }
+  .sidebar-link {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    color: #d8ede6;
+    text-decoration: none;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: transparent;
+    transition: transform .15s ease, background .15s ease;
+  }
+  .sidebar-link:hover { transform: translateX(2px); background: rgba(255,255,255,0.08); }
+  .sidebar-link.is-active { background: #f2f5e9; color: #183531; }
+  .sidebar-user { margin-top: auto; display: grid; gap: 6px; }
+  .sidebar-user-name { font-weight: 700; color: white; }
+  .sidebar-user-email { color: #9fd0c0; font-size: 12px; overflow: hidden; text-overflow: ellipsis; }
+  .sidebar-logout {
+    margin-top: 8px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.18);
+    color: white;
+    background: transparent;
+    cursor: pointer;
   }
   .brand { padding-bottom: 8px; border-bottom: 1px solid #14534b; }
   .brand-logo { font-size: 26px; font-weight: 700; color: white; }
@@ -167,20 +175,13 @@ const appShellCss = `
 
   @media (max-width: 720px) {
     .app-shell { flex-direction: column; }
-    .app-sidebar {
+    .sidebar {
       width: auto; min-height: auto; padding: 12px;
-      flex-direction: row; flex-wrap: wrap; gap: 8px;
+      min-height: auto;
     }
-    .conn-status-bar { display: none; }
-    .app-nav { flex-direction: row; flex-wrap: wrap; gap: 6px; flex: 1 1 100%; }
-    .user-box {
-      flex: 1 1 100%; margin-top: 8px; padding-top: 8px;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .user-email { display: none; }
-    .sign-out { width: auto; }
+    .sidebar-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .sidebar-user-email { display: none; }
     .app-main { padding: 16px; }
-    .brand { display: none; }
   }
 `
 

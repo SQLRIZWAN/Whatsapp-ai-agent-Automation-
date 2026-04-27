@@ -15,7 +15,6 @@ import logger from '@shared/utils/logger'
 import { getFirestore } from '../../database/firestore'
 import { COLLECTIONS, SESSION_STATUS } from '@shared/constants/config'
 import { useFirestoreAuthState } from './authState'
-import qrService from './qrService'
 import { synthesizeVoiceNote, convertToMp3 } from './ttsService'
 import aiService from './aiService'
 import configService from '../../config/services/configService'
@@ -66,6 +65,12 @@ class BaileyService {
         lastError: r.lastError,
         connectedAt: r.connectedAt,
       })
+      if (r.qrDataUrl) {
+        anyIO.to(`user_${uid}`).emit('qr-code', { qr: r.qrDataUrl })
+      }
+      if (r.status === 'connected') {
+        anyIO.to(`user_${uid}`).emit('whatsapp-connected')
+      }
     }
   }
 
@@ -122,9 +127,9 @@ class BaileyService {
       const db = getFirestore()
       if (!db) return false
       const credsDoc = await db
-        .collection('whatsappAuth')
+        .collection(COLLECTIONS.WHATSAPP_SESSIONS)
         .doc(uid)
-        .collection('state')
+        .collection('auth_state')
         .doc('creds')
         .get()
       return credsDoc.exists
@@ -308,6 +313,7 @@ class BaileyService {
             runtime.qrDataUrl = dataUrl
             runtime.qrGeneratedAt = Date.now()
             runtime.status = 'qr'
+            await qrService.saveQRCode(uid, dataUrl)
             this.emitStatus(uid)
             logger.info(`[wa] QR code emitted for ${uid}`)
           } catch (e) {
@@ -325,6 +331,7 @@ class BaileyService {
           runtime.attempts = 0
           this.consecutiveFailures.delete(uid)
           this.clearReconnectTimer(uid)
+          await qrService.markQRAsScanned(uid)
           this.emitStatus(uid)
           await this.persistSessionStatus(uid, SESSION_STATUS.CONNECTED, runtime.phone)
           logger.info(`[wa] Connected as ${runtime.phone}`)

@@ -26,3 +26,16 @@ export const updateAIProvider = (
     apiKey,
     model,
   })
+
+export const saveAPIKey = (provider: string, apiKey: string, model?: string) =>
+  axiosInstance.post<ApiResponse<{ keys: any[] }>>('/api/config/api-keys', {
+    provider,
+    apiKey,
+    model,
+  })
+
+export const listAPIKeys = () =>
+  axiosInstance.get<ApiResponse<{ keys: any[] }>>('/api/config/api-keys')
+
+export const deleteAPIKey = (provider: string) =>
+  axiosInstance.delete<ApiResponse<{ keys: any[] }>>(`/api/config/api-keys/${provider}`)

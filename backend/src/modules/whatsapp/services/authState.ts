@@ -9,11 +9,9 @@ import {
 import admin from 'firebase-admin'
 import { getFirestore } from '../../database/firestore'
 import logger from '@shared/utils/logger'
+import { COLLECTIONS } from '@shared/constants/config'
 
-// Firestore document path: whatsappAuth/{uid} holds creds + keys as subcollections
-// Keys are sharded by type to keep documents small.
-
-const ROOT = 'whatsappAuth'
+const ROOT = COLLECTIONS.WHATSAPP_SESSIONS
 
 function sanitizeId(raw: string): string {
   // Preserve uniqueness while keeping Firestore-safe IDs.
@@ -63,7 +61,7 @@ export async function useFirestoreAuthState(
   if (db) {
     try {
       const userDoc = db.collection(ROOT).doc(uid)
-      const credsDoc = userDoc.collection('state').doc('creds')
+      const credsDoc = userDoc.collection('auth_state').doc('creds')
       const snap = await withTimeout(credsDoc.get())
       
       if (snap.exists) {
@@ -94,8 +92,8 @@ export async function useFirestoreAuthState(
   }
 
   const userDoc = db?.collection(ROOT).doc(uid)
-  const credsDoc = userDoc?.collection('state').doc('creds')
-  const keysCol = userDoc?.collection('keys')
+  const credsDoc = userDoc?.collection('auth_state').doc('creds')
+  const keysCol = userDoc?.collection('auth_state')
 
   const saveCreds = async () => {
     memoryAuthCache.set(uid, creds)
@@ -190,7 +188,7 @@ export async function useFirestoreAuthState(
     if (db && keysCol && credsDoc) {
       try {
         const keysSnap = await keysCol.listDocuments()
-        await Promise.all(keysSnap.map((d) => d.delete()))
+        await Promise.all(keysSnap.filter((d) => d.id !== 'creds').map((d) => d.delete()))
         await credsDoc.delete().catch(() => undefined)
       } catch (e) {
         logger.warn(`[wa-auth] Failed to clear Firestore auth for ${uid}: ${e}`)

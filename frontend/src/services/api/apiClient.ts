@@ -39,6 +39,7 @@ axiosInstance.interceptors.response.use(
         return axiosInstance(originalRequest)
       } catch (refreshError) {
         useAuthStore.getState().logout()
+        window.location.href = `${import.meta.env.BASE_URL}login`
         return Promise.reject(refreshError)
       }
     }

@@ -20,6 +20,7 @@ export const CONFIG = {
 
   // Gemini API
   GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+  ENCRYPTION_KEY: process.env.ENCRYPTION_KEY || '',
 
   // WhatsApp
   QR_CODE_EXPIRY: parseInt(process.env.QR_CODE_EXPIRY || '3600000', 10),
@@ -53,6 +54,8 @@ export const COLLECTIONS = {
   MESSAGES: 'messages',
   CALLS: 'calls',
   QR_CODES: 'qrCodes',
+  WHATSAPP_SESSIONS: 'whatsapp_sessions',
+  USER_API_KEYS: 'user_api_keys',
   DEVICE_TOKENS: 'deviceTokens',
   AUDIT_LOGS: 'auditLogs'
 }
