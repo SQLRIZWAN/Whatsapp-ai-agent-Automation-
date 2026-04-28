@@ -66,6 +66,55 @@ jobs:
           echo "Timed out waiting for Render deploy"
           exit 1
 
+      - uses: actions/checkout@v4
+
+      - name: Fetch Render logs and commit to repo
+        if: always()
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Waiting 20s for log ingestion..."
+          sleep 20
+          SVC=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
+            "https://api.render.com/v1/services?name=whatsapp-ai-backend&limit=5")
+          SID=$(echo "$SVC" | jq -r '.[0].service.id')
+          OWNER_ID=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
+            "https://api.render.com/v1/services/$SID" | jq -r '.ownerId')
+          NOW=$(date -u +%Y-%m-%dT%H:%M:%S.000Z)
+          AGO=$(date -u -d '30 minutes ago' +%Y-%m-%dT%H:%M:%S.000Z)
+          LOGS=$(curl -s -G -H "Authorization: Bearer $RENDER_API_KEY" \
+            "https://api.render.com/v1/logs" \
+            --data-urlencode "ownerId=$OWNER_ID" \
+            --data-urlencode "resource=$SID" \
+            --data-urlencode "type=app" \
+            --data-urlencode "startTime=$AGO" \
+            --data-urlencode "endTime=$NOW" \
+            --data-urlencode "limit=300" \
+            | jq -r '.logs[]? | "\(.timestamp) \(.message)"')
+          {
+            echo "# Render deploy log — $(date -u)"
+            echo "Commit: ${{ github.sha }}"
+            echo ""
+            echo '```'
+            echo "$LOGS"
+            echo '```'
+          } > /tmp/render-log.md
+          cat /tmp/render-log.md
+          B64=$(base64 -w0 /tmp/render-log.md)
+          CUR=$(curl -s -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/contents/diagnostics/render-log.md")
+          SHA=$(echo "$CUR" | jq -r '.sha // empty')
+          PAYLOAD=$(jq -n --arg content "$B64" --arg sha "$SHA" \
+            --arg msg "logs: Render deploy ${{ github.sha }}" \
+            'if $sha == "" then {message:$msg,content:$content,branch:"main"}
+             else {message:$msg,content:$content,branch:"main",sha:$sha} end')
+          curl -s -X PUT \
+            -H "Authorization: token $GH_TOKEN" \
+            -H "Content-Type: application/json" \
+            "https://api.github.com/repos/${{ github.repository }}/contents/diagnostics/render-log.md" \
+            -d "$PAYLOAD" | jq '.commit.sha // .message'
+
   # ── Frontend → GitHub Pages ───────────────────────────────────
   deploy-frontend:
     name: Frontend to GitHub Pages

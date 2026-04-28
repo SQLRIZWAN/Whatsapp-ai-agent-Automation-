@@ -89,6 +89,19 @@ export const startServer = async (app: Express): Promise<http.Server> => {
       }, 14 * 60 * 1000)
     }
 
+    // ── Gemini startup health check ─────────────────────────────
+    setTimeout(async () => {
+      try {
+        logger.info('[startup] Testing Gemini API key...')
+        const aiService = (await import('@modules/whatsapp/services/aiService')).default
+        const result = await aiService.generateResponse('ping', 'Reply with exactly: OK', undefined, undefined)
+        logger.info(`[startup] ✅ Gemini OK via ${result.model}`)
+      } catch (e: any) {
+        logger.error(`[startup] ❌ Gemini FAILED: ${e.message || String(e)}`)
+        logger.error('[startup] Check GEMINI_API_KEY in Render environment variables!')
+      }
+    }, 6000)
+
     // Auto-reconnect any WhatsApp session that has stored credentials in Firestore
     setTimeout(async () => {
       try {
