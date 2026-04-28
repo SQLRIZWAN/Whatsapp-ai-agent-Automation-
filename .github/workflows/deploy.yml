@@ -16,14 +16,28 @@ jobs:
     name: Backend to Render
     runs-on: ubuntu-latest
     steps:
+      - name: Lookup Render service ID by name
+        run: |
+          SVC=$(curl -s \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            "https://api.render.com/v1/services?name=whatsapp-ai-backend&limit=5")
+          echo "Services response: $SVC"
+          SID=$(echo "$SVC" | jq -r '[.[] | select(.service.name=="whatsapp-ai-backend")] | .[0].service.id // empty')
+          if [[ -z "$SID" || "$SID" == "null" ]]; then
+            echo "Could not find whatsapp-ai-backend service on Render"
+            exit 1
+          fi
+          echo "Found service ID: $SID"
+          echo "RENDER_SID=$SID" >> $GITHUB_ENV
+
       - name: Trigger Render deploy
         run: |
           HTTP=$(curl -s -o /tmp/render.json -w "%{http_code}" -X POST \
             -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
             -H "Content-Type: application/json" \
-            "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
+            "https://api.render.com/v1/services/$RENDER_SID/deploys" \
             -d '{}')
-          echo "Render API response: HTTP $HTTP"
+          echo "HTTP: $HTTP"
           cat /tmp/render.json
           if [[ "$HTTP" != "200" && "$HTTP" != "201" ]]; then
             echo "Render trigger failed with HTTP $HTTP"
@@ -37,7 +51,7 @@ jobs:
             sleep 15
             STATUS=$(curl -s \
               -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
-              "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys?limit=1" \
+              "https://api.render.com/v1/services/$RENDER_SID/deploys?limit=1" \
               | jq -r '.[0].deploy.status // "unknown"')
             echo "  attempt $i: $STATUS"
             if [[ "$STATUS" == "live" ]]; then
