@@ -433,29 +433,38 @@ class BaileyService {
     const text = content.conversation || content.extendedTextMessage?.text || content.imageMessage?.caption || content.videoMessage?.caption || ''
 
     if (content.audioMessage) {
+      logger.info(`[wa] audio message received from ${jid}`)
       await r.sock.sendPresenceUpdate('composing', jid)
       try {
+        logger.info('[wa] downloading audio media...')
         const buf = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
+        logger.info(`[wa] audio downloaded: ${buf.length} bytes — converting to mp3`)
         const mp3Buf = await convertToMp3(buf, 'ogg')
-        const { text: replyText } = await aiService.generateFromAudio(mp3Buf.toString('base64'), prompt, uid)
+        logger.info(`[wa] mp3 ready: ${mp3Buf.length} bytes — sending to Gemini`)
+        const { text: replyText, model } = await aiService.generateFromAudio(mp3Buf.toString('base64'), prompt, uid)
+        logger.info(`[wa] audio AI response via ${model} — sending voice reply`)
         await this.sendVoiceReply(uid, jid, replyText)
       } catch (e) {
-        logger.warn('[wa] audio AI failed, sending fallback', e as Error)
-        await r.sock.sendMessage(jid, { text: 'Network issue aa gaya. Aap phir se bhejo, main reply karta hoon.' }).catch(() => {})
+        logger.error('[wa] audio handling failed:', e as Error)
+        await r.sock.sendMessage(jid, { text: 'Voice message process nahi ho paya. Text mein likhein ya dobara bhejein.' }).catch(() => {})
       }
       return
     }
 
     if (content.imageMessage) {
+      logger.info(`[wa] image message received from ${jid}, mime: ${content.imageMessage.mimetype}`)
       await r.sock.sendPresenceUpdate('composing', jid)
       try {
+        logger.info('[wa] downloading image media...')
         const buf = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
+        logger.info(`[wa] image downloaded: ${buf.length} bytes — sending to Gemini`)
         const mime = content.imageMessage.mimetype || 'image/jpeg'
-        const { text: replyText } = await aiService.analyzeImage(buf.toString('base64'), text || 'Describe', prompt, mime)
+        const { text: replyText, model } = await aiService.analyzeImage(buf.toString('base64'), text || 'Is image mein kya hai? Detail mein batao.', prompt, mime)
+        logger.info(`[wa] image AI response via ${model}`)
         await r.sock.sendMessage(jid, { text: replyText })
       } catch (e) {
-        logger.warn('[wa] image AI failed, sending fallback', e as Error)
-        await r.sock.sendMessage(jid, { text: 'Image mil gayi, lekin analysis fail hua. Dobara try karo.' }).catch(() => {})
+        logger.error('[wa] image handling failed:', e as Error)
+        await r.sock.sendMessage(jid, { text: 'Image process nahi ho paya. Dobara bhejein.' }).catch(() => {})
       }
       return
     }

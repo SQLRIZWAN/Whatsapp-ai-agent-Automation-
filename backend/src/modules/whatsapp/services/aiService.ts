@@ -345,27 +345,36 @@ export class AIService {
   }
 
   async generateImage(prompt: string): Promise<{ data: string; mimeType: string } | null> {
-    if (!this.defaultGenAI) return null
+    const apiKey = CONFIG.GEMINI_API_KEY
+    if (!apiKey) return null
+
     const IMAGE_MODELS = [
       'gemini-2.0-flash-preview-image-generation',
       'gemini-2.0-flash-exp-image-generation',
     ]
+
     for (const modelName of IMAGE_MODELS) {
       try {
-        const model = this.defaultGenAI.getGenerativeModel({ model: modelName } as never)
-        const result = await (model as any).generateContent({
-          contents: [{ role: 'user', parts: [{ text: prompt }] }],
-          generationConfig: { responseModalities: ['IMAGE', 'TEXT'] },
-        })
-        for (const part of result.response.candidates?.[0]?.content?.parts || []) {
+        logger.info(`[ai] attempting image gen via REST: ${modelName}`)
+        const response = await axios.post(
+          `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`,
+          {
+            contents: [{ role: 'user', parts: [{ text: prompt }] }],
+            generationConfig: { responseModalities: ['IMAGE', 'TEXT'] },
+          },
+          { timeout: 45000, headers: { 'Content-Type': 'application/json' } }
+        )
+        const parts: any[] = response.data?.candidates?.[0]?.content?.parts || []
+        for (const part of parts) {
           if (part.inlineData?.data) {
             logger.info(`[ai] image generated via ${modelName}`)
-            return { data: part.inlineData.data, mimeType: part.inlineData.mimeType || 'image/jpeg' }
+            return { data: part.inlineData.data, mimeType: part.inlineData.mimeType || 'image/png' }
           }
         }
         logger.warn(`[ai] ${modelName} returned no image data`)
-      } catch (e) {
-        logger.warn(`[ai] image gen failed on ${modelName}: ${(e as Error).message.substring(0, 120)}`)
+      } catch (e: any) {
+        const msg = e.response?.data?.error?.message || e.message || 'unknown'
+        logger.warn(`[ai] image gen failed on ${modelName}: ${msg.substring(0, 160)}`)
       }
     }
     logger.error('[ai] all image generation models failed')
