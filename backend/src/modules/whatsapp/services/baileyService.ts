@@ -433,38 +433,39 @@ class BaileyService {
     const text = content.conversation || content.extendedTextMessage?.text || content.imageMessage?.caption || content.videoMessage?.caption || ''
 
     if (content.audioMessage) {
-      logger.info(`[wa] audio message received from ${jid}`)
+      logger.info(`[wa] audio received from ${jid}`)
       await r.sock.sendPresenceUpdate('composing', jid)
       try {
-        logger.info('[wa] downloading audio media...')
         const buf = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
-        logger.info(`[wa] audio downloaded: ${buf.length} bytes — converting to mp3`)
+        logger.info(`[wa] audio ${buf.length}b — converting mp3`)
         const mp3Buf = await convertToMp3(buf, 'ogg')
-        logger.info(`[wa] mp3 ready: ${mp3Buf.length} bytes — sending to Gemini`)
+        logger.info(`[wa] mp3 ${mp3Buf.length}b — sending to Gemini`)
         const { text: replyText, model } = await aiService.generateFromAudio(mp3Buf.toString('base64'), prompt, uid)
-        logger.info(`[wa] audio AI response via ${model} — sending voice reply`)
+        logger.info(`[wa] audio reply via ${model}`)
         await this.sendVoiceReply(uid, jid, replyText)
       } catch (e) {
-        logger.error('[wa] audio handling failed:', e as Error)
-        await r.sock.sendMessage(jid, { text: 'Voice message process nahi ho paya. Text mein likhein ya dobara bhejein.' }).catch(() => {})
+        logger.error('[wa] audio failed:', (e as Error).message)
       }
       return
     }
 
     if (content.imageMessage) {
-      logger.info(`[wa] image message received from ${jid}, mime: ${content.imageMessage.mimetype}`)
+      logger.info(`[wa] image received from ${jid} mime=${content.imageMessage.mimetype}`)
       await r.sock.sendPresenceUpdate('composing', jid)
       try {
-        logger.info('[wa] downloading image media...')
         const buf = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
-        logger.info(`[wa] image downloaded: ${buf.length} bytes — sending to Gemini`)
+        logger.info(`[wa] image ${buf.length}b — sending to Gemini`)
         const mime = content.imageMessage.mimetype || 'image/jpeg'
-        const { text: replyText, model } = await aiService.analyzeImage(buf.toString('base64'), text || 'Is image mein kya hai? Detail mein batao.', prompt, mime)
-        logger.info(`[wa] image AI response via ${model}`)
+        const { text: replyText, model } = await aiService.analyzeImage(
+          buf.toString('base64'),
+          text || 'Is image mein kya hai? Detail mein batao.',
+          prompt,
+          mime
+        )
+        logger.info(`[wa] image reply via ${model}`)
         await r.sock.sendMessage(jid, { text: replyText })
       } catch (e) {
-        logger.error('[wa] image handling failed:', e as Error)
-        await r.sock.sendMessage(jid, { text: 'Image process nahi ho paya. Dobara bhejein.' }).catch(() => {})
+        logger.error('[wa] image failed:', (e as Error).message)
       }
       return
     }
@@ -481,14 +482,14 @@ class BaileyService {
           await r.sock.sendMessage(jid, {
             image: Buffer.from(imgResult.data, 'base64'),
             mimetype: imgResult.mimeType,
-            caption: '🎨 Aapki image ready hai!',
+            caption: '🎨',
           })
         } else {
-          await r.sock.sendMessage(jid, { text: '🎨 Image generate nahi ho paya. Thoda wait karke dobara try karo.' })
+          const { text: reply } = await aiService.generateResponse(text, text, prompt, uid)
+          await r.sock.sendMessage(jid, { text: reply })
         }
       } catch (e) {
-        logger.warn('[wa] image generation failed', e as Error)
-        await r.sock.sendMessage(jid, { text: '🎨 Image generation mein error aa gaya. Kuch der baad try karo.' }).catch(() => {})
+        logger.error('[wa] image gen failed:', (e as Error).message)
       }
       return
     }
@@ -497,8 +498,7 @@ class BaileyService {
       const { text: replyText } = await aiService.generateResponse(text, text, prompt, uid)
       await r.sock.sendMessage(jid, { text: replyText })
     } catch (e) {
-      logger.warn('[wa] text AI failed, sending fallback', e as Error)
-      await r.sock.sendMessage(jid, { text: 'Thoda network issue hai. Aapka message mil gaya, 1 min me fir try karo.' }).catch(() => {})
+      logger.error('[wa] text AI failed:', (e as Error).message)
     }
   }
 

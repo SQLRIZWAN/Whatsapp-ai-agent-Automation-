@@ -106,8 +106,7 @@ export class MessageHandler {
         imageUrl,
         prompt,
         config?.systemPrompt,
-        'image/jpeg',
-        uid
+        'image/jpeg'
       )
 
       // Send response
