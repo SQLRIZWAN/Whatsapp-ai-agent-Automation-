@@ -39,6 +39,11 @@ export const startServer = async (app: Express): Promise<http.Server> => {
     // Wire Socket.IO into the WhatsApp service so QR / status updates can stream.
     baileyService.setIO(io)
 
+    // Warn early if critical API keys are absent so the issue is visible at boot
+    if (!CONFIG.GEMINI_API_KEY) {
+      logger.warn('GEMINI_API_KEY is not set — AI features will not work until it is configured')
+    }
+
     // Start server
     httpServer.listen(CONFIG.PORT, () => {
       logger.info(`✅ Server running on http://localhost:${CONFIG.PORT}`)
@@ -64,22 +69,25 @@ export const startServer = async (app: Express): Promise<http.Server> => {
       })
     })
 
-    // Keep process alive — log but do NOT exit on uncaught errors
     process.on('uncaughtException', (error) => {
       logger.error('Uncaught Exception:', error)
+      process.exit(1)
     })
 
     process.on('unhandledRejection', (reason, promise) => {
       logger.error('Unhandled Rejection at:', promise, 'reason:', reason)
+      process.exit(1)
     })
 
-    // Self-ping every 14 min to reduce Render free-tier cold starts.
-    const selfUrl = CONFIG.API_URL || `http://localhost:${CONFIG.PORT}`
-    setInterval(() => {
-      fetch(`${selfUrl}/health`)
-        .then(() => logger.info('[keepalive] ping OK'))
-        .catch((e) => logger.warn(`[keepalive] ping failed: ${(e as Error).message}`))
-    }, 14 * 60 * 1000)
+    // Self-ping only on Render (production) to prevent free-tier cold starts
+    if (CONFIG.NODE_ENV === 'production') {
+      const selfUrl = CONFIG.API_URL || `http://localhost:${CONFIG.PORT}`
+      setInterval(() => {
+        fetch(`${selfUrl}/health`)
+          .then(() => logger.info('[keepalive] ping OK'))
+          .catch((e) => logger.warn(`[keepalive] ping failed: ${(e as Error).message}`))
+      }, 14 * 60 * 1000)
+    }
 
     // Auto-reconnect any WhatsApp session that has stored credentials in Firestore
     setTimeout(async () => {

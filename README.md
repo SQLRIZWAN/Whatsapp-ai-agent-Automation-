@@ -58,11 +58,14 @@ Logic:
 - QR endpoint available at `/api/whatsapp/qr`
 - QR cache stored in Firestore
 - WhatsApp auth state stored in Firestore instead of local disk
-- self-ping added for Render sleep reduction
+- self-ping runs only when `NODE_ENV=production` to avoid resource waste in dev
 - API key endpoints added:
   - `POST /api/config/api-keys`
   - `GET /api/config/api-keys`
   - `DELETE /api/config/api-keys/:provider`
+- process exits with code 1 on uncaughtException / unhandledRejection so the container restarts cleanly
+- logs go to stdout only in production — file logging is dev-only (avoids container disk issues)
+- Docker image upgraded to Node.js 22 LTS
 
 ## GitHub Actions
 
@@ -126,4 +129,4 @@ At the moment the failing runs are failing at `Build`, not at install, lint, or 
 - only one markdown file is intentionally kept:
   `README.md`
 
-Last updated: 2026-04-27
+Last updated: 2026-04-28
