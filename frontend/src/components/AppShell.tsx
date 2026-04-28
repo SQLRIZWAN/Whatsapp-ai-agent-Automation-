@@ -11,6 +11,7 @@ const AppShell: React.FC = () => {
   const navigate = useNavigate()
   const { user, token, logout } = useAuthStore()
   const [connStatus, setConnStatus] = useState<ConnStatus>('disconnected')
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const socketRef = useRef<Socket | null>(null)
 
   useEffect(() => {
@@ -38,13 +39,42 @@ const AppShell: React.FC = () => {
   const statusLabel = {
     connected: 'Online',
     qr: 'Scan QR',
-    connecting: 'Connecting',
+    connecting: 'Connecting…',
     disconnected: 'Offline',
   }[connStatus]
 
   return (
     <div className="app-shell">
-      <Sidebar connectionLabel={statusLabel} connectionColor={statusDotColor} onLogout={handleSignOut} />
+      {/* Mobile topbar */}
+      <div className="mobile-topbar">
+        <button
+          className="burger-btn"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          aria-label="Toggle menu"
+        >
+          {sidebarOpen ? '✕' : '☰'}
+        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span>💉</span>
+          <span style={{ fontWeight: 700, color: 'white', fontSize: 16 }}>SQL AI</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: statusDotColor, display: 'inline-block' }} />
+          <span style={{ fontSize: 12, color: 'white', fontWeight: 600 }}>{statusLabel}</span>
+        </div>
+      </div>
+
+      {/* Overlay for mobile */}
+      {sidebarOpen && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      <div className={`sidebar-wrapper${sidebarOpen ? ' is-open' : ''}`}>
+        <Sidebar connectionLabel={statusLabel} connectionColor={statusDotColor} onLogout={handleSignOut} />
+      </div>
 
       <main className="app-main">
         <Outlet />
@@ -56,116 +86,227 @@ const AppShell: React.FC = () => {
 }
 
 const appShellCss = `
+  * { box-sizing: border-box; }
+
   .app-shell {
     display: flex;
     min-height: 100vh;
-    background: #f5f7f9;
+    background: #f0f4f8;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
-  .app-sidebar {
-    width: 240px;
-    min-height: 100vh;
-    background: #0e3b35;
-    color: #cfeae3;
-    padding: 22px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    flex-shrink: 0;
-  }
+
+  /* ── Sidebar ─────────────────────────────────────────── */
   .sidebar {
-    width: 280px;
+    width: 260px;
     min-height: 100vh;
-    background: linear-gradient(180deg, #102f2c 0%, #1f574f 100%);
+    background: linear-gradient(160deg, #0a2520 0%, #133d35 60%, #1a5248 100%);
     color: #d8ede6;
-    padding: 24px;
+    padding: 20px 16px;
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 16px;
     flex-shrink: 0;
+    border-right: 1px solid rgba(255,255,255,0.06);
   }
-  .sidebar-brand { display: grid; gap: 4px; }
-  .sidebar-title { font-size: 28px; font-weight: 800; color: white; letter-spacing: 0.02em; }
-  .sidebar-subtitle { color: #9fd0c0; font-size: 12px; }
+
+  .sidebar-brand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .sidebar-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: white;
+    letter-spacing: 0.01em;
+  }
+
+  .sidebar-subtitle {
+    color: #7ec8b5;
+    font-size: 11px;
+    margin-top: 2px;
+  }
+
+  .sidebar-version {
+    font-size: 10px;
+    font-weight: 700;
+    color: #25d366;
+    background: rgba(37,211,102,0.12);
+    border: 1px solid rgba(37,211,102,0.3);
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+
   .sidebar-status {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    width: fit-content;
-    padding: 8px 12px;
+    padding: 8px 14px;
     border: 1px solid;
     border-radius: 999px;
-    background: rgba(255,255,255,0.06);
-    font-size: 12px;
-    font-weight: 700;
-  }
-  .sidebar-status-dot { width: 8px; height: 8px; border-radius: 999px; }
-  .sidebar-nav { display: grid; gap: 8px; }
-  .sidebar-link {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    color: #d8ede6;
-    text-decoration: none;
-    padding: 12px 14px;
-    border-radius: 16px;
-    background: transparent;
-    transition: transform .15s ease, background .15s ease;
-  }
-  .sidebar-link:hover { transform: translateX(2px); background: rgba(255,255,255,0.08); }
-  .sidebar-link.is-active { background: #f2f5e9; color: #183531; }
-  .sidebar-user { margin-top: auto; display: grid; gap: 6px; }
-  .sidebar-user-name { font-weight: 700; color: white; }
-  .sidebar-user-email { color: #9fd0c0; font-size: 12px; overflow: hidden; text-overflow: ellipsis; }
-  .sidebar-logout {
-    margin-top: 8px;
-    padding: 10px 14px;
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.18);
-    color: white;
-    background: transparent;
-    cursor: pointer;
-  }
-  .brand { padding-bottom: 8px; border-bottom: 1px solid #14534b; }
-  .brand-logo { font-size: 26px; font-weight: 700; color: white; }
-  .brand-sub { font-size: 12px; color: #9bd3c7; margin-top: 4px; }
-
-  .conn-status-bar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 10px;
-    border: 1px solid #25d36644;
-    border-radius: 6px;
     background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(4px);
+    width: fit-content;
   }
-  .status-dot {
+
+  .sidebar-status-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     flex-shrink: 0;
+    transition: background-color 0.3s;
   }
 
-  .app-nav { display: flex; flex-direction: column; gap: 4px; }
-  .app-nav-link {
-    display: flex; align-items: center; padding: 10px 12px;
-    border-radius: 6px; color: #cfeae3; text-decoration: none;
-    font-size: 14px; font-weight: 500; transition: background .15s;
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
   }
-  .app-nav-link:hover { background: #14534b; }
-  .app-nav-link.is-active { background: #25d366; color: white; }
-  .app-nav-icon { margin-right: 10px; font-size: 16px; }
-  .user-box { margin-top: auto; padding-top: 14px; border-top: 1px solid #14534b; }
-  .user-name { color: white; font-weight: 600; font-size: 14px; }
-  .user-email {
-    color: #9bd3c7; font-size: 12px; margin-bottom: 10px;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  }
-  .sign-out {
-    width: 100%; padding: 8px; background: transparent; color: #ff8b8b;
-    border: 1px solid #ff8b8b; border-radius: 4px; cursor: pointer; font-weight: 500;
-  }
-  .app-main { flex: 1; padding: 28px; overflow: auto; }
 
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #aad5c8;
+    text-decoration: none;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+  }
+
+  .sidebar-link:hover {
+    background: rgba(255,255,255,0.08);
+    color: white;
+    transform: translateX(2px);
+  }
+
+  .sidebar-link.is-active {
+    background: linear-gradient(135deg, #25d366, #1aad52);
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(37,211,102,0.3);
+  }
+
+  .sidebar-icon {
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .sidebar-user {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .sidebar-user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #25d366, #0e3b35);
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .sidebar-user-name {
+    font-weight: 700;
+    color: white;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sidebar-user-email {
+    color: #7ec8b5;
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sidebar-logout-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px;
+    border-radius: 8px;
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+
+  .sidebar-logout-btn:hover {
+    background: rgba(255,80,80,0.15);
+  }
+
+  /* ── Mobile topbar ───────────────────────────────────── */
+  .mobile-topbar {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 54px;
+    background: linear-gradient(135deg, #0a2520, #133d35);
+    z-index: 200;
+    padding: 0 16px;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+
+  .burger-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background 0.15s;
+  }
+
+  .burger-btn:hover { background: rgba(255,255,255,0.1); }
+
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 149;
+  }
+
+  .sidebar-wrapper {
+    display: flex;
+  }
+
+  /* ── Main content ────────────────────────────────────── */
+  .app-main {
+    flex: 1;
+    padding: 28px;
+    overflow: auto;
+    min-height: 100vh;
+  }
+
+  /* ── Animations ─────────────────────────────────────── */
   @keyframes pulse-ring {
     0%   { box-shadow: 0 0 0 0 rgba(37,211,102,0.6); }
     70%  { box-shadow: 0 0 0 6px rgba(37,211,102,0); }
@@ -173,15 +314,40 @@ const appShellCss = `
   }
   .dot-pulse { animation: pulse-ring 1.5s infinite; }
 
-  @media (max-width: 720px) {
-    .app-shell { flex-direction: column; }
-    .sidebar {
-      width: auto; min-height: auto; padding: 12px;
-      min-height: auto;
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { animation: fade-in 0.3s ease forwards; }
+
+  /* ── Mobile responsive ───────────────────────────────── */
+  @media (max-width: 768px) {
+    .mobile-topbar { display: flex; }
+
+    .sidebar-overlay { display: block; }
+
+    .sidebar-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 150;
+      transform: translateX(-100%);
+      transition: transform 0.25s ease;
     }
-    .sidebar-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .sidebar-user-email { display: none; }
-    .app-main { padding: 16px; }
+
+    .sidebar-wrapper.is-open {
+      transform: translateX(0);
+    }
+
+    .sidebar {
+      min-height: 100vh;
+      width: 260px;
+    }
+
+    .app-main {
+      padding: 70px 16px 16px;
+    }
   }
 `
 

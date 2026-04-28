@@ -461,6 +461,28 @@ class BaileyService {
 
     if (!text.trim()) return
     await r.sock.sendPresenceUpdate('composing', jid)
+
+    // Image generation detection — check before regular AI response
+    const imgKeywords = ['generate image', 'create image', 'image banao', 'ek image', 'picture banao', 'make image', 'draw ', 'paint ']
+    if (imgKeywords.some(kw => text.toLowerCase().includes(kw))) {
+      try {
+        const imgResult = await aiService.generateImage(text)
+        if (imgResult) {
+          await r.sock.sendMessage(jid, {
+            image: Buffer.from(imgResult.data, 'base64'),
+            mimetype: imgResult.mimeType,
+            caption: '🎨 Aapki image ready hai!',
+          })
+        } else {
+          await r.sock.sendMessage(jid, { text: '🎨 Image generate nahi ho paya. Thoda wait karke dobara try karo.' })
+        }
+      } catch (e) {
+        logger.warn('[wa] image generation failed', e as Error)
+        await r.sock.sendMessage(jid, { text: '🎨 Image generation mein error aa gaya. Kuch der baad try karo.' }).catch(() => {})
+      }
+      return
+    }
+
     try {
       const { text: replyText } = await aiService.generateResponse(text, text, prompt, uid)
       await r.sock.sendMessage(jid, { text: replyText })

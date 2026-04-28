@@ -1,132 +1,143 @@
 # WhatsApp AI Agent Automation
 
-WhatsApp automation system with:
-- backend on Render
-- frontend on GitHub Pages
-- WhatsApp session persistence in Firestore
-- user AI API keys for Gemini, xAI Grok, and OpenAI
-- dashboard for QR connect, messages, calls, AI config, and forwarding
+24/7 WhatsApp AI bot — backend runs on Render (Node.js), frontend dashboard on GitHub Pages.
+Chrome/browser closing has zero effect on the bot.
 
-## Current Setup
+## Live Links
 
-- Backend deploy target: Render
-- Frontend deploy target: GitHub Pages
-- Main branch: `main`
-- Frontend URL:
-  `https://sqlrizwan.github.io/Whatsapp-ai-agent-Automation-/`
-- Backend URL:
-  `https://whatsapp-ai-backend-8ylf.onrender.com`
+- **Frontend (Dashboard):** `https://sqlrizwan.github.io/Whatsapp-ai-agent-Automation-/`
+- **Backend API:** `https://whatsapp-ai-backend-8ylf.onrender.com`
+- **Health check:** `https://whatsapp-ai-backend-8ylf.onrender.com/health`
+- **Keep-alive ping:** `https://whatsapp-ai-backend-8ylf.onrender.com/ping`
 
-## Main Features
+## Architecture
 
-- WhatsApp QR connect flow
-- Firestore-based WhatsApp auth/session storage
-- auto reconnect support after restart
-- live status updates with Socket.IO
-- message history view
-- call history view
-- AI configuration page
-- call forwarding settings
-- encrypted user API key storage
-- provider switching:
-  `Backend Default`, `Gemini`, `Grok`, `OpenAI`
+```
+GitHub Pages (Frontend)          Render (Backend — always on)
+┌─────────────────────┐          ┌──────────────────────────────┐
+│  React dashboard    │  HTTPS   │  Express + Socket.IO          │
+│  - QR scan UI       │ ◄──────► │  - Baileys WhatsApp client    │
+│  - Message history  │          │  - Gemini / Groq / OpenAI AI  │
+│  - Settings         │          │  - Google TTS voice notes     │
+│  - AI config        │          │  - Firestore session store    │
+└─────────────────────┘          └──────────────────────────────┘
+```
 
-## Frontend Pages
+The backend keeps WhatsApp connected 24/7 independent of any browser.
+Self-ping every 14 minutes prevents Render free-tier cold starts.
 
-- `/` or `/dashboard`
-- `/connect`
-- `/messages`
-- `/calls`
-- `/ai-config`
-- `/call-forwarding`
-- `/settings`
-- `/analytics`
+## Bot Capabilities
+
+| Feature | How to trigger |
+|---------|---------------|
+| Text reply | Send any text message |
+| Image analysis | Send an image (with or without caption) |
+| Image generation | Send "image banao [description]" or "generate image..." |
+| Voice note reply | Send a voice note — bot understands and replies with voice |
+| Video analysis | Send a video |
+| Auto call reject | Incoming call → auto-rejected + voice note sent |
+| Call forwarding | Configure forwarding number in Settings |
+
+## Session Persistence
+
+- WhatsApp credentials stored in Firestore after first QR scan
+- On backend restart, all sessions auto-reconnect without new QR scan
+- Exponential backoff reconnect (max 25 attempts)
+- Firestore quota exceeded → graceful memory-only fallback
 
 ## AI Providers
 
-- Google Gemini
-- xAI Grok
-- OpenAI
+- **Gemini** (default): 5-model fallback chain — 2.5-flash → 1.5-flash-latest
+- **Groq (xAI):** llama-3.3-70b-versatile
+- **OpenAI:** gpt-4o-mini (default)
 
-Logic:
-- if user saved own API key, that provider is used
-- if no user key exists, backend Gemini key is used as fallback
+Provider selection logic:
+1. If user saved own API key → use that provider
+2. Else → backend Gemini key (fallback chain)
 
-## Important Backend Changes
+## Frontend Pages
 
-- CORS updated for GitHub Pages
-- QR endpoint available at `/api/whatsapp/qr`
-- QR cache stored in Firestore
-- WhatsApp auth state stored in Firestore instead of local disk
-- self-ping runs only when `NODE_ENV=production` to avoid resource waste in dev
-- API key endpoints added:
-  - `POST /api/config/api-keys`
-  - `GET /api/config/api-keys`
-  - `DELETE /api/config/api-keys/:provider`
-- process exits with code 1 on uncaughtException / unhandledRejection so the container restarts cleanly
-- logs go to stdout only in production — file logging is dev-only (avoids container disk issues)
-- Docker image upgraded to Node.js 22 LTS
+- `/dashboard` — Live status, QR code, stats
+- `/connect` — WhatsApp QR connect
+- `/messages` — Message history
+- `/calls` — Call history
+- `/ai-config` — API key management per provider
+- `/call-forwarding` — Call forwarding rules
+- `/settings` — AI persona, system prompt, call settings
+- `/analytics` — Usage analytics
 
-## GitHub Actions
+## API Endpoints
 
-Workflows now used:
-- `backend-tests.yml`
-- `frontend-tests.yml`
-- `deploy-backend.yml`
-- `deploy-frontend.yml`
+### Health
+- `GET /health` — Server health check
+- `GET /ping` — Keep-alive endpoint (returns `{ pong: true }`)
 
-Legacy workflow removed:
-- `auto-deploy-production.yml`
+### Auth
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `POST /api/auth/logout`
+- `POST /api/auth/refresh`
+- `GET  /api/auth/me`
 
-## Required Secrets / Env
+### WhatsApp
+- `GET  /api/whatsapp/status` — Connection status (does NOT spawn new session)
+- `POST /api/whatsapp/connect` — Start/reconnect WhatsApp session
+- `POST /api/whatsapp/disconnect` — Stop session
+- `POST /api/whatsapp/logout` — Fully unlink device + clear Firestore creds
+- `GET  /api/whatsapp/qr` — Current QR code (base64)
+- `GET  /api/whatsapp/messages` — Message history
+- `GET  /api/whatsapp/calls` — Call history
+- `POST /api/whatsapp/send-message` — Send a message
 
-### GitHub Secrets
+### Config
+- `GET  /api/config` — Full config
+- `PUT  /api/config/system-prompt` — Update AI persona
+- `PUT  /api/config/forwarding` — Call forwarding rules
+- `PUT  /api/config/ai-provider` — Switch AI provider
+- `POST /api/config/api-keys` — Save encrypted API key
+- `GET  /api/config/api-keys` — List saved keys (masked)
+- `DELETE /api/config/api-keys/:provider` — Remove key
 
-- `VITE_API_URL`
+## Required Secrets & Env Vars
+
+### GitHub Secrets (for CI/CD)
+- `VITE_API_URL` — Render backend URL
 - `RENDER_API_KEY`
 - `RENDER_SERVICE_ID`
 
 ### Render Environment Variables
-
-- `NODE_ENV`
-- `PORT`
-- `API_URL`
-- `FRONTEND_URL`
+- `NODE_ENV=production`
+- `PORT=5000`
+- `API_URL` — Full URL of this backend (for self-ping)
+- `FRONTEND_URL` — GitHub Pages URL (for CORS)
 - `JWT_SECRET`
-- `JWT_EXPIRY`
+- `JWT_EXPIRY=7d`
 - `FIREBASE_PROJECT_ID`
 - `FIREBASE_CLIENT_EMAIL`
 - `FIREBASE_PRIVATE_KEY`
 - `GEMINI_API_KEY`
-- `ENCRYPTION_KEY`
-- `LOG_LEVEL`
+- `ENCRYPTION_KEY` — 32-byte hex string for API key encryption
+- `LOG_LEVEL=info`
 
-## Local Run
-
-### Backend
+## Local Development
 
 ```bash
-cd backend
-npm install
-npm run dev
+# Backend
+cd backend && npm install && npm run dev
+
+# Frontend (new terminal)
+cd frontend && npm install && npm run dev
 ```
 
-### Frontend
+Frontend dev server proxies `/api/*` to `localhost:5000` automatically.
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
+## GitHub Actions Workflows
 
-## Current Note
+- `deploy-frontend.yml` — Build + deploy to GitHub Pages on push to `main`
+- `deploy-backend.yml` — Trigger Render redeploy on push to `main`
+- `backend-tests.yml` — TypeScript type check
+- `frontend-tests.yml` — TypeScript + Vite build check
 
-If GitHub Actions shows red, check the build step first.
-At the moment the failing runs are failing at `Build`, not at install, lint, or test.
-
-## Repository Cleanup
-
-- only one markdown file is intentionally kept:
-  `README.md`
+---
 
 Last updated: 2026-04-28

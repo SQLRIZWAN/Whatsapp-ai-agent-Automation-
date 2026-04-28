@@ -34,7 +34,6 @@ const DashboardPage: React.FC = () => {
   const uptimeRef = useRef<number | null>(null)
   const connectedAtRef = useRef<number | null>(null)
 
-  // Load initial status — calls /status which does NOT spawn a new session
   useEffect(() => {
     let cancelled = false
     const boot = async () => {
@@ -54,7 +53,6 @@ const DashboardPage: React.FC = () => {
     return () => { cancelled = true }
   }, [])
 
-  // Load message & call counts
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -66,20 +64,14 @@ const DashboardPage: React.FC = () => {
           messages: (msgRes.data.data?.messages || []).length,
           calls: (callRes.data.data?.calls || []).length,
         })
-      } catch {
-        // stats are best-effort
-      }
+      } catch { /* stats are best-effort */ }
     }
     fetchStats()
   }, [])
 
-  // Live updates via Socket.IO
   useEffect(() => {
     if (!token) return
-    const s = io(API_URL, {
-      transports: ['websocket', 'polling'],
-      reconnection: true,
-    })
+    const s = io(API_URL, { transports: ['websocket', 'polling'], reconnection: true })
     socketRef.current = s
     s.on('connect', () => s.emit('authenticate', token))
     s.on('whatsapp:status', (payload: any) => {
@@ -87,13 +79,9 @@ const DashboardPage: React.FC = () => {
       if (payload.connectedAt) connectedAtRef.current = payload.connectedAt
       if (payload.status !== 'connected') connectedAtRef.current = null
     })
-    return () => {
-      s.close()
-      socketRef.current = null
-    }
+    return () => { s.close(); socketRef.current = null }
   }, [token])
 
-  // Fallback poller when Socket.IO is blocked — only polls /status (no session spawn)
   useEffect(() => {
     if (snap.status === 'connected') {
       if (pollRef.current) { window.clearInterval(pollRef.current); pollRef.current = null }
@@ -108,7 +96,6 @@ const DashboardPage: React.FC = () => {
     return () => { if (pollRef.current) window.clearInterval(pollRef.current); pollRef.current = null }
   }, [snap.status])
 
-  // Live uptime counter while connected
   useEffect(() => {
     if (snap.status !== 'connected') {
       setUptime('')
@@ -129,7 +116,6 @@ const DashboardPage: React.FC = () => {
     return () => { if (uptimeRef.current) window.clearInterval(uptimeRef.current) }
   }, [snap.status])
 
-  // Connect WhatsApp — explicitly calls /connect to start session
   const handleConnect = async () => {
     setErr(null)
     try {
@@ -140,7 +126,6 @@ const DashboardPage: React.FC = () => {
     }
   }
 
-  // Force reconnect — disconnect then connect fresh
   const handleForceReconnect = async () => {
     setErr(null)
     try {
@@ -152,29 +137,13 @@ const DashboardPage: React.FC = () => {
     }
   }
 
-  /**
-   * WhatsApp Logout — fully unlinks the device.
-   * Clears credentials from Firestore DB.
-   * Does NOT auto-reconnect — user must click "Connect" again to scan a new QR.
-   */
   const handleWhatsappLogout = async () => {
-    if (!logoutConfirm) {
-      setLogoutConfirm(true)
-      return
-    }
+    if (!logoutConfirm) { setLogoutConfirm(true); return }
     setLogoutLoading(true)
     setLogoutConfirm(false)
     try {
       await whatsappApi.logoutWhatsapp()
-      // Reset to fully disconnected — do NOT auto-reconnect
-      setSnap({
-        status: 'disconnected',
-        qrCode: null,
-        phone: null,
-        attempts: 0,
-        lastError: null,
-        connectedAt: null,
-      })
+      setSnap({ status: 'disconnected', qrCode: null, phone: null, attempts: 0, lastError: null, connectedAt: null })
       connectedAtRef.current = null
     } catch (e: any) {
       setErr(e?.response?.data?.message || 'Failed to logout of WhatsApp')
@@ -185,140 +154,143 @@ const DashboardPage: React.FC = () => {
 
   const cancelLogout = () => setLogoutConfirm(false)
 
-  const { label: statusLabel, color: statusColor } = (() => {
+  const statusMeta = (() => {
     switch (snap.status) {
-      case 'connected': return { label: `Connected — ${snap.phone || ''}`, color: '#25d366' }
-      case 'qr':        return { label: 'Waiting for QR scan', color: '#f59e0b' }
-      case 'connecting':return { label: 'Connecting…', color: '#6b7280' }
-      default:          return { label: 'Disconnected', color: '#ef4444' }
+      case 'connected':   return { label: `Connected`, sublabel: snap.phone || '', color: '#25d366', bg: 'rgba(37,211,102,0.1)', icon: '🟢' }
+      case 'qr':          return { label: 'Scan QR Code', sublabel: 'Waiting for scan', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', icon: '📲' }
+      case 'connecting':  return { label: 'Connecting…', sublabel: 'Please wait', color: '#6b7280', bg: 'rgba(107,114,128,0.1)', icon: '🔄' }
+      default:            return { label: 'Disconnected', sublabel: 'Bot is offline', color: '#ef4444', bg: 'rgba(239,68,68,0.1)', icon: '🔴' }
     }
   })()
 
-  return (
-    <div>
-      <header style={{ marginBottom: 18 }}>
-        <h1 style={{ margin: 0, color: '#0e3b35' }}>📡 Dashboard</h1>
-        <p style={{ margin: '6px 0 0', color: '#666' }}>
-          WhatsApp connect karein aur AI ka live status dekhein.
-        </p>
-      </header>
+  const features = [
+    { icon: '✉️', label: 'Text Messages', desc: 'Gemini AI se smart Hinglish reply' },
+    { icon: '🖼️', label: 'Image Analysis', desc: 'Vision model se image samajh ke reply' },
+    { icon: '🎨', label: 'Image Generation', desc: '"image banao" likhne par AI image banata hai' },
+    { icon: '🎙️', label: 'Voice Notes', desc: 'Audio message sunn ke voice reply' },
+    { icon: '📹', label: 'Video Messages', desc: 'Video dekh ke context-aware reply' },
+    { icon: '📞', label: 'Auto Call Reject', desc: 'Call reject + AI voice note bhejta hai' },
+  ]
 
-      {/* Stats row */}
-      <div style={statsRow}>
-        <StatCard icon="💬" label="Messages Handled" value={stats.messages} color="#25d366" />
-        <StatCard icon="📞" label="Calls Handled" value={stats.calls} color="#0e3b35" />
-        <StatCard
-          icon="⏱️"
-          label="Uptime"
-          value={snap.status === 'connected' ? uptime || '—' : '—'}
-          color="#6b7280"
-          isText
-        />
-        <StatCard
-          icon={snap.status === 'connected' ? '🟢' : snap.status === 'qr' ? '🟡' : '🔴'}
-          label="Bot Status"
-          value={snap.status === 'connected' ? 'Online' : snap.status === 'qr' ? 'Scan QR' : 'Offline'}
-          color={statusColor}
-          isText
-        />
+  return (
+    <div style={{ animation: 'fade-in 0.3s ease' }}>
+      {/* Page header */}
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{ margin: 0, fontSize: 26, color: '#0e3b35' }}>📡 Dashboard</h1>
+        <p style={{ margin: '4px 0 0', color: '#5a7269', fontSize: 14 }}>
+          WhatsApp AI bot ka live status aur control panel
+        </p>
       </div>
 
-      <div style={grid}>
-        {/* Connection card */}
-        <div style={card}>
-          <h2 style={{ marginTop: 0 }}>WhatsApp Connection</h2>
+      {/* Stats row */}
+      <div style={statsGrid}>
+        <StatCard icon="💬" label="Messages" value={stats.messages.toString()} accent="#25d366" gradient="linear-gradient(135deg,#25d36618,#25d36605)" />
+        <StatCard icon="📞" label="Calls" value={stats.calls.toString()} accent="#3b82f6" gradient="linear-gradient(135deg,#3b82f618,#3b82f605)" />
+        <StatCard icon="⏱️" label="Uptime" value={snap.status === 'connected' ? (uptime || '—') : '—'} accent="#f59e0b" gradient="linear-gradient(135deg,#f59e0b18,#f59e0b05)" />
+        <div style={{ ...statCardBase, background: statusMeta.bg, border: `1.5px solid ${statusMeta.color}33` }}>
+          <div style={{ fontSize: 28 }}>{statusMeta.icon}</div>
+          <div style={{ fontSize: 22, fontWeight: 800, color: statusMeta.color }}>{statusMeta.label}</div>
+          <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{statusMeta.sublabel}</div>
+        </div>
+      </div>
 
-          <div style={statusPill(statusColor)}>
-            <span style={dot(statusColor, snap.status === 'connected')} />
-            {statusLabel}
+      <div style={mainGrid}>
+        {/* Connection card */}
+        <div style={cardStyle}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+            <div style={{ width: 40, height: 40, borderRadius: 10, background: '#25d36615', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>📱</div>
+            <div>
+              <h2 style={{ margin: 0, fontSize: 16 }}>WhatsApp Connection</h2>
+              <p style={{ margin: 0, fontSize: 12, color: '#888' }}>Bot ka connection manage karein</p>
+            </div>
+          </div>
+
+          {/* Status pill */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            padding: '8px 16px', borderRadius: 999,
+            background: statusMeta.bg, color: statusMeta.color,
+            border: `1px solid ${statusMeta.color}44`,
+            fontWeight: 700, fontSize: 13, marginBottom: 14
+          }}>
+            <span style={{
+              width: 9, height: 9, borderRadius: '50%', backgroundColor: statusMeta.color, flexShrink: 0,
+              ...(snap.status === 'connected' ? { animation: 'pulse-ring 1.5s infinite' } : {})
+            }} />
+            {statusMeta.label}
+            {snap.phone && <span style={{ fontWeight: 400, opacity: 0.8 }}>— {snap.phone}</span>}
           </div>
 
           {snap.attempts > 1 && snap.status !== 'connected' && (
-            <div style={{ color: '#92400e', fontSize: 12, marginBottom: 8 }}>
-              Reconnect attempt {snap.attempts} / 25
-              {snap.lastError ? ` — last error: ${snap.lastError}` : ''}
+            <div style={{ fontSize: 12, color: '#92400e', background: '#fff7ed', padding: '6px 10px', borderRadius: 6, marginBottom: 10 }}>
+              Reconnect attempt {snap.attempts}/25{snap.lastError ? ` — ${snap.lastError}` : ''}
             </div>
           )}
 
-          {loading && <p style={{ color: '#666' }}>Loading status…</p>}
+          {loading && <p style={{ color: '#888', fontSize: 14 }}>Status load ho rahi hai…</p>}
           {err && <div style={errorBox}>{err}</div>}
 
-          {/* QR Code display */}
+          {/* QR Code */}
           {snap.status === 'qr' && snap.qrCode && (
             <div style={qrWrap}>
-              <div>
-                <img
-                  src={snap.qrCode}
-                  alt="WhatsApp QR"
-                  style={{ width: 280, height: 280, borderRadius: 8, border: '3px solid #25d366' }}
-                />
-                <p style={{ fontSize: 12, color: '#888', marginTop: 6, textAlign: 'center' }}>
-                  Yeh QR aapki UID se linked hai. Ek baar scan karein, session database mein save ho jayega.
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ padding: 8, background: 'white', borderRadius: 12, border: '3px solid #25d366', display: 'inline-block', boxShadow: '0 4px 16px rgba(37,211,102,0.2)' }}>
+                  <img src={snap.qrCode} alt="WhatsApp QR" style={{ width: 240, height: 240, display: 'block', borderRadius: 6 }} />
+                </div>
+                <p style={{ fontSize: 11, color: '#888', marginTop: 8 }}>
+                  QR aapki UID se linked hai — ek baar scan, session save ho jayega
                 </p>
               </div>
-              <ol style={qrSteps}>
-                <li>WhatsApp mobile app kholein</li>
-                <li>Menu → <b>Linked Devices</b></li>
-                <li><b>Link a Device</b> press karein</li>
-                <li>Is QR code ko scan karein</li>
-              </ol>
+              <div style={{ flex: 1, minWidth: 180 }}>
+                <div style={{ fontWeight: 700, fontSize: 14, color: '#0e3b35', marginBottom: 12 }}>📋 Scan Kaise Karein:</div>
+                {['WhatsApp app kholein', 'Menu → Linked Devices', '"Link a Device" tap karein', 'Is QR ko scan karein'].map((step, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 10 }}>
+                    <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#25d366', color: 'white', fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>{i + 1}</div>
+                    <span style={{ fontSize: 13, color: '#333', lineHeight: 1.5 }}>{step}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
           {snap.status === 'connecting' && (
-            <p style={{ color: '#666' }}>
-              Session load ho rahi hai. QR generate hote hi yahan dikh jayega…
-            </p>
-          )}
-
-          {/* Disconnected — show Connect button */}
-          {snap.status === 'disconnected' && (
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 8 }}>
-              <button onClick={handleConnect} style={primaryBtn}>
-                🔗 Connect WhatsApp
-              </button>
-              <button onClick={handleForceReconnect} style={secondaryBtn}>
-                🔄 Force Restart
-              </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#6b7280', fontSize: 14, padding: '10px 0' }}>
+              <span style={{ width: 16, height: 16, border: '2px solid #ccc', borderTopColor: '#25d366', borderRadius: '50%', animation: 'spin 0.7s linear infinite', flexShrink: 0 }} />
+              Session load ho rahi hai, QR generate hote hi dikh jayega…
             </div>
           )}
 
-          {/* Connected — show logout button */}
+          {/* Action buttons */}
+          {snap.status === 'disconnected' && (
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 8 }}>
+              <button onClick={handleConnect} style={primaryBtn}>🔗 Connect WhatsApp</button>
+              <button onClick={handleForceReconnect} style={secondaryBtn}>🔄 Force Restart</button>
+            </div>
+          )}
+
           {snap.status === 'connected' && (
             <div>
-              {uptime && (
-                <p style={{ fontSize: 13, color: '#666', margin: '4px 0 8px' }}>
-                  Connected for: <b>{uptime}</b>
+              {uptime && <p style={{ fontSize: 13, color: '#5a7269', margin: '4px 0 10px' }}>Connected for: <b style={{ color: '#0e3b35' }}>{uptime}</b></p>}
+              <div style={{ padding: '12px 16px', background: 'rgba(37,211,102,0.08)', borderRadius: 10, border: '1px solid rgba(37,211,102,0.2)', marginBottom: 12 }}>
+                <p style={{ color: '#16a34a', fontWeight: 600, margin: 0, fontSize: 14 }}>
+                  ✅ Bot live hai — messages, calls aur voice notes auto-handle ho rahe hain!
                 </p>
-              )}
-              <p style={{ color: '#25d366', fontWeight: 600, margin: '0 0 12px' }}>
-                ✅ Bot live hai — sare messages aur calls auto-handle ho rahe hain.
-              </p>
-
-              {/* Logout confirmation flow */}
+              </div>
               {!logoutConfirm ? (
-                <button
-                  onClick={handleWhatsappLogout}
-                  style={dangerBtn}
-                  disabled={logoutLoading}
-                >
+                <button onClick={handleWhatsappLogout} style={dangerBtn} disabled={logoutLoading}>
                   {logoutLoading ? 'Logging out…' : '🔌 WhatsApp Logout (Unlink Device)'}
                 </button>
               ) : (
                 <div style={confirmBox}>
-                  <p style={{ margin: '0 0 10px', fontWeight: 600, color: '#991b1b' }}>
-                    ⚠️ Confirm Logout?
+                  <p style={{ margin: '0 0 6px', fontWeight: 700, color: '#991b1b', fontSize: 14 }}>⚠️ Confirm Logout?</p>
+                  <p style={{ margin: '0 0 12px', fontSize: 12, color: '#555' }}>
+                    Yeh WhatsApp ko unlink kar dega. Dobara connect karne ke liye nayi QR scan karni padegi.
                   </p>
-                  <p style={{ margin: '0 0 12px', fontSize: 13, color: '#555' }}>
-                    Yeh WhatsApp ko is device se unlink kar dega. Dobara connect karne ke liye nayi QR scan karni padegi.
-                  </p>
-                  <div style={{ display: 'flex', gap: 10 }}>
+                  <div style={{ display: 'flex', gap: 8 }}>
                     <button onClick={handleWhatsappLogout} style={dangerBtnSolid} disabled={logoutLoading}>
                       {logoutLoading ? 'Logging out…' : 'Haan, Logout Karo'}
                     </button>
-                    <button onClick={cancelLogout} style={cancelBtn}>
-                      Cancel
-                    </button>
+                    <button onClick={cancelLogout} style={cancelBtn}>Cancel</button>
                   </div>
                 </div>
               )}
@@ -326,185 +298,186 @@ const DashboardPage: React.FC = () => {
           )}
         </div>
 
-        {/* Feature summary card */}
-        <div style={card}>
-          <h3 style={{ marginTop: 0 }}>Bot Kya Karta Hai</h3>
-          <ul style={{ lineHeight: 2, color: '#333', paddingLeft: 20 }}>
-            <li>✉️ <b>Text</b> — Gemini se AI reply (SQL 💉 persona)</li>
-            <li>🖼️ <b>Image</b> — Vision model se analyze karke reply</li>
-            <li>🎙️ <b>Voice note</b> — Audio samajh ke voice-note reply</li>
-            <li>📹 <b>Video</b> — Video dekhke reply</li>
-            <li>📞 <b>Calls</b> — Reject + AI voice-note + text follow-up</li>
-            <li>🚨 <b>Urgent</b> — Forwarding number suggest karta hai</li>
-          </ul>
-          <Link to="/settings" style={linkBtn}>
-            ⚙️ Configure prompt &amp; forwarding →
-          </Link>
+        {/* Features card */}
+        <div style={cardStyle}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+            <div style={{ width: 40, height: 40, borderRadius: 10, background: '#3b82f615', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>🤖</div>
+            <div>
+              <h2 style={{ margin: 0, fontSize: 16 }}>Bot Capabilities</h2>
+              <p style={{ margin: 0, fontSize: 12, color: '#888' }}>SQL 💉 AI kya kya kar sakta hai</p>
+            </div>
+          </div>
+          <div style={{ display: 'grid', gap: 10 }}>
+            {features.map((f) => (
+              <div key={f.label} style={{ display: 'flex', gap: 12, padding: '10px 12px', background: '#f8fafb', borderRadius: 10, border: '1px solid #edf1f0', alignItems: 'flex-start' }}>
+                <div style={{ fontSize: 20, flexShrink: 0 }}>{f.icon}</div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 13, color: '#1a2e2b' }}>{f.label}</div>
+                  <div style={{ fontSize: 12, color: '#5a7269', marginTop: 2 }}>{f.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <Link to="/settings" style={linkBtn}>⚙️ AI Prompt &amp; Settings Configure Karein →</Link>
         </div>
       </div>
 
-      <style>{pulseStyle}</style>
+      <style>{animCss}</style>
     </div>
   )
 }
 
-interface StatCardProps {
-  icon: string
-  label: string
-  value: number | string
-  color: string
-  isText?: boolean
-}
+/* ── Sub-components ───────────────────────────────────── */
+interface StatCardProps { icon: string; label: string; value: string; accent: string; gradient: string }
 
-const StatCard: React.FC<StatCardProps> = ({ icon, label, value, color, isText }) => (
-  <div style={statCard}>
-    <div style={{ fontSize: 28 }}>{icon}</div>
-    <div style={{ fontSize: isText ? 18 : 28, fontWeight: 700, color, lineHeight: 1.2 }}>
-      {value}
-    </div>
+const StatCard: React.FC<StatCardProps> = ({ icon, label, value, accent, gradient }) => (
+  <div style={{ ...statCardBase, background: gradient, border: `1.5px solid ${accent}22` }}>
+    <div style={{ fontSize: 26 }}>{icon}</div>
+    <div style={{ fontSize: 26, fontWeight: 800, color: accent, lineHeight: 1.2 }}>{value}</div>
     <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{label}</div>
   </div>
 )
 
-const pulseStyle = `
+/* ── Styles ───────────────────────────────────────────── */
+const animCss = `
   @keyframes pulse-ring {
     0%   { box-shadow: 0 0 0 0 rgba(37,211,102,0.5); }
     70%  { box-shadow: 0 0 0 8px rgba(37,211,102,0); }
     100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); }
   }
-  .dot-pulse { animation: pulse-ring 1.5s infinite; }
+  @keyframes fade-in {
+    from { opacity:0; transform:translateY(8px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
 `
 
-const statsRow: React.CSSProperties = {
+const statsGrid: React.CSSProperties = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(150px,1fr))',
   gap: 14,
-  marginBottom: 20,
+  marginBottom: 22,
 }
-const statCard: React.CSSProperties = {
-  background: 'white',
-  padding: '16px 18px',
-  borderRadius: 8,
-  boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
+
+const statCardBase: React.CSSProperties = {
+  padding: '18px 16px',
+  borderRadius: 14,
   display: 'flex',
   flexDirection: 'column',
   gap: 4,
+  boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+  background: 'white',
 }
-const grid: React.CSSProperties = {
+
+const mainGrid: React.CSSProperties = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(320px,1fr))',
   gap: 20,
 }
-const card: React.CSSProperties = {
+
+const cardStyle: React.CSSProperties = {
   background: 'white',
   padding: 22,
-  borderRadius: 8,
-  boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
+  borderRadius: 14,
+  boxShadow: '0 4px 16px rgba(0,0,0,0.07)',
+  border: '1px solid #edf1f0',
 }
+
 const errorBox: React.CSSProperties = {
-  padding: 10,
+  padding: '10px 14px',
   background: '#fee2e2',
   color: '#991b1b',
-  borderRadius: 4,
+  borderRadius: 8,
+  fontSize: 13,
   marginTop: 10,
+  border: '1px solid #fecaca',
 }
+
 const confirmBox: React.CSSProperties = {
   padding: 14,
   background: '#fff7ed',
   border: '1px solid #fed7aa',
-  borderRadius: 8,
+  borderRadius: 10,
   marginTop: 10,
 }
+
 const qrWrap: React.CSSProperties = {
-  marginTop: 16,
+  marginTop: 14,
   display: 'flex',
-  gap: 24,
+  gap: 20,
   alignItems: 'flex-start',
   flexWrap: 'wrap',
 }
-const qrSteps: React.CSSProperties = {
-  lineHeight: 2,
-  color: '#333',
-  margin: 0,
-  paddingLeft: 20,
-}
-const statusPill = (color: string): React.CSSProperties => ({
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: 8,
-  padding: '6px 12px',
-  background: `${color}1a`,
-  color,
-  borderRadius: 999,
-  fontWeight: 600,
-  marginBottom: 12,
-})
-const dot = (color: string, pulse: boolean): React.CSSProperties => ({
-  width: 10,
-  height: 10,
-  borderRadius: '50%',
-  backgroundColor: color,
-  flexShrink: 0,
-  ...(pulse ? { animation: 'pulse-ring 1.5s infinite' } : {}),
-})
+
 const primaryBtn: React.CSSProperties = {
-  padding: '10px 20px',
-  background: '#25d366',
+  padding: '11px 20px',
+  background: 'linear-gradient(135deg,#25d366,#1aad52)',
   color: 'white',
   border: 'none',
-  borderRadius: 6,
-  cursor: 'pointer',
-  fontWeight: 600,
+  borderRadius: 8,
+  fontWeight: 700,
   fontSize: 14,
+  boxShadow: '0 2px 8px rgba(37,211,102,0.3)',
+  cursor: 'pointer',
 }
+
 const secondaryBtn: React.CSSProperties = {
-  padding: '10px 20px',
+  padding: '11px 20px',
   background: 'transparent',
   color: '#0e3b35',
-  border: '1px solid #0e3b35',
-  borderRadius: 6,
-  cursor: 'pointer',
+  border: '1.5px solid #0e3b35',
+  borderRadius: 8,
   fontWeight: 600,
   fontSize: 14,
+  cursor: 'pointer',
 }
+
 const dangerBtn: React.CSSProperties = {
   padding: '10px 16px',
   background: 'transparent',
   color: '#ef4444',
-  border: '1px solid #ef4444',
-  borderRadius: 6,
-  cursor: 'pointer',
+  border: '1.5px solid #ef4444',
+  borderRadius: 8,
   fontSize: 14,
+  cursor: 'pointer',
+  fontWeight: 600,
 }
+
 const dangerBtnSolid: React.CSSProperties = {
   padding: '10px 16px',
   background: '#ef4444',
   color: 'white',
   border: 'none',
-  borderRadius: 6,
-  cursor: 'pointer',
-  fontWeight: 600,
+  borderRadius: 8,
+  fontWeight: 700,
   fontSize: 14,
+  cursor: 'pointer',
 }
+
 const cancelBtn: React.CSSProperties = {
   padding: '10px 16px',
   background: 'transparent',
   color: '#6b7280',
   border: '1px solid #d1d5db',
-  borderRadius: 6,
-  cursor: 'pointer',
+  borderRadius: 8,
   fontSize: 14,
+  cursor: 'pointer',
 }
+
 const linkBtn: React.CSSProperties = {
   display: 'inline-block',
-  marginTop: 14,
-  padding: '8px 14px',
-  background: '#0e3b351a',
+  marginTop: 16,
+  padding: '10px 16px',
+  background: 'rgba(14,59,53,0.06)',
   color: '#0e3b35',
   textDecoration: 'none',
-  fontWeight: 600,
-  borderRadius: 6,
+  fontWeight: 700,
+  borderRadius: 8,
   fontSize: 13,
+  border: '1px solid rgba(14,59,53,0.12)',
+  transition: 'all 0.15s ease',
 }
 
 export default DashboardPage

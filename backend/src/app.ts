@@ -64,6 +64,11 @@ export const createApp = (): Express => {
     })
   }))
 
+  // Ping endpoint (keep-alive alias for Render free tier)
+  app.get('/ping', (_req: Request, res: Response) => {
+    res.json({ pong: true, timestamp: Date.now() })
+  })
+
   // API routes
   const apiRouter = express.Router()
   apiRouter.use('/auth', authRoutes)

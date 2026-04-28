@@ -8,6 +8,28 @@ if (ffmpegStatic) {
   ffmpeg.setFfmpegPath(ffmpegStatic as unknown as string)
 }
 
+// Fetch a TTS URL with browser-like headers and retry logic to avoid Render IP blocks.
+async function fetchTtsUrl(url: string, retries = 3): Promise<Response> {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const res = await fetch(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+          'Referer': 'https://translate.google.com/',
+          'Accept': 'audio/mpeg,audio/*;q=0.9,*/*;q=0.8',
+          'Accept-Language': 'en-US,en;q=0.9,hi;q=0.8',
+        },
+      })
+      if (res.ok) return res
+      if (i < retries - 1) await new Promise(r => setTimeout(r, 600 * (i + 1)))
+    } catch (e) {
+      if (i === retries - 1) throw e
+      await new Promise(r => setTimeout(r, 600 * (i + 1)))
+    }
+  }
+  throw new Error('TTS fetch failed after all retries')
+}
+
 // Google Translate TTS has a ~200 char limit per request; split & concat.
 async function fetchMp3Chunks(text: string, lang: string): Promise<Buffer> {
   const urls = googleTTS.getAllAudioUrls(text, {
@@ -19,7 +41,7 @@ async function fetchMp3Chunks(text: string, lang: string): Promise<Buffer> {
 
   const buffers: Buffer[] = []
   for (const item of urls) {
-    const res = await fetch(item.url)
+    const res = await fetchTtsUrl(item.url)
     if (!res.ok) {
       throw new Error(`TTS fetch failed: ${res.status}`)
     }
