@@ -1,0 +1,97 @@
+name: Deploy — Frontend & Backend
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # ── Backend → Render ──────────────────────────────────────────
+  deploy-backend:
+    name: Backend → Render
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy
+        run: |
+          RESP=$(curl -s -w "\n%{http_code}" -X POST \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
+            -d '{}')
+          HTTP_CODE=$(echo "$RESP" | tail -n1)
+          BODY=$(echo "$RESP" | head -n -1)
+          echo "HTTP $HTTP_CODE"
+          echo "$BODY" | python3 -m json.tool 2>/dev/null || echo "$BODY"
+          if [[ "$HTTP_CODE" != "200" && "$HTTP_CODE" != "201" ]]; then
+            echo "Render API returned error $HTTP_CODE"
+            exit 1
+          fi
+          DEPLOY_ID=$(echo "$BODY" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('id','?'))" 2>/dev/null)
+          echo "Render deploy id: $DEPLOY_ID"
+
+      - name: Wait for Render deploy to finish
+        run: |
+          echo "Polling Render deploy status (up to 10 min)..."
+          for i in $(seq 1 40); do
+            sleep 15
+            RESP=$(curl -s \
+              -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+              "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys?limit=1")
+            STATUS=$(echo "$RESP" | python3 -c "
+import json,sys
+deploys=json.load(sys.stdin)
+d=deploys[0]['deploy'] if deploys else {}
+print(d.get('status','unknown'))
+" 2>/dev/null)
+            echo "  attempt $i: status=$STATUS"
+            if [[ "$STATUS" == "live" ]]; then
+              echo "Render deploy succeeded!"
+              exit 0
+            fi
+            if [[ "$STATUS" == "failed" || "$STATUS" == "canceled" ]]; then
+              echo "Render deploy $STATUS"
+              exit 1
+            fi
+          done
+          echo "Timed out waiting for Render deploy"
+          exit 1
+
+  # ── Frontend → GitHub Pages ───────────────────────────────────
+  deploy-frontend:
+    name: Frontend → GitHub Pages
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: cd frontend && npm install
+
+      - name: Build
+        run: cd frontend && npm run build
+        env:
+          VITE_API_URL: https://whatsapp-ai-backend-8ylf.onrender.com
+          VITE_APP_NAME: WhatsApp AI Automation
+          VITE_GITHUB_PAGES: 'true'
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend/dist
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

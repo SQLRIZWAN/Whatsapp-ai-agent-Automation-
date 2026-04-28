@@ -32,7 +32,7 @@ jobs:
 
       - name: Build env
         run: |
-          echo "VITE_API_URL=https://whatsapp-ai-backend.onrender.com" >> $GITHUB_ENV
+          echo "VITE_API_URL=https://whatsapp-ai-backend-8ylf.onrender.com" >> $GITHUB_ENV
 
       - name: Lint code
         run: cd frontend && npm run lint --if-present

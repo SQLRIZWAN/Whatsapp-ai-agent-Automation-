@@ -2,12 +2,6 @@ name: Frontend Diagnose (Playwright)
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-      - claude/production-deployment-setup-pnyZn
-    paths:
-      - '.github/workflows/frontend-diagnose.yml'
 
 permissions:
   contents: write
@@ -30,7 +24,7 @@ jobs:
       - name: Probe live frontend
         id: probe
         env:
-          TARGET_URL: https://whatsapp-ai-automation.vercel.app
+          TARGET_URL: https://sqlrizwan.github.io/Whatsapp-ai-agent-Automation-/
         run: |
           cat > probe.js <<'EOF'
           const { chromium } = require('playwright');
