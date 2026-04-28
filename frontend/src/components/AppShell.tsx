@@ -4,6 +4,7 @@ import { useAuthStore } from '@store/authStore'
 import { Socket } from 'socket.io-client'
 import Sidebar from './Sidebar'
 import { createSocket } from '@services/socket'
+import axiosInstance from '@services/api/apiClient'
 
 type ConnStatus = 'connected' | 'qr' | 'connecting' | 'disconnected'
 
@@ -13,6 +14,17 @@ const AppShell: React.FC = () => {
   const [connStatus, setConnStatus] = useState<ConnStatus>('disconnected')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const socketRef = useRef<Socket | null>(null)
+
+  // Fetch real status on mount so topbar doesn't flash "Offline"
+  useEffect(() => {
+    if (!token) return
+    axiosInstance.get('/api/whatsapp/status')
+      .then(res => {
+        const s = res.data?.data?.status as ConnStatus | undefined
+        if (s) setConnStatus(s)
+      })
+      .catch(() => {/* ignore — Socket.IO will update soon */})
+  }, [token])
 
   useEffect(() => {
     if (!token) return
