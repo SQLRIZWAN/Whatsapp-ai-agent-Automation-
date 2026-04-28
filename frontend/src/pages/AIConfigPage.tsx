@@ -12,6 +12,8 @@ const AIConfigPage: React.FC = () => {
   const { apiKeys, fetchAPIKeys, saveAPIKey, deleteAPIKey } = useSettingsStore()
   const [activeProvider, setActiveProvider] = useState<'gemini' | 'grok' | 'openai' | 'default'>('default')
   const [systemPrompt, setSystemPrompt] = useState('')
+  const [saving, setSaving] = useState<string | null>(null)
+  const [msg, setMsg] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null)
   const [drafts, setDrafts] = useState<Record<string, { key: string; model: string }>>({
     gemini: { key: '', model: '' },
     grok: { key: '', model: '' },
@@ -27,6 +29,11 @@ const AIConfigPage: React.FC = () => {
     }).catch(() => undefined)
   }, [fetchAPIKeys])
 
+  const showMsg = (kind: 'ok' | 'err', text: string) => {
+    setMsg({ kind, text })
+    setTimeout(() => setMsg(null), 3500)
+  }
+
   return (
     <div style={page}>
       <div style={hero}>
@@ -38,13 +45,23 @@ const AIConfigPage: React.FC = () => {
         <h2 style={sectionTitle}>Active Provider</h2>
         <div style={radioRow}>
           {['default', 'gemini', 'grok', 'openai'].map((value) => (
-            <label key={value} style={radioCard}>
+            <label key={value} style={{ ...radioCard, opacity: saving === 'provider' ? 0.6 : 1 }}>
               <input
                 type="radio"
                 checked={activeProvider === value}
-                onChange={() => {
+                disabled={saving === 'provider'}
+                onChange={async () => {
                   setActiveProvider(value as any)
-                  configApi.updateAIProvider(value).catch(() => undefined)
+                  setSaving('provider')
+                  setMsg(null)
+                  try {
+                    await configApi.updateAIProvider(value)
+                    showMsg('ok', `Provider updated to ${value === 'default' ? 'Backend Default' : value}`)
+                  } catch {
+                    showMsg('err', 'Failed to update provider')
+                  } finally {
+                    setSaving(null)
+                  }
                 }}
               />
               <span>{value === 'default' ? 'Backend Default' : value}</span>
@@ -61,7 +78,24 @@ const AIConfigPage: React.FC = () => {
           style={textarea}
           rows={6}
         />
-        <button style={buttonPrimary} onClick={() => configApi.updateSystemPrompt(systemPrompt)}>Save Prompt</button>
+        <button
+          style={{ ...buttonPrimary, opacity: saving === 'prompt' ? 0.6 : 1 }}
+          disabled={saving === 'prompt'}
+          onClick={async () => {
+            setSaving('prompt')
+            setMsg(null)
+            try {
+              await configApi.updateSystemPrompt(systemPrompt)
+              showMsg('ok', 'System prompt saved!')
+            } catch {
+              showMsg('err', 'Failed to save system prompt')
+            } finally {
+              setSaving(null)
+            }
+          }}
+        >
+          {saving === 'prompt' ? 'Saving...' : 'Save Prompt'}
+        </button>
       </section>
 
       <section style={grid}>
@@ -87,13 +121,49 @@ const AIConfigPage: React.FC = () => {
                 {models.map((model) => <option key={model} value={model}>{model}</option>)}
               </select>
               <div style={actions}>
-                <button style={buttonPrimary} onClick={() => saveAPIKey(provider, drafts[provider].key, drafts[provider].model)}>Save</button>
+                <button
+                  style={{ ...buttonPrimary, opacity: saving === provider ? 0.6 : 1 }}
+                  disabled={saving === provider}
+                  onClick={async () => {
+                    if (!drafts[provider].key.trim()) {
+                      showMsg('err', `${provider} API key empty nahi hona chahiye`)
+                      return
+                    }
+                    setSaving(provider)
+                    setMsg(null)
+                    try {
+                      await saveAPIKey(provider, drafts[provider].key, drafts[provider].model)
+                      showMsg('ok', `${provider} API key saved!`)
+                      setDrafts((state) => ({ ...state, [provider]: { ...state[provider], key: '' } }))
+                    } catch {
+                      showMsg('err', `Failed to save ${provider} API key`)
+                    } finally {
+                      setSaving(null)
+                    }
+                  }}
+                >
+                  {saving === provider ? 'Saving...' : 'Save'}
+                </button>
                 <button style={buttonSecondary} onClick={() => deleteAPIKey(provider)}>Delete</button>
               </div>
             </div>
           )
         })}
       </section>
+
+      {msg && (
+        <div style={{
+          padding: '10px 16px',
+          borderRadius: 12,
+          background: msg.kind === 'ok' ? '#dcfce716' : '#fee2e216',
+          color: msg.kind === 'ok' ? '#166534' : '#991b1b',
+          border: `1px solid ${msg.kind === 'ok' ? '#86efac' : '#fca5a5'}`,
+          fontSize: 13,
+          fontWeight: 600,
+        }}>
+          {msg.text}
+        </div>
+      )}
     </div>
   )
 }
@@ -106,9 +176,9 @@ const card: React.CSSProperties = { background: '#fff', borderRadius: 24, paddin
 const sectionTitle: React.CSSProperties = { margin: 0, color: '#123d35' }
 const grid: React.CSSProperties = { display: 'grid', gap: 20, gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))' }
 const radioRow: React.CSSProperties = { display: 'flex', gap: 12, flexWrap: 'wrap' }
-const radioCard: React.CSSProperties = { display: 'flex', gap: 8, alignItems: 'center', padding: '10px 14px', borderRadius: 999, background: '#eef5f1' }
-const input: React.CSSProperties = { width: '100%', padding: '12px 14px', borderRadius: 14, border: '1px solid #c9ddd4' }
-const textarea: React.CSSProperties = { width: '100%', padding: '14px', borderRadius: 18, border: '1px solid #c9ddd4', minHeight: 140 }
+const radioCard: React.CSSProperties = { display: 'flex', gap: 8, alignItems: 'center', padding: '10px 14px', borderRadius: 999, background: '#eef5f1', cursor: 'pointer' }
+const input: React.CSSProperties = { width: '100%', padding: '12px 14px', borderRadius: 14, border: '1px solid #c9ddd4', boxSizing: 'border-box' }
+const textarea: React.CSSProperties = { width: '100%', padding: '14px', borderRadius: 18, border: '1px solid #c9ddd4', minHeight: 140, boxSizing: 'border-box' }
 const actions: React.CSSProperties = { display: 'flex', gap: 10, flexWrap: 'wrap' }
 const buttonPrimary: React.CSSProperties = { background: '#123d35', color: '#fff', border: 'none', padding: '11px 16px', borderRadius: 999, cursor: 'pointer' }
 const buttonSecondary: React.CSSProperties = { background: '#fff', color: '#123d35', border: '1px solid #c9ddd4', padding: '11px 16px', borderRadius: 999, cursor: 'pointer' }
