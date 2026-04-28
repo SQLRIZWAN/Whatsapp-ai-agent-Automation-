@@ -434,9 +434,9 @@ class BaileyService {
 
     if (content.audioMessage) {
       await r.sock.sendPresenceUpdate('composing', jid)
-      const buf = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
-      const mp3Buf = await convertToMp3(buf, 'ogg')
       try {
+        const buf = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
+        const mp3Buf = await convertToMp3(buf, 'ogg')
         const { text: replyText } = await aiService.generateFromAudio(mp3Buf.toString('base64'), prompt, uid)
         await this.sendVoiceReply(uid, jid, replyText)
       } catch (e) {
@@ -448,9 +448,10 @@ class BaileyService {
 
     if (content.imageMessage) {
       await r.sock.sendPresenceUpdate('composing', jid)
-      const buf = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
       try {
-        const { text: replyText } = await aiService.analyzeImage(buf.toString('base64'), text || 'Describe', prompt)
+        const buf = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
+        const mime = content.imageMessage.mimetype || 'image/jpeg'
+        const { text: replyText } = await aiService.analyzeImage(buf.toString('base64'), text || 'Describe', prompt, mime)
         await r.sock.sendMessage(jid, { text: replyText })
       } catch (e) {
         logger.warn('[wa] image AI failed, sending fallback', e as Error)
@@ -463,7 +464,7 @@ class BaileyService {
     await r.sock.sendPresenceUpdate('composing', jid)
 
     // Image generation detection — check before regular AI response
-    const imgKeywords = ['generate image', 'create image', 'image banao', 'ek image', 'picture banao', 'make image', 'draw ', 'paint ']
+    const imgKeywords = ['generate image', 'create image', 'image banao', 'ek image', 'picture banao', 'make image', 'draw ', 'paint ', 'photo banao', 'tasveer', 'tasweer', 'wallpaper banao', 'illustration', 'photo bana', 'image bana', 'ek photo', 'design banao']
     if (imgKeywords.some(kw => text.toLowerCase().includes(kw))) {
       try {
         const imgResult = await aiService.generateImage(text)
