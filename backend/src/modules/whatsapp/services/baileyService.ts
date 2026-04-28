@@ -13,7 +13,7 @@ import pino from 'pino'
 import QRCode from 'qrcode'
 import logger from '@shared/utils/logger'
 import { getFirestore } from '../../database/firestore'
-import { COLLECTIONS, SESSION_STATUS } from '@shared/constants/config'
+import { CONFIG, COLLECTIONS, SESSION_STATUS } from '@shared/constants/config'
 import { useFirestoreAuthState } from './authState'
 import qrService from './qrService'
 import { synthesizeVoiceNote, convertToMp3 } from './ttsService'
@@ -407,7 +407,7 @@ class BaileyService {
       const context = `User called. Reject politely. Explain you can't answer calls. Ask for text/voice. Hinglish.`
       const { text: spoken } = await aiService.generateResponse(context, context, prompt, uid)
       try {
-        const { ogg, durationSec } = await synthesizeVoiceNote(spoken, { lang: 'hi' })
+        const { ogg, durationSec } = await synthesizeVoiceNote(spoken, { lang: 'hi', apiKey: CONFIG.GEMINI_API_KEY })
         await r.sock.sendMessage(call.from, { audio: ogg, ptt: true, mimetype: 'audio/ogg; codecs=opus', seconds: durationSec })
       } catch {
         await r.sock.sendMessage(call.from, { text: spoken }).catch(() => {})
@@ -496,7 +496,10 @@ class BaileyService {
     const r = this.runtimes.get(uid)
     if (!r) return
     try {
-      const { ogg, durationSec } = await synthesizeVoiceNote(text, { lang: 'hi' })
+      const { ogg, durationSec } = await synthesizeVoiceNote(text, {
+        lang: 'hi',
+        apiKey: CONFIG.GEMINI_API_KEY,
+      })
       await r.sock.sendMessage(jid, { audio: ogg, ptt: true, mimetype: 'audio/ogg; codecs=opus', seconds: durationSec })
     } catch {
       await r.sock.sendMessage(jid, { text }).catch(() => {})

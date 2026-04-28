@@ -1,3 +1,4 @@
+import { GoogleGenerativeAI } from '@google/generative-ai'
 import googleTTS from 'google-tts-api'
 import ffmpeg from 'fluent-ffmpeg'
 import ffmpegStatic from 'ffmpeg-static'
@@ -8,7 +9,72 @@ if (ffmpegStatic) {
   ffmpeg.setFfmpegPath(ffmpegStatic as unknown as string)
 }
 
-// Fetch a TTS URL with browser-like headers and retry logic to avoid Render IP blocks.
+// ── Gemini TTS (primary — works reliably on Render) ───────────
+
+const GEMINI_TTS_MODELS = [
+  'gemini-2.5-flash-preview-tts',
+  'gemini-2.0-flash-preview-tts',
+]
+
+async function synthesizeWithGeminiTTS(text: string, apiKey: string): Promise<Buffer> {
+  const genAI = new GoogleGenerativeAI(apiKey)
+  let lastErr: Error | null = null
+
+  for (const modelName of GEMINI_TTS_MODELS) {
+    try {
+      const model = genAI.getGenerativeModel({ model: modelName } as never)
+      const result = await (model as any).generateContent({
+        contents: [{ role: 'user', parts: [{ text }] }],
+        generationConfig: {
+          responseModalities: ['AUDIO'],
+          speechConfig: {
+            voiceConfig: {
+              prebuiltVoiceConfig: { voiceName: 'Charon' }, // Deep male voice
+            },
+          },
+        },
+      })
+      const parts = result.response.candidates?.[0]?.content?.parts || []
+      for (const part of parts) {
+        if (part.inlineData?.data) {
+          logger.info(`[tts] Gemini TTS OK via ${modelName}`)
+          return Buffer.from(part.inlineData.data, 'base64')
+        }
+      }
+      throw new Error('No audio data in response')
+    } catch (e) {
+      lastErr = e as Error
+      logger.warn(`[tts] Gemini TTS ${modelName} failed: ${(e as Error).message.substring(0, 100)}`)
+    }
+  }
+  throw lastErr || new Error('All Gemini TTS models failed')
+}
+
+// Convert raw PCM/WAV buffer (from Gemini TTS) → OGG/Opus for WhatsApp PTT
+async function rawToOpus(input: Buffer, inputFormat = 'wav'): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    const src = Readable.from(input)
+    const out = new PassThrough()
+    const chunks: Buffer[] = []
+    out.on('data', (c) => chunks.push(c as Buffer))
+    out.on('end', () => resolve(Buffer.concat(chunks)))
+    out.on('error', reject)
+
+    ffmpeg(src)
+      .inputFormat(inputFormat)
+      .audioCodec('libopus')
+      .audioBitrate('64k')
+      .format('ogg')
+      .on('error', (err) => {
+        logger.error('[tts] rawToOpus error', err)
+        reject(err)
+      })
+      .pipe(out, { end: true })
+  })
+}
+
+// ── Google Translate TTS (fallback) ──────────────────────────
+
 async function fetchTtsUrl(url: string, retries = 3): Promise<Response> {
   for (let i = 0; i < retries; i++) {
     try {
@@ -30,7 +96,6 @@ async function fetchTtsUrl(url: string, retries = 3): Promise<Response> {
   throw new Error('TTS fetch failed after all retries')
 }
 
-// Google Translate TTS has a ~200 char limit per request; split & concat.
 async function fetchMp3Chunks(text: string, lang: string): Promise<Buffer> {
   const urls = googleTTS.getAllAudioUrls(text, {
     lang,
@@ -38,21 +103,15 @@ async function fetchMp3Chunks(text: string, lang: string): Promise<Buffer> {
     host: 'https://translate.google.com',
     splitPunct: ',.?!',
   })
-
   const buffers: Buffer[] = []
   for (const item of urls) {
     const res = await fetchTtsUrl(item.url)
-    if (!res.ok) {
-      throw new Error(`TTS fetch failed: ${res.status}`)
-    }
-    const arr = new Uint8Array(await res.arrayBuffer())
-    buffers.push(Buffer.from(arr))
+    if (!res.ok) throw new Error(`TTS fetch failed: ${res.status}`)
+    buffers.push(Buffer.from(new Uint8Array(await res.arrayBuffer())))
   }
   return Buffer.concat(buffers)
 }
 
-// Convert MP3 buffer to OGG/Opus buffer suitable for WhatsApp PTT,
-// and pitch-shift slightly down to sound more masculine.
 async function mp3ToOpusMale(mp3: Buffer): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const input = Readable.from(mp3)
@@ -64,8 +123,6 @@ async function mp3ToOpusMale(mp3: Buffer): Promise<Buffer> {
 
     ffmpeg(input)
       .inputFormat('mp3')
-      // Lower pitch ~15% while keeping tempo, to give a deeper/male-sounding voice.
-      // atempo 1.15 keeps original speed after the rate-shift.
       .audioFilters(['asetrate=44100*0.87', 'aresample=44100', 'atempo=1.15'])
       .audioCodec('libopus')
       .audioBitrate('64k')
@@ -78,12 +135,14 @@ async function mp3ToOpusMale(mp3: Buffer): Promise<Buffer> {
   })
 }
 
+// ── Public API ────────────────────────────────────────────────
+
 export interface TTSResult {
   ogg: Buffer
   durationSec: number
 }
 
-// Convert any audio buffer (typically OGG/Opus from WhatsApp) to MP3 for Gemini compatibility.
+// Convert any audio buffer (OGG/Opus from WhatsApp) to MP3 for Gemini audio input.
 export async function convertToMp3(input: Buffer, inputFormat = 'ogg'): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const src = Readable.from(input)
@@ -108,23 +167,31 @@ export async function convertToMp3(input: Buffer, inputFormat = 'ogg'): Promise<
 
 export async function synthesizeVoiceNote(
   text: string,
-  opts: { lang?: string } = {}
+  opts: { lang?: string; apiKey?: string } = {}
 ): Promise<TTSResult> {
-  const lang = opts.lang || detectLang(text)
-  // Hard cap length so free TTS doesn't choke.
   const clipped = text.length > 900 ? text.slice(0, 897) + '…' : text
-  logger.info(`[tts] synthesizing (${lang}, ${clipped.length} chars)`)
+  const durationSec = Math.max(1, Math.round(clipped.length / 16))
 
+  // Primary: Gemini TTS — reliable on server IPs, no rate-limit issues
+  if (opts.apiKey) {
+    try {
+      const rawBuf = await synthesizeWithGeminiTTS(clipped, opts.apiKey)
+      const ogg = await rawToOpus(rawBuf, 'wav')
+      return { ogg, durationSec }
+    } catch (e) {
+      logger.warn(`[tts] Gemini TTS failed, falling back to Google Translate: ${(e as Error).message}`)
+    }
+  }
+
+  // Fallback: Google Translate TTS
+  const lang = opts.lang || detectLang(text)
+  logger.info(`[tts] Google Translate TTS (${lang}, ${clipped.length} chars)`)
   const mp3 = await fetchMp3Chunks(clipped, lang)
   const ogg = await mp3ToOpusMale(mp3)
-  // Rough estimate: ~16 chars per second of speech
-  const durationSec = Math.max(1, Math.round(clipped.length / 16))
   return { ogg, durationSec }
 }
 
 function detectLang(text: string): string {
-  // If we see Devanagari, use Hindi; else Hindi (Roman) still speaks well in 'hi'.
   if (/[ऀ-ॿ]/.test(text)) return 'hi'
-  // Hindi-in-roman script works better with Hindi TTS than English, tune as needed.
   return 'hi'
 }

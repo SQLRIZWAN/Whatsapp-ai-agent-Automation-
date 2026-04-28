@@ -346,23 +346,30 @@ export class AIService {
 
   async generateImage(prompt: string): Promise<{ data: string; mimeType: string } | null> {
     if (!this.defaultGenAI) return null
-    try {
-      const model = this.defaultGenAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp-image-generation' })
-      const result = await (model as any).generateContent({
-        contents: [{ role: 'user', parts: [{ text: prompt }] }],
-        generationConfig: { responseModalities: ['IMAGE', 'TEXT'] },
-      })
-      for (const part of result.response.candidates?.[0]?.content?.parts || []) {
-        if (part.inlineData?.data) {
-          logger.info('[ai] image generated successfully')
-          return { data: part.inlineData.data, mimeType: part.inlineData.mimeType || 'image/jpeg' }
+    const IMAGE_MODELS = [
+      'gemini-2.0-flash-preview-image-generation',
+      'gemini-2.0-flash-exp-image-generation',
+    ]
+    for (const modelName of IMAGE_MODELS) {
+      try {
+        const model = this.defaultGenAI.getGenerativeModel({ model: modelName } as never)
+        const result = await (model as any).generateContent({
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          generationConfig: { responseModalities: ['IMAGE', 'TEXT'] },
+        })
+        for (const part of result.response.candidates?.[0]?.content?.parts || []) {
+          if (part.inlineData?.data) {
+            logger.info(`[ai] image generated via ${modelName}`)
+            return { data: part.inlineData.data, mimeType: part.inlineData.mimeType || 'image/jpeg' }
+          }
         }
+        logger.warn(`[ai] ${modelName} returned no image data`)
+      } catch (e) {
+        logger.warn(`[ai] image gen failed on ${modelName}: ${(e as Error).message.substring(0, 120)}`)
       }
-      return null
-    } catch (e) {
-      logger.error(`[ai] image generation failed: ${(e as Error).message}`)
-      return null
     }
+    logger.error('[ai] all image generation models failed')
+    return null
   }
 
   /** Returns the full model list for diagnostics/test-ai endpoint */
