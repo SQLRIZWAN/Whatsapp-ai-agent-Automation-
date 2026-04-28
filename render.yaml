@@ -4,10 +4,30 @@ services:
     runtime: node
     buildCommand: cd backend && npm install && npm run build
     startCommand: cd backend && npm start
+    autoDeploy: true
+    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 5000
-    autoDeploy: true
-    healthCheckPath: /health
+      - key: API_URL
+        value: https://whatsapp-ai-backend-8ylf.onrender.com
+      - key: FRONTEND_URL
+        value: https://sqlrizwan.github.io
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRY
+        value: 7d
+      - key: FIREBASE_PROJECT_ID
+        sync: false
+      - key: FIREBASE_CLIENT_EMAIL
+        sync: false
+      - key: FIREBASE_PRIVATE_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: ENCRYPTION_KEY
+        sync: false
+      - key: LOG_LEVEL
+        value: info

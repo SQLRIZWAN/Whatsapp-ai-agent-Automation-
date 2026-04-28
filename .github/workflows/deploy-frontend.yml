@@ -35,7 +35,7 @@ jobs:
       - name: Build
         run: cd frontend && npm run build
         env:
-          VITE_API_URL: https://whatsapp-ai-backend.onrender.com
+          VITE_API_URL: https://whatsapp-ai-backend-8ylf.onrender.com
           VITE_APP_NAME: WhatsApp AI Automation
           VITE_GITHUB_PAGES: 'true'
 

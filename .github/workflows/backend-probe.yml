@@ -18,7 +18,6 @@ jobs:
         id: probe
         run: |
           set +e
-          mkdir -p diagnostics
 
           echo "== /health ==" | tee /tmp/probe.log
           curl -sS -w "\nHTTP: %{http_code}\n" "$BACKEND_URL/health" | tee -a /tmp/probe.log
