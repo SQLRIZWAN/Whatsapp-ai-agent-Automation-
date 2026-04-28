@@ -1,7 +1,0 @@
-> NOTE: The Vercel CLI now collects telemetry regarding usage of the CLI.
-> This information is used to shape the CLI roadmap and prioritize features.
-> You can learn more, including how to opt-out if you'd not like to participate in this program, by visiting the following URL:
-> https://vercel.com/docs/cli/about-telemetry
-Retrieving project…
-Error: Project not found ({"VERCEL_PROJECT_ID":"null","VERCEL_ORG_ID":"udvkVpJr7oxCJeByUXLER119"})
-

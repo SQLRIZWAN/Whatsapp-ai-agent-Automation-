@@ -8,7 +8,7 @@ export const CONFIG = {
   FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:5173',
 
   // JWT
-  JWT_SECRET: process.env.JWT_SECRET || 'your-secret-key',
+  JWT_SECRET: process.env.JWT_SECRET || '285038287231@RIZWAN786_a4f9c2d7e1b68a35f2c4e9b1d7a8f0c3',
   JWT_EXPIRY: process.env.JWT_EXPIRY || '7d',
 
   // Database
