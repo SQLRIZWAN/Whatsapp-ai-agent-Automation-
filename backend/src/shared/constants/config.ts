@@ -22,6 +22,10 @@ export const CONFIG = {
   GEMINI_API_KEY: process.env.GEMINI_API_KEY,
   ENCRYPTION_KEY: process.env.ENCRYPTION_KEY || '',
 
+  // ElevenLabs (TTS fallback layer 2)
+  ELEVENLABS_API_KEY: process.env.ELEVENLABS_API_KEY || '',
+  ELEVENLABS_VOICE_ID: process.env.ELEVENLABS_VOICE_ID || 'pNInz6obpgDQGcFmaJgB',
+
   // WhatsApp
   QR_CODE_EXPIRY: parseInt(process.env.QR_CODE_EXPIRY || '3600000', 10),
 

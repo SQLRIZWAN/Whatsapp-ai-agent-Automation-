@@ -4,46 +4,47 @@ import { validateSystemPrompt, validatePhoneNumber } from '@shared/utils/validat
 import { AppError } from '@shared/utils/errorHandler'
 import { ErrorCode } from '@shared/types/common.types'
 import logger from '@shared/utils/logger'
-import { v4 as uuidv4 } from 'uuid'
 import configRepository, { AIProvider } from '@modules/database/repositories/configRepository'
+
+// In-memory fallback so the bot still works when Firestore is unreachable.
+const memoryConfigs = new Map<string, any>()
 
 export class ConfigService {
   async getConfiguration(uid: string): Promise<any> {
     try {
       const db = getFirestore()
+      if (!db) {
+        return memoryConfigs.get(uid) || this.getDefaultConfiguration(uid)
+      }
       const doc = await db.collection(COLLECTIONS.CONFIGURATIONS).doc(uid).get()
-
       if (!doc.exists) {
-        // Return default configuration
         return this.getDefaultConfiguration(uid)
       }
-
       return doc.data()
     } catch (error) {
-      logger.error('Failed to get configuration:', error)
-      throw new AppError(
-        ErrorCode.DATABASE_ERROR,
-        'Failed to retrieve configuration',
-        500
-      )
+      logger.warn('[config] Firestore read failed, using cached/default:', (error as Error).message)
+      return memoryConfigs.get(uid) || this.getDefaultConfiguration(uid)
     }
   }
 
   async updateConfiguration(uid: string, updates: any): Promise<any> {
+    const updateData = {
+      ...updates,
+      updatedAt: Date.now()
+    }
     try {
       const db = getFirestore()
-      const updateData = {
-        ...updates,
-        updatedAt: Date.now()
+      if (!db) {
+        const merged = { ...(memoryConfigs.get(uid) || this.getDefaultConfiguration(uid)), ...updateData }
+        memoryConfigs.set(uid, merged)
+        logger.warn('[config] Firestore unavailable, persisted update in memory only')
+        return merged
       }
-
       await db
         .collection(COLLECTIONS.CONFIGURATIONS)
         .doc(uid)
         .set(updateData, { merge: true })
-
       logger.info(`Configuration updated for user ${uid}`)
-
       return this.getConfiguration(uid)
     } catch (error) {
       logger.error('Failed to update configuration:', error)
@@ -66,13 +67,18 @@ export class ConfigService {
       }
 
       const db = getFirestore()
-      await db
-        .collection(COLLECTIONS.CONFIGURATIONS)
-        .doc(uid)
-        .set(
-          { systemPrompt, updatedAt: Date.now() },
-          { merge: true }
-        )
+      if (!db) {
+        const cur = memoryConfigs.get(uid) || this.getDefaultConfiguration(uid)
+        memoryConfigs.set(uid, { ...cur, systemPrompt, updatedAt: Date.now() })
+      } else {
+        await db
+          .collection(COLLECTIONS.CONFIGURATIONS)
+          .doc(uid)
+          .set(
+            { systemPrompt, updatedAt: Date.now() },
+            { merge: true }
+          )
+      }
 
       logger.info(`System prompt updated for user ${uid}`)
       return systemPrompt
@@ -100,25 +106,31 @@ export class ConfigService {
         )
       }
 
+      const callForwarding = {
+        enabled,
+        phoneNumber: phoneNumber || '',
+        forwardOnNo: enabled,
+        forwardOnBusy: enabled
+      }
+
       const db = getFirestore()
-      await db
-        .collection(COLLECTIONS.CONFIGURATIONS)
-        .doc(uid)
-        .set(
-          {
-            callForwarding: {
-              enabled,
-              phoneNumber: phoneNumber || '',
-              forwardOnNo: enabled,
-              forwardOnBusy: enabled
+      if (!db) {
+        const cur = memoryConfigs.get(uid) || this.getDefaultConfiguration(uid)
+        memoryConfigs.set(uid, { ...cur, callForwarding, updatedAt: Date.now() })
+      } else {
+        await db
+          .collection(COLLECTIONS.CONFIGURATIONS)
+          .doc(uid)
+          .set(
+            {
+              callForwarding,
+              updatedAt: Date.now()
             },
-            updatedAt: Date.now()
-          },
-          { merge: true }
-        )
+            { merge: true }
+          )
+      }
 
       logger.info(`Call forwarding updated for user ${uid}`)
-
       return this.getConfiguration(uid)
     } catch (error) {
       if (error instanceof AppError) throw error
@@ -153,20 +165,24 @@ export class ConfigService {
       }
 
       const db = getFirestore()
-      await db
-        .collection(COLLECTIONS.CONFIGURATIONS)
-        .doc(uid)
-        .set(
-          {
-            temperature,
-            maxOutputTokens,
-            updatedAt: Date.now()
-          },
-          { merge: true }
-        )
+      if (!db) {
+        const cur = memoryConfigs.get(uid) || this.getDefaultConfiguration(uid)
+        memoryConfigs.set(uid, { ...cur, temperature, maxOutputTokens, updatedAt: Date.now() })
+      } else {
+        await db
+          .collection(COLLECTIONS.CONFIGURATIONS)
+          .doc(uid)
+          .set(
+            {
+              temperature,
+              maxOutputTokens,
+              updatedAt: Date.now()
+            },
+            { merge: true }
+          )
+      }
 
       logger.info(`AI settings updated for user ${uid}`)
-
       return this.getConfiguration(uid)
     } catch (error) {
       if (error instanceof AppError) throw error
@@ -178,10 +194,6 @@ export class ConfigService {
     }
   }
 
-  /**
-   * Update AI provider configuration (API key, provider type, model)
-   * This allows users to use their own API keys (Gemini, Groq, OpenAI)
-   */
   async updateAIProvider(
     uid: string,
     provider: string,
@@ -206,7 +218,6 @@ export class ConfigService {
         )
       }
 
-      const db = getFirestore()
       const updateData: any = {
         aiProvider: provider,
         updatedAt: Date.now()
@@ -220,13 +231,18 @@ export class ConfigService {
         updateData.aiModel = model
       }
 
-      await db
-        .collection(COLLECTIONS.CONFIGURATIONS)
-        .doc(uid)
-        .set(updateData, { merge: true })
+      const db = getFirestore()
+      if (!db) {
+        const cur = memoryConfigs.get(uid) || this.getDefaultConfiguration(uid)
+        memoryConfigs.set(uid, { ...cur, ...updateData })
+      } else {
+        await db
+          .collection(COLLECTIONS.CONFIGURATIONS)
+          .doc(uid)
+          .set(updateData, { merge: true })
+      }
 
       logger.info(`AI provider updated for user ${uid}: ${provider}`)
-
       return this.getConfiguration(uid)
     } catch (error) {
       if (error instanceof AppError) throw error
@@ -244,7 +260,11 @@ export class ConfigService {
     apiKey: string,
     model?: string
   ) {
-    await configRepository.saveUserAPIKey(uid, provider, apiKey, model)
+    try {
+      await configRepository.saveUserAPIKey(uid, provider, apiKey, model)
+    } catch (e) {
+      logger.warn('[config] saveUserAPIKey persistence failed:', (e as Error).message)
+    }
     await this.updateConfiguration(uid, {
       aiProvider: provider,
       aiModel: model || null,
@@ -253,11 +273,20 @@ export class ConfigService {
   }
 
   async listUserAPIKeys(uid: string) {
-    return configRepository.listUserAPIKeys(uid)
+    try {
+      return await configRepository.listUserAPIKeys(uid)
+    } catch (e) {
+      logger.warn('[config] listUserAPIKeys failed:', (e as Error).message)
+      return []
+    }
   }
 
   async deleteUserAPIKey(uid: string, provider: AIProvider) {
-    await configRepository.deleteUserAPIKey(uid, provider)
+    try {
+      await configRepository.deleteUserAPIKey(uid, provider)
+    } catch (e) {
+      logger.warn('[config] deleteUserAPIKey failed:', (e as Error).message)
+    }
     const config = await this.getConfiguration(uid)
     if (config?.aiProvider === provider) {
       await this.updateConfiguration(uid, {
@@ -269,7 +298,12 @@ export class ConfigService {
   }
 
   async getUserAIConfig(uid: string) {
-    return configRepository.getActiveUserAIConfig(uid)
+    try {
+      return await configRepository.getActiveUserAIConfig(uid)
+    } catch (e) {
+      logger.warn('[config] getUserAIConfig failed:', (e as Error).message)
+      return null
+    }
   }
 
   private getDefaultConfiguration(uid: string): any {

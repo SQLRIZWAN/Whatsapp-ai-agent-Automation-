@@ -45,6 +45,8 @@ export const getFirestore = (): admin.firestore.Firestore | null => {
   return db
 }
 
+export const firestoreReady = (): boolean => db !== null
+
 export const closeFirestore = async (): Promise<void> => {
   if (db) {
     await db.terminate()
@@ -56,5 +58,6 @@ export const closeFirestore = async (): Promise<void> => {
 export default {
   initializeFirestore,
   getFirestore,
+  firestoreReady,
   closeFirestore
 }

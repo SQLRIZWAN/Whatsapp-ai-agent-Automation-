@@ -89,16 +89,35 @@ export const startServer = async (app: Express): Promise<http.Server> => {
       }, 14 * 60 * 1000)
     }
 
-    // ── Gemini startup health check ─────────────────────────────
+    // ── Consolidated startup readiness check ───────────────────
     setTimeout(async () => {
+      const { firestoreReady } = await import('@modules/database/firestore')
+      const { ttsReadiness } = await import('@modules/whatsapp/services/ttsService')
+      const aiService = (await import('@modules/whatsapp/services/aiService')).default
+
+      const fs = firestoreReady()
+      const tts = ttsReadiness()
+
+      let aiOk = false
+      let aiModel = ''
+      let aiErr = ''
       try {
-        logger.info('[startup] Testing Gemini API key...')
-        const aiService = (await import('@modules/whatsapp/services/aiService')).default
         const result = await aiService.generateResponse('ping', 'Reply with exactly: OK', undefined, undefined)
-        logger.info(`[startup] ✅ Gemini OK via ${result.model}`)
+        aiOk = true
+        aiModel = result.model
       } catch (e: any) {
-        logger.error(`[startup] ❌ Gemini FAILED: ${e.message || String(e)}`)
+        aiErr = e?.message || String(e)
+      }
+
+      logger.info(
+        `[startup] readiness: firestore=${fs} ai=${aiOk}${aiOk ? `(${aiModel})` : ''} tts.gemini=${tts.gemini} tts.elevenlabs=${tts.elevenlabs} tts.gtts=${tts.gtts}`
+      )
+      if (!aiOk) {
+        logger.error(`[startup] ❌ Gemini FAILED: ${aiErr}`)
         logger.error('[startup] Check GEMINI_API_KEY in Render environment variables!')
+      }
+      if (!fs) {
+        logger.warn('[startup] ⚠ Firestore offline — running in memory-only mode (set FIREBASE_* envs to enable persistence)')
       }
     }, 6000)
 

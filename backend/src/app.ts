@@ -8,6 +8,9 @@ import logger from '@shared/utils/logger'
 import authRoutes from '@modules/auth/routes/authRoutes'
 import whatsappRoutes from '@modules/whatsapp/routes/whatsappRoutes'
 import configRoutes from '@modules/config/routes/configRoutes'
+import { firestoreReady } from '@modules/database/firestore'
+import aiService from '@modules/whatsapp/services/aiService'
+import { ttsReadiness } from '@modules/whatsapp/services/ttsService'
 
 export const createApp = (): Express => {
   const app = express()
@@ -55,12 +58,23 @@ export const createApp = (): Express => {
     next()
   })
 
-  // Health check endpoint
-  app.get('/health', asyncHandler(async (req: Request, res: Response) => {
-    res.json({
-      status: 'ok',
+  // Health check endpoint — reports per-subsystem booleans so deploy.yml
+  // can detect partial failure (Render thinks the process is alive but
+  // AI/Firestore is broken).
+  app.get('/health', asyncHandler(async (_req: Request, res: Response) => {
+    const tts = ttsReadiness()
+    const subsystems = {
+      firestore: firestoreReady(),
+      ai: aiService.isReady(),
+      tts: tts.gemini || tts.elevenlabs || tts.gtts,
+    }
+    const ok = subsystems.ai && subsystems.tts
+    res.status(ok ? 200 : 503).json({
+      status: ok ? 'ok' : 'degraded',
       timestamp: new Date().toISOString(),
-      uptime: process.uptime()
+      uptime: process.uptime(),
+      ...subsystems,
+      ttsLayers: tts,
     })
   }))
 

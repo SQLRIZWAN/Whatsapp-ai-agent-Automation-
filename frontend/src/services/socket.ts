@@ -9,8 +9,10 @@ export const createSocket = (token: string) => {
     transports: ['websocket', 'polling'],
     withCredentials: true,
     reconnection: true,
-    reconnectionAttempts: 5,
+    reconnectionAttempts: Infinity,
     reconnectionDelay: 2000,
+    reconnectionDelayMax: 30000,
+    randomizationFactor: 0.5,
   })
 
   socket.on('connect', () => {

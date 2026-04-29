@@ -6,15 +6,21 @@ import { useWhatsappStore } from '@store/whatsappStore'
 const ConnectPage: React.FC = () => {
   const { status, qrCode, phone, fetchStatus, fetchQR } = useWhatsappStore()
   const [secondsRemaining, setSecondsRemaining] = useState(30)
+  const [lastError, setLastError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetchStatus().catch(() => undefined)
-    fetchQR().catch(() => undefined)
+    Promise.all([
+      fetchStatus().then(() => null).catch((e: Error) => e.message || 'status failed'),
+      fetchQR().then(() => null).catch((e: Error) => e.message || 'QR fetch failed'),
+    ]).then(([sErr, qErr]) => {
+      const err = sErr || qErr
+      setLastError(err || null)
+    })
   }, [fetchQR, fetchStatus])
 
   useEffect(() => {
     const refresh = window.setInterval(() => {
-      fetchQR().catch(() => undefined)
+      fetchQR().then(() => setLastError(null)).catch((e: Error) => setLastError(e.message || 'QR fetch failed'))
       setSecondsRemaining(30)
     }, 30000)
     const timer = window.setInterval(() => {
@@ -33,6 +39,9 @@ const ConnectPage: React.FC = () => {
         <p style={subtitle}>Backend Render par run karega, yahan se QR scan karke pair karein.</p>
         <QRCode qrCode={qrCode} secondsRemaining={status === 'qr' ? secondsRemaining : undefined} />
         <div style={statusBox}>Status: {status}{phone ? ` • ${phone}` : ''}</div>
+        {lastError && (
+          <div style={errBox}>⚠️ {lastError}. Retrying…</div>
+        )}
         <div style={actions}>
           <button style={buttonPrimary} onClick={() => whatsappApi.connect().then(() => fetchQR())}>Generate QR</button>
           <button style={buttonSecondary} onClick={() => whatsappApi.disconnect().then(() => fetchStatus())}>Disconnect</button>
@@ -47,6 +56,7 @@ const card: React.CSSProperties = { background: '#fff', borderRadius: 24, paddin
 const title: React.CSSProperties = { margin: 0, color: '#123d35' }
 const subtitle: React.CSSProperties = { color: '#537067' }
 const statusBox: React.CSSProperties = { padding: 14, borderRadius: 16, background: '#eef5f1', color: '#24463f' }
+const errBox: React.CSSProperties = { padding: 12, borderRadius: 12, background: '#fdecea', color: '#b91c1c', fontSize: 13, fontWeight: 600 }
 const actions: React.CSSProperties = { display: 'flex', gap: 12, flexWrap: 'wrap' }
 const buttonPrimary: React.CSSProperties = { background: '#123d35', color: '#fff', border: 'none', padding: '12px 18px', borderRadius: 999, cursor: 'pointer' }
 const buttonSecondary: React.CSSProperties = { background: '#fff', color: '#123d35', border: '1px solid #c9ddd4', padding: '12px 18px', borderRadius: 999, cursor: 'pointer' }

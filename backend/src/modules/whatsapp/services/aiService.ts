@@ -32,6 +32,12 @@ type GeminiPart =
  * Uses v1beta REST API directly (no SDK dependency).
  * Throws only when every model is exhausted.
  */
+// Working-model cache: once a model returns OK we try it first on subsequent calls.
+// Reset whenever it fails so we don't get stuck on a model that just stopped working.
+let preferredModel: string | null = null
+
+const PER_MODEL_TIMEOUT_MS = 8000
+
 async function callGeminiREST(
   apiKey: string,
   parts: GeminiPart[],
@@ -40,7 +46,12 @@ async function callGeminiREST(
 ): Promise<{ text: string; model: string }> {
   let lastError = ''
 
-  for (const modelName of GEMINI_FALLBACK_MODELS) {
+  // Try the cached working model first, then the rest (skipping it).
+  const modelOrder: string[] = preferredModel
+    ? [preferredModel, ...GEMINI_FALLBACK_MODELS.filter((m) => m !== preferredModel)]
+    : [...GEMINI_FALLBACK_MODELS]
+
+  for (const modelName of modelOrder) {
     for (let attempt = 0; attempt < 2; attempt++) {
       try {
         const body: Record<string, unknown> = {
@@ -54,7 +65,7 @@ async function callGeminiREST(
         const res = await axios.post(
           `${GEMINI_BASE}/${modelName}:generateContent?key=${apiKey}`,
           body,
-          { timeout: 30000, headers: { 'Content-Type': 'application/json' } }
+          { timeout: PER_MODEL_TIMEOUT_MS, headers: { 'Content-Type': 'application/json' } }
         )
 
         const text: string =
@@ -68,6 +79,7 @@ async function callGeminiREST(
           throw new Error(`empty response (finishReason: ${finishReason})`)
         }
 
+        preferredModel = modelName
         logger.info(`[ai] ${tag} OK via ${modelName}`)
         return { text, model: modelName }
       } catch (e: any) {
@@ -77,12 +89,14 @@ async function callGeminiREST(
         lastError = `${modelName}: [${status || 'ERR'}] ${msg.substring(0, 120)}`
         logger.warn(`[ai] ${tag} failed — ${lastError}`)
 
+        if (preferredModel === modelName) preferredModel = null
+
         if (status === 429) {
           const retryMs = (() => {
             const m = msg.match(/retry[^0-9]*(\d+(?:\.\d+)?)\s*s/i)
-            return m ? Math.min(parseFloat(m[1]) * 1000, 8000) : 2000
+            return m ? Math.min(parseFloat(m[1]) * 1000, 4000) : 1500
           })()
-          if (attempt === 0 && retryMs <= 8000) {
+          if (attempt === 0 && retryMs <= 4000) {
             logger.info(`[ai] ${tag} 429 — waiting ${retryMs}ms before retry`)
             await new Promise((r) => setTimeout(r, retryMs))
             continue
@@ -150,6 +164,10 @@ export class AIService {
   private getApiKey(): string {
     if (!this.apiKey) throw new AppError(ErrorCode.INTERNAL_ERROR, 'GEMINI_API_KEY not configured', 500)
     return this.apiKey
+  }
+
+  isReady(): boolean {
+    return !!this.apiKey
   }
 
   async getAIConfig(uid: string): Promise<AIConfig> {

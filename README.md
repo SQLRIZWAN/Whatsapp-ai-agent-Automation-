@@ -10,6 +10,20 @@ Chrome/browser closing has zero effect on the bot.
 - **Health check:** `https://whatsapp-ai-backend-8ylf.onrender.com/health`
 - **Keep-alive ping:** `https://whatsapp-ai-backend-8ylf.onrender.com/ping`
 
+`/health` returns per-subsystem booleans so the deploy workflow can detect partial failure:
+
+```json
+{
+  "status": "ok",
+  "firestore": true,
+  "ai": true,
+  "tts": true,
+  "ttsLayers": { "gemini": true, "elevenlabs": false, "gtts": true }
+}
+```
+
+If `ai` is `false`, the bot will still reply with a canned text fallback so the user never sees total silence.
+
 ## Architecture
 
 ```
@@ -47,13 +61,22 @@ Self-ping every 14 minutes prevents Render free-tier cold starts.
 
 ## AI Providers
 
-- **Gemini** (default): 5-model fallback chain — 2.5-flash → 1.5-flash-latest
-- **Groq (xAI):** llama-3.3-70b-versatile
-- **OpenAI:** gpt-4o-mini (default)
+- **Gemini** (default): 5-model fallback chain — 2.5-flash → 2.5-flash-preview-05-20 → 2.0-flash → 2.0-flash-lite → 1.5-flash-latest. Per-model timeout 8s, working model is cached so subsequent requests skip dead models.
+- **Groq (xAI):** llama-3.3-70b-versatile (used only when user saves their own Groq key)
+- **OpenAI:** gpt-4o-mini (used only when user saves their own OpenAI key)
 
 Provider selection logic:
 1. If user saved own API key → use that provider
 2. Else → backend Gemini key (fallback chain)
+3. If every layer fails → bot sends a short canned text fallback reply ("⚠️ thoda issue aaya, please dobara try karein. — SQL 💉") so the user is never left in silence.
+
+## TTS Fallback Chain (voice notes)
+
+1. **Gemini TTS** (`gemini-2.5-flash-preview-tts` → `gemini-2.0-flash-preview-tts`) — primary, best quality on server IPs.
+2. **ElevenLabs** (`eleven_multilingual_v2`) — used only if `ELEVENLABS_API_KEY` is set in Render env. Skipped silently otherwise.
+3. **Google Translate TTS** (`google-tts-api`) — last-resort free fallback.
+
+If all three layers fail the caller sends a plain text reply instead of a voice note.
 
 ## Frontend Pages
 
@@ -117,6 +140,8 @@ Provider selection logic:
 - `FIREBASE_PRIVATE_KEY`
 - `GEMINI_API_KEY`
 - `ENCRYPTION_KEY` — 32-byte hex string for API key encryption
+- `ELEVENLABS_API_KEY` — *(optional)* enables layer-2 TTS fallback. Bot still works without it.
+- `ELEVENLABS_VOICE_ID` — *(optional)* defaults to `pNInz6obpgDQGcFmaJgB` (Adam).
 - `LOG_LEVEL=info`
 
 ## Local Development

@@ -56,14 +56,39 @@ jobs:
             echo "  attempt $i: $STATUS"
             if [[ "$STATUS" == "live" ]]; then
               echo "Render deploy succeeded"
-              exit 0
+              break
             fi
             if [[ "$STATUS" == "failed" || "$STATUS" == "canceled" ]]; then
               echo "Render deploy $STATUS"
               exit 1
             fi
+            if [[ $i -eq 40 ]]; then
+              echo "Timed out waiting for Render deploy"
+              exit 1
+            fi
           done
-          echo "Timed out waiting for Render deploy"
+
+      - name: Validate /health subsystems
+        run: |
+          # Backend just went live — validate that AI and TTS subsystems are healthy.
+          # If /health returns 503 or any subsystem is false, fail the workflow.
+          for i in $(seq 1 12); do
+            sleep 10
+            RESP=$(curl -s -w "\n%{http_code}" https://whatsapp-ai-backend-8ylf.onrender.com/health || true)
+            HTTP=$(echo "$RESP" | tail -n1)
+            BODY=$(echo "$RESP" | sed '$d')
+            echo "  attempt $i — HTTP $HTTP — $BODY"
+            if [[ "$HTTP" == "200" ]]; then
+              AI=$(echo "$BODY" | jq -r '.ai // false')
+              TTS=$(echo "$BODY" | jq -r '.tts // false')
+              if [[ "$AI" == "true" && "$TTS" == "true" ]]; then
+                echo "✅ /health green: ai=$AI tts=$TTS"
+                exit 0
+              fi
+              echo "  /health degraded — ai=$AI tts=$TTS, retrying"
+            fi
+          done
+          echo "❌ /health validation failed after 12 attempts"
           exit 1
 
       - uses: actions/checkout@v4

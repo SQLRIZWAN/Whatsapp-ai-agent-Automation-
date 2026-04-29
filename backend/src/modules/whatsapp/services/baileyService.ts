@@ -425,80 +425,102 @@ class BaileyService {
     if (!m) return
     const content: proto.IMessage = m.ephemeralMessage?.message || m.viewOnceMessage?.message || m.viewOnceMessageV2?.message || m
 
+    // configService now always returns a sane default — never null.
     const cfg = await configService.getConfiguration(uid).catch(() => null)
-    const systemPrompt = cfg?.systemPrompt || ''
+    const systemPrompt = cfg?.systemPrompt || 'My name is SQL 💉. Created by SQL RIZWAN.'
     const forwardNumber = cfg?.callForwarding?.phoneNumber || ''
     const prompt = buildPromptWithForwarding(systemPrompt, forwardNumber)
 
     const text = content.conversation || content.extendedTextMessage?.text || content.imageMessage?.caption || content.videoMessage?.caption || ''
 
-    if (content.audioMessage) {
-      logger.info(`[wa] audio received from ${jid}`)
-      await r.sock.sendPresenceUpdate('composing', jid)
-      try {
-        const buf = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
-        logger.info(`[wa] audio ${buf.length}b — converting mp3`)
-        const mp3Buf = await convertToMp3(buf, 'ogg')
-        logger.info(`[wa] mp3 ${mp3Buf.length}b — sending to Gemini`)
-        const { text: replyText, model } = await aiService.generateFromAudio(mp3Buf.toString('base64'), prompt, uid)
-        logger.info(`[wa] audio reply via ${model}`)
-        await this.sendVoiceReply(uid, jid, replyText)
-      } catch (e) {
-        logger.error('[wa] audio failed:', (e as Error).message)
+    try {
+      if (content.audioMessage) {
+        logger.info(`[wa] audio received from ${jid}`)
+        await r.sock.sendPresenceUpdate('composing', jid).catch(() => undefined)
+        try {
+          const buf = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
+          logger.info(`[wa] audio ${buf.length}b — converting mp3`)
+          const mp3Buf = await convertToMp3(buf, 'ogg')
+          logger.info(`[wa] mp3 ${mp3Buf.length}b — sending to Gemini`)
+          const { text: replyText, model } = await aiService.generateFromAudio(mp3Buf.toString('base64'), prompt, uid)
+          logger.info(`[wa] audio reply via ${model}`)
+          await this.sendVoiceReply(uid, jid, replyText)
+        } catch (e) {
+          logger.error('[wa] audio failed:', (e as Error).message)
+          await this.sendFallbackReply(uid, jid)
+        }
+        return
       }
-      return
-    }
 
-    if (content.imageMessage) {
-      logger.info(`[wa] image received from ${jid} mime=${content.imageMessage.mimetype}`)
-      await r.sock.sendPresenceUpdate('composing', jid)
+      if (content.imageMessage) {
+        logger.info(`[wa] image received from ${jid} mime=${content.imageMessage.mimetype}`)
+        await r.sock.sendPresenceUpdate('composing', jid).catch(() => undefined)
+        try {
+          const buf = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
+          logger.info(`[wa] image ${buf.length}b — sending to Gemini`)
+          const mime = content.imageMessage.mimetype || 'image/jpeg'
+          const { text: replyText, model } = await aiService.analyzeImage(
+            buf.toString('base64'),
+            text || 'Is image mein kya hai? Detail mein batao.',
+            prompt,
+            mime
+          )
+          logger.info(`[wa] image reply via ${model}`)
+          await r.sock.sendMessage(jid, { text: replyText })
+        } catch (e) {
+          logger.error('[wa] image failed:', (e as Error).message)
+          await this.sendFallbackReply(uid, jid)
+        }
+        return
+      }
+
+      if (!text.trim()) return
+      await r.sock.sendPresenceUpdate('composing', jid).catch(() => undefined)
+
+      // Image generation detection — check before regular AI response
+      const imgKeywords = ['generate image', 'create image', 'image banao', 'ek image', 'picture banao', 'make image', 'draw ', 'paint ', 'photo banao', 'tasveer', 'tasweer', 'wallpaper banao', 'illustration', 'photo bana', 'image bana', 'ek photo', 'design banao']
+      if (imgKeywords.some(kw => text.toLowerCase().includes(kw))) {
+        try {
+          const imgResult = await aiService.generateImage(text)
+          if (imgResult) {
+            await r.sock.sendMessage(jid, {
+              image: Buffer.from(imgResult.data, 'base64'),
+              mimetype: imgResult.mimeType,
+              caption: '🎨',
+            })
+          } else {
+            const { text: reply } = await aiService.generateResponse(text, text, prompt, uid)
+            await r.sock.sendMessage(jid, { text: reply })
+          }
+        } catch (e) {
+          logger.error('[wa] image gen failed:', (e as Error).message)
+          await this.sendFallbackReply(uid, jid)
+        }
+        return
+      }
+
       try {
-        const buf = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
-        logger.info(`[wa] image ${buf.length}b — sending to Gemini`)
-        const mime = content.imageMessage.mimetype || 'image/jpeg'
-        const { text: replyText, model } = await aiService.analyzeImage(
-          buf.toString('base64'),
-          text || 'Is image mein kya hai? Detail mein batao.',
-          prompt,
-          mime
-        )
-        logger.info(`[wa] image reply via ${model}`)
+        const { text: replyText } = await aiService.generateResponse(text, text, prompt, uid)
         await r.sock.sendMessage(jid, { text: replyText })
       } catch (e) {
-        logger.error('[wa] image failed:', (e as Error).message)
+        logger.error('[wa] text AI failed:', (e as Error).message)
+        await this.sendFallbackReply(uid, jid)
       }
-      return
+    } catch (outer) {
+      logger.error('[wa] handleIncomingMessage outer failure:', (outer as Error).message)
+      await this.sendFallbackReply(uid, jid)
     }
+  }
 
-    if (!text.trim()) return
-    await r.sock.sendPresenceUpdate('composing', jid)
-
-    // Image generation detection — check before regular AI response
-    const imgKeywords = ['generate image', 'create image', 'image banao', 'ek image', 'picture banao', 'make image', 'draw ', 'paint ', 'photo banao', 'tasveer', 'tasweer', 'wallpaper banao', 'illustration', 'photo bana', 'image bana', 'ek photo', 'design banao']
-    if (imgKeywords.some(kw => text.toLowerCase().includes(kw))) {
-      try {
-        const imgResult = await aiService.generateImage(text)
-        if (imgResult) {
-          await r.sock.sendMessage(jid, {
-            image: Buffer.from(imgResult.data, 'base64'),
-            mimetype: imgResult.mimeType,
-            caption: '🎨',
-          })
-        } else {
-          const { text: reply } = await aiService.generateResponse(text, text, prompt, uid)
-          await r.sock.sendMessage(jid, { text: reply })
-        }
-      } catch (e) {
-        logger.error('[wa] image gen failed:', (e as Error).message)
-      }
-      return
-    }
-
+  private async sendFallbackReply(uid: string, jid: string) {
+    const r = this.runtimes.get(uid)
+    if (!r || r.status !== 'connected') return
     try {
-      const { text: replyText } = await aiService.generateResponse(text, text, prompt, uid)
-      await r.sock.sendMessage(jid, { text: replyText })
+      await r.sock.sendMessage(jid, {
+        text: '⚠️ thoda issue aaya, please dobara try karein. — SQL 💉',
+      })
     } catch (e) {
-      logger.error('[wa] text AI failed:', (e as Error).message)
+      logger.warn('[wa] fallback reply send failed:', (e as Error).message)
     }
   }
 

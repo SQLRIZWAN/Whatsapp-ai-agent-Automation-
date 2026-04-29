@@ -29,5 +29,9 @@ services:
         sync: false
       - key: ENCRYPTION_KEY
         sync: false
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: ELEVENLABS_VOICE_ID
+        sync: false
       - key: LOG_LEVEL
         value: info

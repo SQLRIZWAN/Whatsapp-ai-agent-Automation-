@@ -13,17 +13,29 @@ const AppShell: React.FC = () => {
   const { user, token, logout } = useAuthStore()
   const [connStatus, setConnStatus] = useState<ConnStatus>('disconnected')
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [backendOffline, setBackendOffline] = useState(false)
   const socketRef = useRef<Socket | null>(null)
 
   // Fetch real status on mount so topbar doesn't flash "Offline"
   useEffect(() => {
     if (!token) return
-    axiosInstance.get('/api/whatsapp/status')
-      .then(res => {
-        const s = res.data?.data?.status as ConnStatus | undefined
-        if (s) setConnStatus(s)
-      })
-      .catch(() => {/* ignore — Socket.IO will update soon */})
+    let cancelled = false
+    const fetchStatus = () => {
+      axiosInstance.get('/api/whatsapp/status')
+        .then(res => {
+          if (cancelled) return
+          const s = res.data?.data?.status as ConnStatus | undefined
+          if (s) setConnStatus(s)
+          setBackendOffline(false)
+        })
+        .catch(() => {
+          if (cancelled) return
+          setBackendOffline(true)
+        })
+    }
+    fetchStatus()
+    const id = window.setInterval(fetchStatus, 15000)
+    return () => { cancelled = true; window.clearInterval(id) }
   }, [token])
 
   useEffect(() => {
@@ -33,6 +45,9 @@ const AppShell: React.FC = () => {
     s.on('whatsapp:status', (payload: { status: ConnStatus }) => {
       setConnStatus(payload.status)
     })
+    s.on('connect', () => setBackendOffline(false))
+    s.on('connect_error', () => setBackendOffline(true))
+    s.on('disconnect', () => setBackendOffline(true))
     return () => { s.close(); socketRef.current = null }
   }, [token])
 
@@ -57,6 +72,12 @@ const AppShell: React.FC = () => {
 
   return (
     <div className="app-shell">
+      {backendOffline && (
+        <div className="backend-offline-banner" role="status" aria-live="polite">
+          ⚠️ Backend offline — retrying… replies may be delayed.
+        </div>
+      )}
+
       {/* Mobile topbar */}
       <div className="mobile-topbar">
         <button
@@ -99,6 +120,21 @@ const AppShell: React.FC = () => {
 
 const appShellCss = `
   * { box-sizing: border-box; }
+
+  .backend-offline-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 300;
+    background: #fdecea;
+    color: #b91c1c;
+    border-bottom: 1px solid #f5c2c0;
+    padding: 8px 16px;
+    font-size: 13px;
+    text-align: center;
+    font-weight: 600;
+  }
 
   .app-shell {
     display: flex;
