@@ -13,7 +13,7 @@ import pino from 'pino'
 import QRCode from 'qrcode'
 import logger from '@shared/utils/logger'
 import { getFirestore } from '../../database/firestore'
-import { CONFIG, COLLECTIONS, SESSION_STATUS } from '@shared/constants/config'
+import { CONFIG, COLLECTIONS, SESSION_STATUS, MESSAGE_TYPE } from '@shared/constants/config'
 import { useFirestoreAuthState } from './authState'
 import qrService from './qrService'
 import { synthesizeVoiceNote, convertToMp3 } from './ttsService'
@@ -415,6 +415,29 @@ class BaileyService {
     }, 1500)
   }
 
+  private async persistInbound(uid: string, from: string, content: string, type: string) {
+    try {
+      const saved = await messageService.saveMessage(uid, from, uid, content, type, false)
+      this.emitNewMessage(uid, saved)
+    } catch (e) {
+      logger.warn('[wa] persistInbound failed:', (e as Error).message)
+    }
+  }
+
+  private async persistOutbound(uid: string, to: string, content: string, type: string, model?: string) {
+    try {
+      const saved = await messageService.saveMessage(uid, uid, to, content, type, true, {
+        text: content,
+        model: model || '',
+        tokensUsed: 0,
+        processedAt: Date.now(),
+      })
+      this.emitNewMessage(uid, saved)
+    } catch (e) {
+      logger.warn('[wa] persistOutbound failed:', (e as Error).message)
+    }
+  }
+
   private async handleIncomingMessage(uid: string, msg: WAMessage) {
     const r = this.runtimes.get(uid)
     if (!r) return
@@ -425,7 +448,6 @@ class BaileyService {
     if (!m) return
     const content: proto.IMessage = m.ephemeralMessage?.message || m.viewOnceMessage?.message || m.viewOnceMessageV2?.message || m
 
-    // configService now always returns a sane default — never null.
     const cfg = await configService.getConfiguration(uid).catch(() => null)
     const systemPrompt = cfg?.systemPrompt || DEFAULT_SYSTEM_PROMPT
     const forwardNumber = cfg?.callForwarding?.phoneNumber || ''
@@ -436,17 +458,17 @@ class BaileyService {
     try {
       if (content.audioMessage) {
         logger.info(`[wa] audio received from ${jid} mime=${content.audioMessage.mimetype}`)
+        await this.persistInbound(uid, jid, text || '🎙️ voice note', MESSAGE_TYPE.AUDIO)
         await r.sock.sendPresenceUpdate('composing', jid).catch(() => undefined)
         try {
           const buf = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
-          // Gemini accepts audio/ogg directly per docs §4 — but converting to
-          // mp3 is more reliable for codec/voice-note variations on Render.
           logger.info(`[wa] audio ${buf.length}b — converting → mp3`)
           const mp3Buf = await convertToMp3(buf, 'ogg')
           logger.info(`[wa] mp3 ${mp3Buf.length}b — sending to Gemini`)
           const { text: replyText, model } = await aiService.generateFromAudio(mp3Buf, prompt, uid, 'audio/mp3')
           logger.info(`[wa] audio reply via ${model}`)
           await this.sendVoiceReply(uid, jid, replyText)
+          await this.persistOutbound(uid, jid, replyText, MESSAGE_TYPE.AUDIO, model)
         } catch (e) {
           logger.error('[wa] audio failed:', (e as Error).message)
           await this.sendFallbackReply(uid, jid)
@@ -456,6 +478,7 @@ class BaileyService {
 
       if (content.imageMessage) {
         logger.info(`[wa] image received from ${jid} mime=${content.imageMessage.mimetype}`)
+        await this.persistInbound(uid, jid, text || '🖼️ image', MESSAGE_TYPE.IMAGE)
         await r.sock.sendPresenceUpdate('composing', jid).catch(() => undefined)
         try {
           const buf = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
@@ -469,6 +492,7 @@ class BaileyService {
           )
           logger.info(`[wa] image reply via ${model}`)
           await r.sock.sendMessage(jid, { text: replyText })
+          await this.persistOutbound(uid, jid, replyText, MESSAGE_TYPE.TEXT, model)
         } catch (e) {
           logger.error('[wa] image failed:', (e as Error).message)
           await this.sendFallbackReply(uid, jid)
@@ -478,6 +502,7 @@ class BaileyService {
 
       if (content.videoMessage) {
         logger.info(`[wa] video received from ${jid} mime=${content.videoMessage.mimetype}`)
+        await this.persistInbound(uid, jid, text || '📹 video', MESSAGE_TYPE.VIDEO)
         await r.sock.sendPresenceUpdate('composing', jid).catch(() => undefined)
         try {
           const buf = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
@@ -485,6 +510,7 @@ class BaileyService {
           const { text: replyText, model } = await aiService.analyzeVideo(buf, text || '', prompt, mime)
           logger.info(`[wa] video reply via ${model}`)
           await r.sock.sendMessage(jid, { text: replyText })
+          await this.persistOutbound(uid, jid, replyText, MESSAGE_TYPE.TEXT, model)
         } catch (e) {
           logger.error('[wa] video failed:', (e as Error).message)
           await this.sendFallbackReply(uid, jid)
@@ -493,6 +519,7 @@ class BaileyService {
       }
 
       if (!text.trim()) return
+      await this.persistInbound(uid, jid, text, MESSAGE_TYPE.TEXT)
       await r.sock.sendPresenceUpdate('composing', jid).catch(() => undefined)
 
       // Image generation detection — check before regular AI response
@@ -506,9 +533,11 @@ class BaileyService {
               mimetype: imgResult.mimeType,
               caption: `🎨 ${imgResult.model}`,
             })
+            await this.persistOutbound(uid, jid, `🎨 generated image (${imgResult.model})`, MESSAGE_TYPE.IMAGE, imgResult.model)
           } else {
-            const { text: reply } = await aiService.generateResponse(text, text, prompt, uid)
+            const { text: reply, model } = await aiService.generateResponse(text, text, prompt, uid)
             await r.sock.sendMessage(jid, { text: reply })
+            await this.persistOutbound(uid, jid, reply, MESSAGE_TYPE.TEXT, model)
           }
         } catch (e) {
           logger.error('[wa] image gen failed:', (e as Error).message)
@@ -518,8 +547,9 @@ class BaileyService {
       }
 
       try {
-        const { text: replyText } = await aiService.generateResponse(text, text, prompt, uid)
+        const { text: replyText, model } = await aiService.generateResponse(text, text, prompt, uid)
         await r.sock.sendMessage(jid, { text: replyText })
+        await this.persistOutbound(uid, jid, replyText, MESSAGE_TYPE.TEXT, model)
       } catch (e) {
         logger.error('[wa] text AI failed:', (e as Error).message)
         await this.sendFallbackReply(uid, jid)
@@ -533,10 +563,10 @@ class BaileyService {
   private async sendFallbackReply(uid: string, jid: string) {
     const r = this.runtimes.get(uid)
     if (!r || r.status !== 'connected') return
+    const fallback = '⚠️ thoda issue aaya, please dobara try karein. — SQL 💉'
     try {
-      await r.sock.sendMessage(jid, {
-        text: '⚠️ thoda issue aaya, please dobara try karein. — SQL 💉',
-      })
+      await r.sock.sendMessage(jid, { text: fallback })
+      await this.persistOutbound(uid, jid, fallback, MESSAGE_TYPE.TEXT, 'fallback')
     } catch (e) {
       logger.warn('[wa] fallback reply send failed:', (e as Error).message)
     }

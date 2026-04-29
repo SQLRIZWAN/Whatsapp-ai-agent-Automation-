@@ -72,17 +72,27 @@ deleted after the response so the project's 20 GB quota is never burned.
 
 ## Model Fallback Chain (per modality)
 
-Per user spec — picked per modality from the Gemini documentation.
+The first 5 entries of the text chain are the user's spec, verbatim. The
+trailing recovery aliases are appended after live verification via the
+`v1beta/models` ListModels endpoint so that 404'd preview/-latest aliases
+don't dead-end the chain. The image and TTS chains are sourced from the same
+ListModels output.
 
-| Task                    | Chain                                                                                                         |
-|-------------------------|---------------------------------------------------------------------------------------------------------------|
-| Text / Vision / Audio   | `gemini-2.5-flash` → `gemini-2.5-flash-preview-05-20` → `gemini-2.0-flash` → `gemini-2.0-flash-lite` → `gemini-1.5-flash-latest` |
-| Image generation        | `imagen-3.0-generate-002` → `imagen-3.0-fast-generate-001` → `gemini-2.0-flash-preview-image-generation` → `gemini-2.0-flash-exp-image-generation` |
-| Audio output (TTS)      | `gemini-2.5-flash-preview-tts` → `gemini-2.0-flash-preview-tts` → `gemini-2.0-flash` (AUDIO modality)         |
+| Task                    | Chain                                                                                                                                                                                    |
+|-------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Text / Vision / Audio   | `gemini-2.5-flash` → `gemini-2.5-flash-preview-05-20` → `gemini-2.0-flash` → `gemini-2.0-flash-lite` → `gemini-1.5-flash-latest` → `gemini-2.5-flash-lite` → `gemini-2.0-flash-001` → `gemini-2.0-flash-lite-001` |
+| Image generation        | `imagen-4.0-generate-001` → `imagen-4.0-fast-generate-001` → `imagen-4.0-ultra-generate-001` → `imagen-3.0-generate-002` → `imagen-3.0-generate-001` → `imagen-3.0-fast-generate-001` (Imagen first); then Gemini multimodal: `gemini-2.5-flash-image` → `gemini-3-pro-image-preview` → `gemini-3.1-flash-image-preview` → `gemini-2.5-flash-image-preview` → `gemini-2.0-flash-preview-image-generation` → `gemini-2.0-flash-exp-image-generation` |
+| Audio output (TTS)      | `gemini-2.5-flash-preview-tts` → `gemini-2.5-pro-preview-tts` → `gemini-3.1-flash-tts-preview` → `gemini-2.0-flash-preview-tts`                                                          |
 
 Per-model timeout is 12 s. The first model that returns OK is cached as
 `preferredModel` so subsequent requests skip dead/slow models. On 429 the bot
 honours the `retry` hint up to 4 s before moving to the next model.
+
+At server startup, `ListModels` is called once and the result is logged + made
+available on `/health` under `ai_diag.availableModels`. If your bot is
+returning the canned "thoda issue aaya" reply, check that endpoint — most
+silent failures are quota (429) on the active model or a 404 because the
+preview alias was retired by Google.
 
 ## Default System Prompt
 
@@ -114,6 +124,15 @@ top of whatever you save so the model never forgets it can see / hear.
 - On backend restart, all sessions auto-reconnect without new QR scan
 - Exponential backoff reconnect (max 25 attempts)
 - Firestore quota exceeded → graceful memory-only fallback
+
+## Message Persistence & Live Counters
+
+Every inbound and outbound message (text, image, audio, video, image-gen,
+canned fallback) is persisted via `messageService.saveMessage` and broadcast
+on the `whatsapp:message:new` Socket.IO event so the dashboard message count
+and the `/messages` page update in real time. If Firestore is unavailable, the
+service keeps a rolling 500-message in-memory buffer per user so the UI never
+shows zero just because the database is offline.
 
 ## AI Providers
 

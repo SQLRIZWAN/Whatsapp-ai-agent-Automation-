@@ -53,20 +53,25 @@ const DashboardPage: React.FC = () => {
     return () => { cancelled = true }
   }, [])
 
+  const fetchStats = async () => {
+    try {
+      const [msgRes, callRes] = await Promise.all([
+        axiosInstance.get('/api/whatsapp/messages?limit=1000'),
+        axiosInstance.get('/api/whatsapp/calls?limit=1000'),
+      ])
+      setStats({
+        messages: (msgRes.data.data?.messages || []).length,
+        calls: (callRes.data.data?.calls || []).length,
+      })
+    } catch { /* stats are best-effort */ }
+  }
+
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const [msgRes, callRes] = await Promise.all([
-          axiosInstance.get('/api/whatsapp/messages?limit=1000'),
-          axiosInstance.get('/api/whatsapp/calls?limit=1000'),
-        ])
-        setStats({
-          messages: (msgRes.data.data?.messages || []).length,
-          calls: (callRes.data.data?.calls || []).length,
-        })
-      } catch { /* stats are best-effort */ }
-    }
     fetchStats()
+    // Background refresh every 15s so counts stay fresh even if the
+    // socket misses an event.
+    const id = window.setInterval(fetchStats, 15000)
+    return () => window.clearInterval(id)
   }, [])
 
   useEffect(() => {
@@ -79,6 +84,10 @@ const DashboardPage: React.FC = () => {
       if (payload.connectedAt) connectedAtRef.current = payload.connectedAt
       if (payload.status !== 'connected') connectedAtRef.current = null
     })
+    // Live message / call counters — increment on each socket event and
+    // do a background refetch to reconcile.
+    s.on('whatsapp:message:new', () => fetchStats())
+    s.on('whatsapp:call:new', () => fetchStats())
     return () => { s.close(); socketRef.current = null }
   }, [token])
 
