@@ -535,9 +535,12 @@ class BaileyService {
             })
             await this.persistOutbound(uid, jid, `🎨 generated image (${imgResult.model})`, MESSAGE_TYPE.IMAGE, imgResult.model)
           } else {
-            const { text: reply, model } = await aiService.generateResponse(text, text, prompt, uid)
-            await r.sock.sendMessage(jid, { text: reply })
-            await this.persistOutbound(uid, jid, reply, MESSAGE_TYPE.TEXT, model)
+            // Fail loud — don't fall through to generateResponse, which would
+            // hallucinate "yes I'll make it" text replies. Tell the user the
+            // truth so they don't think we're sending a real image.
+            const failMsg = '🚫 Abhi image generate nahi ho payi — Gemini image-gen / Imagen models temporarily unavailable. Thodi der mein dobara try karein. — SQL 💉'
+            await r.sock.sendMessage(jid, { text: failMsg })
+            await this.persistOutbound(uid, jid, failMsg, MESSAGE_TYPE.TEXT, 'image-gen-failed')
           }
         } catch (e) {
           logger.error('[wa] image gen failed:', (e as Error).message)
