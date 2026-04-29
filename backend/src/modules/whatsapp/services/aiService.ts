@@ -550,72 +550,105 @@ export class AIService {
   }
 
   /**
-   * Image generation — Imagen 3 first (per docs §5), then Gemini multimodal
-   * image generation as fallback. Returns null when every model fails.
+   * Image generation — try Gemini multimodal image-gen first (gemini-2.5-flash-image
+   * is GA on the public API and just works), then Imagen via :predict as a
+   * fallback. Each model is tried with a few invocation variants because
+   * different generations of the API expect slightly different request shapes.
+   * Returns null when every model + variant fails.
    */
   async generateImage(prompt: string): Promise<GeneratedImage | null> {
     const apiKey = this.apiKey
     if (!apiKey) return null
 
-    // Layer 1 — Imagen via :predict
-    for (const modelName of IMAGEN_MODELS) {
-      try {
-        logger.info(`[ai] image gen via Imagen: ${modelName}`)
-        const res = await axios.post(
-          `${GEMINI_BASE}/${modelName}:predict?key=${apiKey}`,
-          {
-            instances: [{ prompt }],
-            parameters: {
-              sampleCount: 1,
-              aspectRatio: '1:1',
-              personGeneration: 'allow_adult',
-            },
-          },
-          { timeout: 60_000, headers: { 'Content-Type': 'application/json' } }
-        )
-        const pred = res.data?.predictions?.[0]
-        const b64 = pred?.bytesBase64Encoded || pred?.image?.bytesBase64Encoded
-        if (b64) {
-          logger.info(`[ai] image generated via ${modelName}`)
-          return { data: b64, mimeType: pred?.mimeType || 'image/png', model: modelName }
-        }
-        logger.warn(`[ai] ${modelName} returned no image data`)
-      } catch (e: any) {
-        const msg = e.response?.data?.error?.message || e.message || 'unknown'
-        logger.warn(`[ai] Imagen ${modelName} failed: ${msg.substring(0, 160)}`)
-      }
-    }
+    const errors: string[] = []
 
-    // Layer 2 — Gemini multimodal image-gen via :generateContent
+    // Layer 1 — Gemini multimodal image-gen via :generateContent.
+    // Try a few generationConfig shapes because the modality requirement
+    // varies between model generations (some require ['IMAGE'], some
+    // ['IMAGE','TEXT'], some just respond without a config).
+    const geminiVariants = [
+      { responseModalities: ['IMAGE'] },
+      { responseModalities: ['IMAGE', 'TEXT'] },
+      undefined,
+    ]
     for (const modelName of GEMINI_IMAGE_GEN_MODELS) {
-      try {
-        logger.info(`[ai] image gen via Gemini: ${modelName}`)
-        const res = await axios.post(
-          `${GEMINI_BASE}/${modelName}:generateContent?key=${apiKey}`,
-          {
+      for (const generationConfig of geminiVariants) {
+        try {
+          logger.info(`[ai] image gen via Gemini: ${modelName} (cfg=${generationConfig ? generationConfig.responseModalities?.join('+') : 'none'})`)
+          const body: Record<string, unknown> = {
             contents: [{ role: 'user', parts: [{ text: prompt }] }],
-            generationConfig: { responseModalities: ['IMAGE', 'TEXT'] },
-          },
-          { timeout: 60_000, headers: { 'Content-Type': 'application/json' } }
-        )
-        for (const part of res.data?.candidates?.[0]?.content?.parts || []) {
-          if (part.inlineData?.data) {
-            logger.info(`[ai] image generated via ${modelName}`)
-            return {
-              data: part.inlineData.data,
-              mimeType: part.inlineData.mimeType || 'image/png',
-              model: modelName,
+          }
+          if (generationConfig) body.generationConfig = generationConfig
+
+          const res = await axios.post(
+            `${GEMINI_BASE}/${modelName}:generateContent?key=${apiKey}`,
+            body,
+            { timeout: 60_000, headers: { 'Content-Type': 'application/json' } }
+          )
+          for (const part of res.data?.candidates?.[0]?.content?.parts || []) {
+            if (part.inlineData?.data) {
+              logger.info(`[ai] image generated via ${modelName} (${part.inlineData.mimeType || 'image/png'}, ${part.inlineData.data.length}b)`)
+              return {
+                data: part.inlineData.data,
+                mimeType: part.inlineData.mimeType || 'image/png',
+                model: modelName,
+              }
             }
           }
+          const finishReason = res.data?.candidates?.[0]?.finishReason || 'no-image-part'
+          errors.push(`${modelName}: ${finishReason}`)
+          logger.warn(`[ai] ${modelName} returned no image data (finishReason=${finishReason})`)
+        } catch (e: any) {
+          const status = e.response?.status || 'ERR'
+          const msg = e.response?.data?.error?.message || e.message || 'unknown'
+          errors.push(`${modelName}: [${status}] ${msg.substring(0, 100)}`)
+          logger.warn(`[ai] Gemini image-gen ${modelName} failed [${status}]: ${msg.substring(0, 160)}`)
+          // 400 on invalid argument typically means this variant is wrong —
+          // try the next variant. For 404, skip ahead to the next model.
+          if (status === 404) break
         }
-        logger.warn(`[ai] ${modelName} returned no image data`)
-      } catch (e: any) {
-        const msg = e.response?.data?.error?.message || e.message || 'unknown'
-        logger.warn(`[ai] Gemini image-gen ${modelName} failed: ${msg.substring(0, 160)}`)
       }
     }
 
-    logger.error('[ai] all image generation models failed')
+    // Layer 2 — Imagen via :predict. Try with minimal params first (Imagen 4
+    // doesn't always accept personGeneration) then with the full param set.
+    const imagenVariants = [
+      { sampleCount: 1 },
+      { sampleCount: 1, aspectRatio: '1:1' },
+      { sampleCount: 1, aspectRatio: '1:1', personGeneration: 'allow_adult' },
+    ]
+    for (const modelName of IMAGEN_MODELS) {
+      for (const parameters of imagenVariants) {
+        try {
+          logger.info(`[ai] image gen via Imagen: ${modelName} (params=${Object.keys(parameters).join(',')})`)
+          const res = await axios.post(
+            `${GEMINI_BASE}/${modelName}:predict?key=${apiKey}`,
+            { instances: [{ prompt }], parameters },
+            { timeout: 60_000, headers: { 'Content-Type': 'application/json' } }
+          )
+          const pred = res.data?.predictions?.[0]
+          const b64 = pred?.bytesBase64Encoded || pred?.image?.bytesBase64Encoded
+          if (b64) {
+            logger.info(`[ai] image generated via ${modelName}`)
+            return { data: b64, mimeType: pred?.mimeType || 'image/png', model: modelName }
+          }
+          errors.push(`${modelName}: no predictions`)
+          logger.warn(`[ai] ${modelName} returned no predictions`)
+        } catch (e: any) {
+          const status = e.response?.status || 'ERR'
+          const msg = e.response?.data?.error?.message || e.message || 'unknown'
+          errors.push(`${modelName}: [${status}] ${msg.substring(0, 100)}`)
+          logger.warn(`[ai] Imagen ${modelName} failed [${status}]: ${msg.substring(0, 160)}`)
+          if (status === 404) break
+          if (status === 400 && /personGeneration|aspectRatio/i.test(msg)) {
+            // try next param variant
+            continue
+          }
+        }
+      }
+    }
+
+    logger.error(`[ai] all image generation models failed: ${errors.slice(0, 6).join(' | ')}`)
     return null
   }
 
