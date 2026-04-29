@@ -1,16 +1,18 @@
 # WhatsApp AI Agent Automation
 
-24/7 WhatsApp AI bot — backend runs on Render (Node.js), frontend dashboard on GitHub Pages.
-Chrome/browser closing has zero effect on the bot.
+24/7 multimodal WhatsApp AI bot — backend on Render (Node.js), frontend dashboard on GitHub Pages.
+Closing your browser has zero effect on the bot.
 
 ## Live Links
 
 - **Frontend (Dashboard):** `https://sqlrizwan.github.io/Whatsapp-ai-agent-Automation-/`
 - **Backend API:** `https://whatsapp-ai-backend-8ylf.onrender.com`
 - **Health check:** `https://whatsapp-ai-backend-8ylf.onrender.com/health`
+- **Live AI probe:** `https://whatsapp-ai-backend-8ylf.onrender.com/api/diag/ai`
 - **Keep-alive ping:** `https://whatsapp-ai-backend-8ylf.onrender.com/ping`
 
-`/health` returns per-subsystem booleans so the deploy workflow can detect partial failure:
+`/health` returns per-subsystem booleans plus an `ai_diag` block so the deploy
+workflow and operators can detect partial failure without dashboard access:
 
 ```json
 {
@@ -18,39 +20,93 @@ Chrome/browser closing has zero effect on the bot.
   "firestore": true,
   "ai": true,
   "tts": true,
-  "ttsLayers": { "gemini": true, "elevenlabs": false, "gtts": true }
+  "ttsLayers": { "gemini": true, "elevenlabs": false, "gtts": true },
+  "ai_diag": {
+    "keyPresent": true,
+    "preferredModel": "gemini-2.5-flash",
+    "chain": "gemini-2.5-flash → gemini-2.5-flash-preview-05-20 → gemini-2.0-flash → gemini-2.0-flash-lite → gemini-1.5-flash-latest",
+    "imagen": "imagen-3.0-generate-002 → imagen-3.0-fast-generate-001",
+    "tts": "gemini-2.5-flash-preview-tts → gemini-2.0-flash-preview-tts → gemini-2.0-flash"
+  }
 }
 ```
 
-If `ai` is `false`, the bot will still reply with a canned text fallback so the user never sees total silence.
+If any layer fails the bot drops down the chain instead of going silent.
 
 ## Architecture
 
 ```
 GitHub Pages (Frontend)          Render (Backend — always on)
-┌─────────────────────┐          ┌──────────────────────────────┐
-│  React dashboard    │  HTTPS   │  Express + Socket.IO          │
-│  - QR scan UI       │ ◄──────► │  - Baileys WhatsApp client    │
-│  - Message history  │          │  - Gemini / Groq / OpenAI AI  │
-│  - Settings         │          │  - Google TTS voice notes     │
-│  - AI config        │          │  - Firestore session store    │
-└─────────────────────┘          └──────────────────────────────┘
+┌─────────────────────┐          ┌────────────────────────────────┐
+│  React dashboard    │  HTTPS   │  Express + Socket.IO            │
+│  - QR scan UI       │ ◄──────► │  - Baileys WhatsApp client      │
+│  - Message history  │          │  - Gemini multimodal (REST)     │
+│  - Settings         │          │  - Imagen 3 image generation    │
+│  - AI config        │          │  - Gemini native AUDIO TTS      │
+└─────────────────────┘          │  - Gemini Files API (>18 MB)    │
+                                 │  - Firestore session store      │
+                                 └────────────────────────────────┘
 ```
 
-The backend keeps WhatsApp connected 24/7 independent of any browser.
 Self-ping every 14 minutes prevents Render free-tier cold starts.
 
-## Bot Capabilities
+## Bot Capabilities (Multimodal — per Gemini API docs)
 
-| Feature | How to trigger |
-|---------|---------------|
-| Text reply | Send any text message |
-| Image analysis | Send an image (with or without caption) |
-| Image generation | Send "image banao [description]" or "generate image..." |
-| Voice note reply | Send a voice note — bot understands and replies with voice |
-| Video analysis | Send a video |
-| Auto call reject | Incoming call → auto-rejected + voice note sent |
-| Call forwarding | Configure forwarding number in Settings |
+| Feature           | Trigger                                                    | Backend implementation                                  |
+|-------------------|------------------------------------------------------------|---------------------------------------------------------|
+| Text reply        | Send any text                                              | `models/{flash}:generateContent`                        |
+| Image analysis    | Send a JPEG / PNG / WEBP / HEIC image                      | inline data <18 MB, else Files API upload               |
+| Video analysis    | Send a short MP4 / WEBM / 3GP video                        | inline data <18 MB, else Files API upload               |
+| Voice note reply  | Send a voice note (.ogg)                                   | OGG → MP3 → Gemini → reply audio (Gemini TTS)           |
+| Image generation  | "image banao …", "generate image …", "draw …"              | Imagen 3 first, Gemini image-gen as fallback            |
+| Voice output      | Bot replies to voice with voice automatically              | Gemini AUDIO modality (`Charon` voice) → PCM → OGG/Opus |
+| Auto call reject  | Incoming call → declined + voice-note explanation          | Baileys + Gemini TTS                                    |
+| Call forwarding   | Configure forwarding number in Settings                    | Persisted in Firestore                                  |
+
+### Files API auto-routing
+
+The bot inlines media smaller than ~18 MB (within the 20 MB request budget per
+the docs). Any larger media is uploaded via the Gemini Files API
+(`/upload/v1beta/files` resumable session), referenced by `fileUri`, then
+deleted after the response so the project's 20 GB quota is never burned.
+
+## Model Fallback Chain (per modality)
+
+Per user spec — picked per modality from the Gemini documentation.
+
+| Task                    | Chain                                                                                                         |
+|-------------------------|---------------------------------------------------------------------------------------------------------------|
+| Text / Vision / Audio   | `gemini-2.5-flash` → `gemini-2.5-flash-preview-05-20` → `gemini-2.0-flash` → `gemini-2.0-flash-lite` → `gemini-1.5-flash-latest` |
+| Image generation        | `imagen-3.0-generate-002` → `imagen-3.0-fast-generate-001` → `gemini-2.0-flash-preview-image-generation` → `gemini-2.0-flash-exp-image-generation` |
+| Audio output (TTS)      | `gemini-2.5-flash-preview-tts` → `gemini-2.0-flash-preview-tts` → `gemini-2.0-flash` (AUDIO modality)         |
+
+Per-model timeout is 12 s. The first model that returns OK is cached as
+`preferredModel` so subsequent requests skip dead/slow models. On 429 the bot
+honours the `retry` hint up to 4 s before moving to the next model.
+
+## Default System Prompt
+
+```
+My name is SQL 💉. I am a highly advanced multimodal AI created by SQL RIZWAN.
+I manage this WhatsApp account 24/7.
+
+What I can do:
+- Read and reply to text messages.
+- See images you send and describe / analyze them in detail.
+- Watch short videos and tell you what's happening.
+- Listen to voice notes and reply with my own voice note.
+- Generate fresh images from your description (try: "image banao a sunset on a
+  beach" or "generate image of a cat astronaut").
+
+Personality:
+- Reply in friendly Hinglish by default.
+- Be concise, warm, and helpful.
+- Never claim to be a human — I'm SQL, the AI manager.
+```
+
+You can override this per-user from `/settings → System Prompt` in the
+dashboard. The runtime appends a small "multimodal capability rules" block on
+top of whatever you save so the model never forgets it can see / hear.
 
 ## Session Persistence
 
@@ -61,22 +117,23 @@ Self-ping every 14 minutes prevents Render free-tier cold starts.
 
 ## AI Providers
 
-- **Gemini** (default): 5-model fallback chain — 2.5-flash → 2.5-flash-preview-05-20 → 2.0-flash → 2.0-flash-lite → 1.5-flash-latest. Per-model timeout 8s, working model is cached so subsequent requests skip dead models.
-- **Groq (xAI):** llama-3.3-70b-versatile (used only when user saves their own Groq key)
-- **OpenAI:** gpt-4o-mini (used only when user saves their own OpenAI key)
+- **Gemini** (default): per-modality fallback chain above. Working model is
+  cached so subsequent requests skip dead models.
+- **Groq:** `llama-3.3-70b-versatile` (used only when user saves their own Groq key, text-only)
+- **OpenAI:** `gpt-4o-mini` (used only when user saves their own OpenAI key, text-only)
 
 Provider selection logic:
 1. If user saved own API key → use that provider
-2. Else → backend Gemini key (fallback chain)
-3. If every layer fails → bot sends a short canned text fallback reply ("⚠️ thoda issue aaya, please dobara try karein. — SQL 💉") so the user is never left in silence.
+2. Else → backend Gemini key (full multimodal stack)
+3. If every layer fails → bot sends a short canned text fallback
 
 ## TTS Fallback Chain (voice notes)
 
-1. **Gemini TTS** (`gemini-2.5-flash-preview-tts` → `gemini-2.0-flash-preview-tts`) — primary, best quality on server IPs.
-2. **ElevenLabs** (`eleven_multilingual_v2`) — used only if `ELEVENLABS_API_KEY` is set in Render env. Skipped silently otherwise.
-3. **Google Translate TTS** (`google-tts-api`) — last-resort free fallback.
-
-If all three layers fail the caller sends a plain text reply instead of a voice note.
+1. **Gemini native AUDIO modality** — primary, best quality.
+   - Returns raw 16-bit PCM (24 kHz mono) which is wrapped to WAV then transcoded to OGG/Opus by ffmpeg.
+   - Voice defaults to `Charon` (informative). Other doc voices: `Puck`, `Kore`, `Zephyr`, `Aoede`, `Enceladus`, `Iapetus`.
+2. **ElevenLabs** (`eleven_multilingual_v2`) — used only if `ELEVENLABS_API_KEY` is set.
+3. **Google Translate TTS** — last-resort free fallback.
 
 ## Frontend Pages
 
@@ -92,8 +149,9 @@ If all three layers fail the caller sends a plain text reply instead of a voice 
 ## API Endpoints
 
 ### Health
-- `GET /health` — Server health check
-- `GET /ping` — Keep-alive endpoint (returns `{ pong: true }`)
+- `GET /health` — Server health check (per-subsystem booleans + `ai_diag`)
+- `GET /api/diag/ai` — Live Gemini probe — returns the verbatim error if it fails
+- `GET /ping` — Keep-alive endpoint
 
 ### Auth
 - `POST /api/auth/register`
@@ -123,10 +181,9 @@ If all three layers fail the caller sends a plain text reply instead of a voice 
 
 ## Required Secrets & Env Vars
 
-### GitHub Secrets (for CI/CD)
-- `VITE_API_URL` — Render backend URL
-- `RENDER_API_KEY`
-- `RENDER_SERVICE_ID`
+### GitHub Secrets (CI/CD)
+- `RENDER_API_KEY` — needed by `.github/workflows/deploy.yml` to trigger redeploys
+- `RENDER_SERVICE_ID` — optional, looked up by name otherwise
 
 ### Render Environment Variables
 - `NODE_ENV=production`
@@ -138,10 +195,10 @@ If all three layers fail the caller sends a plain text reply instead of a voice 
 - `FIREBASE_PROJECT_ID`
 - `FIREBASE_CLIENT_EMAIL`
 - `FIREBASE_PRIVATE_KEY`
-- `GEMINI_API_KEY`
+- `GEMINI_API_KEY` — required, drives every modality
 - `ENCRYPTION_KEY` — 32-byte hex string for API key encryption
-- `ELEVENLABS_API_KEY` — *(optional)* enables layer-2 TTS fallback. Bot still works without it.
-- `ELEVENLABS_VOICE_ID` — *(optional)* defaults to `pNInz6obpgDQGcFmaJgB` (Adam).
+- `ELEVENLABS_API_KEY` — *(optional)* enables layer-2 TTS fallback
+- `ELEVENLABS_VOICE_ID` — *(optional)* defaults to `pNInz6obpgDQGcFmaJgB` (Adam)
 - `LOG_LEVEL=info`
 
 ## Local Development
@@ -158,11 +215,10 @@ Frontend dev server proxies `/api/*` to `localhost:5000` automatically.
 
 ## GitHub Actions Workflows
 
-- `deploy-frontend.yml` — Build + deploy to GitHub Pages on push to `main`
-- `deploy-backend.yml` — Trigger Render redeploy on push to `main`
+- `deploy.yml` — Build + deploy frontend to GitHub Pages, trigger Render redeploy, validate `/health` post-deploy, commit Render logs to `diagnostics/render-log.md`
 - `backend-tests.yml` — TypeScript type check
 - `frontend-tests.yml` — TypeScript + Vite build check
 
 ---
 
-Last updated: 2026-04-28
+Last updated: 2026-04-29

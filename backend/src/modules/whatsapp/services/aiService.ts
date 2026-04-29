@@ -5,8 +5,13 @@ import { ErrorCode } from '@shared/types/common.types'
 import configService from '../../config/services/configService'
 import axios from 'axios'
 
+// REST endpoints (per Google AI for Developers — Gemini API v1beta)
 const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models'
+const GEMINI_FILES_BASE = 'https://generativelanguage.googleapis.com/v1beta/files'
+const GEMINI_UPLOAD_BASE = 'https://generativelanguage.googleapis.com/upload/v1beta/files'
 
+// User-specified Gemini fallback chain (highest → lowest preference).
+// Used by all text/vision/audio/decision calls.
 const GEMINI_FALLBACK_MODELS = [
   'gemini-2.5-flash',
   'gemini-2.5-flash-preview-05-20',
@@ -14,6 +19,29 @@ const GEMINI_FALLBACK_MODELS = [
   'gemini-2.0-flash-lite',
   'gemini-1.5-flash-latest',
 ] as const
+
+// Imagen image-generation chain (preferred per Gemini API docs)
+const IMAGEN_MODELS = [
+  'imagen-3.0-generate-002',
+  'imagen-3.0-fast-generate-001',
+] as const
+
+// Gemini multimodal image-generation fallback (works with :generateContent)
+const GEMINI_IMAGE_GEN_MODELS = [
+  'gemini-2.0-flash-preview-image-generation',
+  'gemini-2.0-flash-exp-image-generation',
+] as const
+
+// Gemini TTS / native-audio-output models (per docs §6)
+const GEMINI_TTS_MODELS = [
+  'gemini-2.5-flash-preview-tts',
+  'gemini-2.0-flash-preview-tts',
+  'gemini-2.0-flash',
+] as const
+
+// Threshold above which we route media through the Files API instead of inline
+// data. Doc recommends Files API for total request > 20 MB.
+const FILES_API_THRESHOLD_BYTES = 18 * 1024 * 1024
 
 export type AIProvider = 'gemini' | 'grok' | 'openai'
 
@@ -26,18 +54,9 @@ export interface AIConfig {
 type GeminiPart =
   | { text: string }
   | { inlineData: { data: string; mimeType: string } }
+  | { fileData: { fileUri: string; mimeType: string } }
 
-/**
- * Core Gemini REST caller — tries each model in the fallback chain.
- * Uses v1beta REST API directly (no SDK dependency).
- * Throws only when every model is exhausted.
- */
-// Working-model cache: once a model returns OK we try it first on subsequent calls.
-// Reset whenever it fails so we don't get stuck on a model that just stopped working.
 let preferredModel: string | null = null
-
-// Last failure (truncated) — surfaced on /health so user can diagnose without
-// Render dashboard access. No key material is ever stored here.
 let lastAiError: { at: number; tag: string; status: number | string; message: string } | null = null
 let lastAiOk: { at: number; model: string } | null = null
 
@@ -46,25 +65,32 @@ export function getAiDiag() {
     keyPresent: !!CONFIG.GEMINI_API_KEY,
     keyLen: CONFIG.GEMINI_API_KEY ? CONFIG.GEMINI_API_KEY.length : 0,
     preferredModel,
+    chain: GEMINI_FALLBACK_MODELS.join(' → '),
+    imagen: IMAGEN_MODELS.join(' → '),
+    tts: GEMINI_TTS_MODELS.join(' → '),
     lastOk: lastAiOk,
     lastError: lastAiError,
   }
 }
 
-const PER_MODEL_TIMEOUT_MS = 8000
+const PER_MODEL_TIMEOUT_MS = 12_000
 
 async function callGeminiREST(
   apiKey: string,
   parts: GeminiPart[],
   tag: string,
-  systemInstruction?: string
+  systemInstruction?: string,
+  modelOverrideOrder?: readonly string[]
 ): Promise<{ text: string; model: string }> {
   let lastError = ''
 
-  // Try the cached working model first, then the rest (skipping it).
-  const modelOrder: string[] = preferredModel
-    ? [preferredModel, ...GEMINI_FALLBACK_MODELS.filter((m) => m !== preferredModel)]
+  const baseChain = modelOverrideOrder && modelOverrideOrder.length > 0
+    ? [...modelOverrideOrder]
     : [...GEMINI_FALLBACK_MODELS]
+
+  const modelOrder: string[] = preferredModel && baseChain.includes(preferredModel)
+    ? [preferredModel, ...baseChain.filter((m) => m !== preferredModel)]
+    : baseChain
 
   for (const modelName of modelOrder) {
     for (let attempt = 0; attempt < 2; attempt++) {
@@ -132,6 +158,95 @@ async function callGeminiREST(
   )
 }
 
+// ── Files API (per docs §1) ────────────────────────────────────
+// Used when a single piece of media exceeds ~18 MB or when we want
+// to reuse the same upload across multiple prompts.
+
+export interface UploadedFile {
+  uri: string
+  name: string
+  mimeType: string
+  sizeBytes: number
+  expirationTime?: string
+}
+
+async function uploadFile(
+  apiKey: string,
+  buffer: Buffer,
+  mimeType: string,
+  displayName = 'wa-media'
+): Promise<UploadedFile> {
+  // Two-phase resumable upload: 1) start session, 2) upload bytes.
+  const startRes = await axios.post(
+    `${GEMINI_UPLOAD_BASE}?key=${apiKey}`,
+    { file: { displayName } },
+    {
+      headers: {
+        'X-Goog-Upload-Protocol': 'resumable',
+        'X-Goog-Upload-Command': 'start',
+        'X-Goog-Upload-Header-Content-Length': String(buffer.length),
+        'X-Goog-Upload-Header-Content-Type': mimeType,
+        'Content-Type': 'application/json',
+      },
+      timeout: 30_000,
+    }
+  )
+  const uploadUrl = startRes.headers['x-goog-upload-url'] as string | undefined
+  if (!uploadUrl) {
+    throw new Error('Files API: missing upload URL in start response')
+  }
+
+  const uploadRes = await axios.post(uploadUrl, buffer, {
+    headers: {
+      'Content-Length': String(buffer.length),
+      'X-Goog-Upload-Offset': '0',
+      'X-Goog-Upload-Command': 'upload, finalize',
+    },
+    maxBodyLength: Infinity,
+    maxContentLength: Infinity,
+    timeout: 90_000,
+  })
+
+  const f = uploadRes.data?.file
+  if (!f?.uri) throw new Error('Files API: empty file response')
+
+  // Poll until ACTIVE (file processing for audio/video can take a few seconds).
+  for (let i = 0; i < 12; i++) {
+    if (f.state === 'ACTIVE' || !f.state) break
+    await new Promise((r) => setTimeout(r, 1000))
+    const meta = await axios.get(
+      `${GEMINI_FILES_BASE}/${f.name.replace(/^files\//, '')}?key=${apiKey}`,
+      { timeout: 10_000 }
+    )
+    if (meta.data?.state === 'ACTIVE') {
+      f.state = 'ACTIVE'
+      break
+    }
+    if (meta.data?.state === 'FAILED') {
+      throw new Error(`Files API: file processing FAILED (${meta.data?.error?.message || 'unknown'})`)
+    }
+  }
+
+  return {
+    uri: f.uri as string,
+    name: f.name as string,
+    mimeType: (f.mimeType as string) || mimeType,
+    sizeBytes: parseInt((f.sizeBytes as string) || String(buffer.length), 10),
+    expirationTime: f.expirationTime,
+  }
+}
+
+async function deleteFile(apiKey: string, name: string): Promise<void> {
+  try {
+    await axios.delete(
+      `${GEMINI_FILES_BASE}/${name.replace(/^files\//, '')}?key=${apiKey}`,
+      { timeout: 8_000 }
+    )
+  } catch (e) {
+    logger.warn(`[ai] file delete failed (will auto-expire in 48h): ${(e as Error).message}`)
+  }
+}
+
 async function callGroqAPI(
   apiKey: string,
   model: string,
@@ -166,6 +281,18 @@ async function callOpenAIAPI(
   return { text, model }
 }
 
+export interface GeneratedImage {
+  data: string
+  mimeType: string
+  model: string
+}
+
+export interface GeneratedAudio {
+  data: Buffer
+  mimeType: string
+  model: string
+}
+
 export class AIService {
   private apiKey: string
 
@@ -173,6 +300,8 @@ export class AIService {
     this.apiKey = CONFIG.GEMINI_API_KEY || ''
     if (this.apiKey) {
       logger.info(`[ai] Gemini REST ready — chain: ${GEMINI_FALLBACK_MODELS.join(' → ')}`)
+      logger.info(`[ai] Imagen chain: ${IMAGEN_MODELS.join(' → ')}`)
+      logger.info(`[ai] TTS chain: ${GEMINI_TTS_MODELS.join(' → ')}`)
     } else {
       logger.error('[ai] GEMINI_API_KEY missing — AI will be disabled!')
     }
@@ -197,6 +326,29 @@ export class AIService {
       logger.warn('[ai] Could not fetch user AI config, using defaults')
     }
     return { provider: 'gemini', apiKey: this.apiKey }
+  }
+
+  /**
+   * Build a media part from a buffer — uses inline data when small,
+   * Files API when larger than the threshold (per docs §1).
+   */
+  private async mediaPart(
+    apiKey: string,
+    buffer: Buffer,
+    mimeType: string,
+    displayName: string
+  ): Promise<{ part: GeminiPart; uploadedName?: string }> {
+    if (buffer.length <= FILES_API_THRESHOLD_BYTES) {
+      return {
+        part: { inlineData: { data: buffer.toString('base64'), mimeType } },
+      }
+    }
+    logger.info(`[ai] media ${buffer.length}b > ${FILES_API_THRESHOLD_BYTES}b — uploading via Files API`)
+    const uploaded = await uploadFile(apiKey, buffer, mimeType, displayName)
+    return {
+      part: { fileData: { fileUri: uploaded.uri, mimeType: uploaded.mimeType } },
+      uploadedName: uploaded.name,
+    }
   }
 
   async generateResponse(
@@ -237,56 +389,105 @@ export class AIService {
     return { text: r.text, tokensUsed: 0, model: r.model }
   }
 
+  /**
+   * Vision — accepts either a base64 string (legacy) or a raw Buffer.
+   * Auto-promotes to Files API when buffer exceeds 18 MB.
+   */
   async analyzeImage(
-    imageData: string,
+    imageInput: string | Buffer,
     prompt: string,
     systemPrompt?: string,
     mimeType = 'image/jpeg'
   ): Promise<{ text: string; tokensUsed: number; model: string }> {
-    const safeMime = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(
-      mimeType.split(';')[0].trim()
-    )
-      ? mimeType.split(';')[0].trim()
-      : 'image/jpeg'
+    const allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/heic', 'image/heif']
+    const cleanMime = mimeType.split(';')[0].trim()
+    const safeMime = allowed.includes(cleanMime) ? cleanMime : 'image/jpeg'
 
-    const parts: GeminiPart[] = [
-      { inlineData: { data: imageData, mimeType: safeMime } },
-      { text: prompt },
-    ]
-    const r = await callGeminiREST(this.getApiKey(), parts, 'image', systemPrompt)
-    return { text: r.text, tokensUsed: 0, model: r.model }
+    let part: GeminiPart
+    let uploadedName: string | undefined
+    const apiKey = this.getApiKey()
+
+    if (Buffer.isBuffer(imageInput)) {
+      const r = await this.mediaPart(apiKey, imageInput, safeMime, 'wa-image')
+      part = r.part
+      uploadedName = r.uploadedName
+    } else {
+      part = { inlineData: { data: imageInput, mimeType: safeMime } }
+    }
+
+    try {
+      const r = await callGeminiREST(apiKey, [part, { text: prompt }], 'image', systemPrompt)
+      return { text: r.text, tokensUsed: 0, model: r.model }
+    } finally {
+      if (uploadedName) await deleteFile(apiKey, uploadedName)
+    }
   }
 
+  /**
+   * Audio understanding — accepts base64 (legacy) or Buffer.
+   * Auto-uses Files API for files > 18 MB. Doc §4 supports
+   * transcription, summarization, emotion detection, and timestamp queries.
+   */
   async generateFromAudio(
-    audioBase64: string,
+    audioInput: string | Buffer,
     systemPrompt: string,
-    uid?: string
+    _uid?: string,
+    mimeType = 'audio/mp3'
   ): Promise<{ text: string; model: string }> {
-    const parts: GeminiPart[] = [
-      { inlineData: { data: audioBase64, mimeType: 'audio/mp3' } },
-      { text: 'User ne ek voice message bheja hai. Usse samjho aur short natural Hinglish mein reply karo. No transcription labels.' },
-    ]
-    return callGeminiREST(this.getApiKey(), parts, 'audio', systemPrompt)
+    const apiKey = this.getApiKey()
+    const allowed = ['audio/wav', 'audio/mp3', 'audio/mpeg', 'audio/aiff', 'audio/aac', 'audio/ogg', 'audio/flac']
+    const cleanMime = mimeType.split(';')[0].trim()
+    const safeMime = allowed.includes(cleanMime) ? cleanMime : 'audio/mp3'
+
+    let part: GeminiPart
+    let uploadedName: string | undefined
+
+    if (Buffer.isBuffer(audioInput)) {
+      const r = await this.mediaPart(apiKey, audioInput, safeMime, 'wa-voice')
+      part = r.part
+      uploadedName = r.uploadedName
+    } else {
+      part = { inlineData: { data: audioInput, mimeType: safeMime } }
+    }
+
+    const instruction =
+      'User ne ek voice message bheja hai. Usse samjho aur short natural Hinglish mein reply karo. No transcription labels.'
+
+    try {
+      return await callGeminiREST(apiKey, [part, { text: instruction }], 'audio', systemPrompt)
+    } finally {
+      if (uploadedName) await deleteFile(apiKey, uploadedName)
+    }
   }
 
   async analyzeVideo(
-    videoData: string,
+    videoInput: string | Buffer,
     caption: string,
     systemPrompt?: string,
     mimeType = 'video/mp4'
   ): Promise<{ text: string; model: string }> {
-    const safeMime = ['video/mp4', 'video/mpeg', 'video/webm', 'video/quicktime', 'video/3gpp'].includes(
-      mimeType.split(';')[0].trim()
-    )
-      ? mimeType.split(';')[0].trim()
-      : 'video/mp4'
+    const apiKey = this.getApiKey()
+    const allowed = ['video/mp4', 'video/mpeg', 'video/webm', 'video/quicktime', 'video/3gpp']
+    const cleanMime = mimeType.split(';')[0].trim()
+    const safeMime = allowed.includes(cleanMime) ? cleanMime : 'video/mp4'
+
+    let part: GeminiPart
+    let uploadedName: string | undefined
+
+    if (Buffer.isBuffer(videoInput)) {
+      const r = await this.mediaPart(apiKey, videoInput, safeMime, 'wa-video')
+      part = r.part
+      uploadedName = r.uploadedName
+    } else {
+      part = { inlineData: { data: videoInput, mimeType: safeMime } }
+    }
 
     const instruction = `User ne ek video bheja hai${caption ? ` with caption: "${caption}"` : ''}. Describe karo aur Hinglish mein reply karo.`
-    const parts: GeminiPart[] = [
-      { inlineData: { data: videoData, mimeType: safeMime } },
-      { text: instruction },
-    ]
-    return callGeminiREST(this.getApiKey(), parts, 'video', systemPrompt)
+    try {
+      return await callGeminiREST(apiKey, [part, { text: instruction }], 'video', systemPrompt)
+    } finally {
+      if (uploadedName) await deleteFile(apiKey, uploadedName)
+    }
   }
 
   async makeDecision(context: string, systemPrompt: string): Promise<{ decision: string; model: string }> {
@@ -299,45 +500,131 @@ export class AIService {
     return { decision: r.text, model: r.model }
   }
 
-  async generateImage(prompt: string): Promise<{ data: string; mimeType: string } | null> {
+  /**
+   * Image generation — Imagen 3 first (per docs §5), then Gemini multimodal
+   * image generation as fallback. Returns null when every model fails.
+   */
+  async generateImage(prompt: string): Promise<GeneratedImage | null> {
     const apiKey = this.apiKey
     if (!apiKey) return null
 
-    const IMAGE_MODELS = [
-      'gemini-2.0-flash-preview-image-generation',
-      'gemini-2.0-flash-exp-image-generation',
-    ]
-
-    for (const modelName of IMAGE_MODELS) {
+    // Layer 1 — Imagen via :predict
+    for (const modelName of IMAGEN_MODELS) {
       try {
-        logger.info(`[ai] image gen via REST: ${modelName}`)
+        logger.info(`[ai] image gen via Imagen: ${modelName}`)
+        const res = await axios.post(
+          `${GEMINI_BASE}/${modelName}:predict?key=${apiKey}`,
+          {
+            instances: [{ prompt }],
+            parameters: {
+              sampleCount: 1,
+              aspectRatio: '1:1',
+              personGeneration: 'allow_adult',
+            },
+          },
+          { timeout: 60_000, headers: { 'Content-Type': 'application/json' } }
+        )
+        const pred = res.data?.predictions?.[0]
+        const b64 = pred?.bytesBase64Encoded || pred?.image?.bytesBase64Encoded
+        if (b64) {
+          logger.info(`[ai] image generated via ${modelName}`)
+          return { data: b64, mimeType: pred?.mimeType || 'image/png', model: modelName }
+        }
+        logger.warn(`[ai] ${modelName} returned no image data`)
+      } catch (e: any) {
+        const msg = e.response?.data?.error?.message || e.message || 'unknown'
+        logger.warn(`[ai] Imagen ${modelName} failed: ${msg.substring(0, 160)}`)
+      }
+    }
+
+    // Layer 2 — Gemini multimodal image-gen via :generateContent
+    for (const modelName of GEMINI_IMAGE_GEN_MODELS) {
+      try {
+        logger.info(`[ai] image gen via Gemini: ${modelName}`)
         const res = await axios.post(
           `${GEMINI_BASE}/${modelName}:generateContent?key=${apiKey}`,
           {
             contents: [{ role: 'user', parts: [{ text: prompt }] }],
             generationConfig: { responseModalities: ['IMAGE', 'TEXT'] },
           },
-          { timeout: 45000, headers: { 'Content-Type': 'application/json' } }
+          { timeout: 60_000, headers: { 'Content-Type': 'application/json' } }
         )
         for (const part of res.data?.candidates?.[0]?.content?.parts || []) {
           if (part.inlineData?.data) {
             logger.info(`[ai] image generated via ${modelName}`)
-            return { data: part.inlineData.data, mimeType: part.inlineData.mimeType || 'image/png' }
+            return {
+              data: part.inlineData.data,
+              mimeType: part.inlineData.mimeType || 'image/png',
+              model: modelName,
+            }
           }
         }
         logger.warn(`[ai] ${modelName} returned no image data`)
       } catch (e: any) {
         const msg = e.response?.data?.error?.message || e.message || 'unknown'
-        logger.warn(`[ai] image gen failed on ${modelName}: ${msg.substring(0, 160)}`)
+        logger.warn(`[ai] Gemini image-gen ${modelName} failed: ${msg.substring(0, 160)}`)
       }
     }
+
     logger.error('[ai] all image generation models failed')
+    return null
+  }
+
+  /**
+   * Native Gemini audio output (TTS). Returns raw bytes + mime type so the
+   * caller can wrap into WAV / convert to OGG/Opus for WhatsApp.
+   * Tries the preview-tts models first, then plain gemini-2.0-flash with
+   * AUDIO modality (per docs §6).
+   */
+  async generateSpeech(
+    text: string,
+    voice = 'Charon'
+  ): Promise<GeneratedAudio | null> {
+    const apiKey = this.apiKey
+    if (!apiKey) return null
+
+    for (const modelName of GEMINI_TTS_MODELS) {
+      try {
+        const res = await axios.post(
+          `${GEMINI_BASE}/${modelName}:generateContent?key=${apiKey}`,
+          {
+            contents: [{ role: 'user', parts: [{ text }] }],
+            generationConfig: {
+              responseModalities: ['AUDIO'],
+              speechConfig: {
+                voiceConfig: {
+                  prebuiltVoiceConfig: { voiceName: voice },
+                },
+              },
+            },
+          },
+          { timeout: 30_000, headers: { 'Content-Type': 'application/json' } }
+        )
+        for (const part of res.data?.candidates?.[0]?.content?.parts || []) {
+          if (part.inlineData?.data) {
+            logger.info(`[ai] tts OK via ${modelName} (voice=${voice})`)
+            return {
+              data: Buffer.from(part.inlineData.data, 'base64'),
+              mimeType: (part.inlineData.mimeType as string) || 'audio/L16;codec=pcm;rate=24000',
+              model: modelName,
+            }
+          }
+        }
+        logger.warn(`[ai] tts ${modelName} returned no audio`)
+      } catch (e: any) {
+        const msg = e.response?.data?.error?.message || e.message || 'unknown'
+        logger.warn(`[ai] tts ${modelName} failed: ${msg.substring(0, 160)}`)
+      }
+    }
     return null
   }
 
   getAvailableModels() {
     return {
       gemini: [...GEMINI_FALLBACK_MODELS],
+      imagen: [...IMAGEN_MODELS],
+      geminiImageGen: [...GEMINI_IMAGE_GEN_MODELS],
+      geminiTTS: [...GEMINI_TTS_MODELS],
       grok: ['grok-beta'],
       openai: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-3.5-turbo'],
       fallbackChain: GEMINI_FALLBACK_MODELS.join(' → '),

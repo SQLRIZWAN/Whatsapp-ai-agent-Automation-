@@ -1,57 +1,45 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
 import googleTTS from 'google-tts-api'
 import ffmpeg from 'fluent-ffmpeg'
 import ffmpegStatic from 'ffmpeg-static'
 import { PassThrough, Readable } from 'stream'
 import logger from '@shared/utils/logger'
 import { CONFIG } from '@shared/constants/config'
+import aiService from './aiService'
 
 if (ffmpegStatic) {
   ffmpeg.setFfmpegPath(ffmpegStatic as unknown as string)
 }
 
-// ── Gemini TTS (primary — works reliably on Render) ───────────
+// ── Gemini TTS (primary — via REST helper in aiService) ───────
 
-const GEMINI_TTS_MODELS = [
-  'gemini-2.5-flash-preview-tts',
-  'gemini-2.0-flash-preview-tts',
-]
-
-async function synthesizeWithGeminiTTS(text: string, apiKey: string): Promise<Buffer> {
-  const genAI = new GoogleGenerativeAI(apiKey)
-  let lastErr: Error | null = null
-
-  for (const modelName of GEMINI_TTS_MODELS) {
-    try {
-      const model = genAI.getGenerativeModel({ model: modelName } as never)
-      const result = await (model as any).generateContent({
-        contents: [{ role: 'user', parts: [{ text }] }],
-        generationConfig: {
-          responseModalities: ['AUDIO'],
-          speechConfig: {
-            voiceConfig: {
-              prebuiltVoiceConfig: { voiceName: 'Charon' }, // Deep male voice
-            },
-          },
-        },
-      })
-      const parts = result.response.candidates?.[0]?.content?.parts || []
-      for (const part of parts) {
-        if (part.inlineData?.data) {
-          logger.info(`[tts] Gemini TTS OK via ${modelName}`)
-          return Buffer.from(part.inlineData.data, 'base64')
-        }
-      }
-      throw new Error('No audio data in response')
-    } catch (e) {
-      lastErr = e as Error
-      logger.warn(`[tts] Gemini TTS ${modelName} failed: ${(e as Error).message.substring(0, 100)}`)
-    }
-  }
-  throw lastErr || new Error('All Gemini TTS models failed')
+// Gemini TTS returns raw 16-bit PCM (signed little-endian, mono, 24 kHz by
+// default). Headers must be added before ffmpeg can transcode it.
+function pcmRateFromMime(mime: string): number {
+  const m = mime.match(/rate=(\d+)/i)
+  return m ? parseInt(m[1], 10) : 24_000
 }
 
-// Convert raw PCM/WAV buffer (from Gemini TTS) → OGG/Opus for WhatsApp PTT
+function wrapPcmAsWav(pcm: Buffer, sampleRate = 24_000, channels = 1, bitsPerSample = 16): Buffer {
+  const byteRate = sampleRate * channels * (bitsPerSample / 8)
+  const blockAlign = channels * (bitsPerSample / 8)
+  const dataSize = pcm.length
+  const header = Buffer.alloc(44)
+  header.write('RIFF', 0)
+  header.writeUInt32LE(36 + dataSize, 4)
+  header.write('WAVE', 8)
+  header.write('fmt ', 12)
+  header.writeUInt32LE(16, 16)            // fmt chunk size
+  header.writeUInt16LE(1, 20)             // PCM
+  header.writeUInt16LE(channels, 22)
+  header.writeUInt32LE(sampleRate, 24)
+  header.writeUInt32LE(byteRate, 28)
+  header.writeUInt16LE(blockAlign, 32)
+  header.writeUInt16LE(bitsPerSample, 34)
+  header.write('data', 36)
+  header.writeUInt32LE(dataSize, 40)
+  return Buffer.concat([header, pcm])
+}
+
 async function rawToOpus(input: Buffer, inputFormat = 'wav'): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const src = Readable.from(input)
@@ -203,7 +191,6 @@ export interface TTSResult {
   durationSec: number
 }
 
-// Convert any audio buffer (OGG/Opus from WhatsApp) to MP3 for Gemini audio input.
 export async function convertToMp3(input: Buffer, inputFormat = 'ogg'): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const src = Readable.from(input)
@@ -226,27 +213,41 @@ export async function convertToMp3(input: Buffer, inputFormat = 'ogg'): Promise<
   })
 }
 
+export interface SynthOpts {
+  lang?: string
+  apiKey?: string
+  voice?: string
+}
+
 export async function synthesizeVoiceNote(
   text: string,
-  opts: { lang?: string; apiKey?: string } = {}
+  opts: SynthOpts = {}
 ): Promise<TTSResult> {
   const clipped = text.length > 900 ? text.slice(0, 897) + '…' : text
   const durationSec = Math.max(1, Math.round(clipped.length / 16))
   const errors: string[] = []
+  const voice = opts.voice || 'Charon'
 
-  // Layer 1 — Gemini TTS (best quality on server IPs)
-  if (opts.apiKey) {
+  // Layer 1 — Gemini AUDIO modality via REST (covered by aiService).
+  if (opts.apiKey || CONFIG.GEMINI_API_KEY) {
     try {
-      const rawBuf = await synthesizeWithGeminiTTS(clipped, opts.apiKey)
-      const ogg = await rawToOpus(rawBuf, 'wav')
-      return { ogg, durationSec }
+      const audio = await aiService.generateSpeech(clipped, voice)
+      if (audio) {
+        // Gemini returns raw signed-16-bit PCM mono. Wrap to WAV first.
+        const sampleRate = pcmRateFromMime(audio.mimeType)
+        const wav = wrapPcmAsWav(audio.data, sampleRate)
+        const ogg = await rawToOpus(wav, 'wav')
+        logger.info(`[tts] layer1 Gemini OK via ${audio.model} (${ogg.length}b ogg)`)
+        return { ogg, durationSec }
+      }
+      errors.push('gemini: no audio returned')
     } catch (e) {
       const m = (e as Error).message
-      errors.push(`gemini: ${m.substring(0, 80)}`)
+      errors.push(`gemini: ${m.substring(0, 100)}`)
       logger.warn(`[tts] layer1 Gemini failed: ${m}`)
     }
   } else {
-    errors.push('gemini: no apiKey provided')
+    errors.push('gemini: no apiKey configured')
   }
 
   // Layer 2 — ElevenLabs (if key configured)
@@ -280,12 +281,11 @@ export async function synthesizeVoiceNote(
   throw new Error(`[tts] all layers failed — ${errors.join(' | ')}`)
 }
 
-// Lightweight liveness probe for /health — checks if at least one layer is wired.
 export function ttsReadiness(): { gemini: boolean; elevenlabs: boolean; gtts: boolean } {
   return {
     gemini: !!CONFIG.GEMINI_API_KEY,
     elevenlabs: !!CONFIG.ELEVENLABS_API_KEY,
-    gtts: true, // gTTS has no key — always nominally "ready"
+    gtts: true,
   }
 }
 

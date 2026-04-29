@@ -427,7 +427,7 @@ class BaileyService {
 
     // configService now always returns a sane default — never null.
     const cfg = await configService.getConfiguration(uid).catch(() => null)
-    const systemPrompt = cfg?.systemPrompt || 'My name is SQL 💉. Created by SQL RIZWAN.'
+    const systemPrompt = cfg?.systemPrompt || DEFAULT_SYSTEM_PROMPT
     const forwardNumber = cfg?.callForwarding?.phoneNumber || ''
     const prompt = buildPromptWithForwarding(systemPrompt, forwardNumber)
 
@@ -435,14 +435,16 @@ class BaileyService {
 
     try {
       if (content.audioMessage) {
-        logger.info(`[wa] audio received from ${jid}`)
+        logger.info(`[wa] audio received from ${jid} mime=${content.audioMessage.mimetype}`)
         await r.sock.sendPresenceUpdate('composing', jid).catch(() => undefined)
         try {
           const buf = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
-          logger.info(`[wa] audio ${buf.length}b — converting mp3`)
+          // Gemini accepts audio/ogg directly per docs §4 — but converting to
+          // mp3 is more reliable for codec/voice-note variations on Render.
+          logger.info(`[wa] audio ${buf.length}b — converting → mp3`)
           const mp3Buf = await convertToMp3(buf, 'ogg')
           logger.info(`[wa] mp3 ${mp3Buf.length}b — sending to Gemini`)
-          const { text: replyText, model } = await aiService.generateFromAudio(mp3Buf.toString('base64'), prompt, uid)
+          const { text: replyText, model } = await aiService.generateFromAudio(mp3Buf, prompt, uid, 'audio/mp3')
           logger.info(`[wa] audio reply via ${model}`)
           await this.sendVoiceReply(uid, jid, replyText)
         } catch (e) {
@@ -460,8 +462,8 @@ class BaileyService {
           logger.info(`[wa] image ${buf.length}b — sending to Gemini`)
           const mime = content.imageMessage.mimetype || 'image/jpeg'
           const { text: replyText, model } = await aiService.analyzeImage(
-            buf.toString('base64'),
-            text || 'Is image mein kya hai? Detail mein batao.',
+            buf,
+            text || 'Is image mein kya hai? Detail mein, natural Hinglish mein batao.',
             prompt,
             mime
           )
@@ -474,19 +476,35 @@ class BaileyService {
         return
       }
 
+      if (content.videoMessage) {
+        logger.info(`[wa] video received from ${jid} mime=${content.videoMessage.mimetype}`)
+        await r.sock.sendPresenceUpdate('composing', jid).catch(() => undefined)
+        try {
+          const buf = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
+          const mime = content.videoMessage.mimetype || 'video/mp4'
+          const { text: replyText, model } = await aiService.analyzeVideo(buf, text || '', prompt, mime)
+          logger.info(`[wa] video reply via ${model}`)
+          await r.sock.sendMessage(jid, { text: replyText })
+        } catch (e) {
+          logger.error('[wa] video failed:', (e as Error).message)
+          await this.sendFallbackReply(uid, jid)
+        }
+        return
+      }
+
       if (!text.trim()) return
       await r.sock.sendPresenceUpdate('composing', jid).catch(() => undefined)
 
       // Image generation detection — check before regular AI response
-      const imgKeywords = ['generate image', 'create image', 'image banao', 'ek image', 'picture banao', 'make image', 'draw ', 'paint ', 'photo banao', 'tasveer', 'tasweer', 'wallpaper banao', 'illustration', 'photo bana', 'image bana', 'ek photo', 'design banao']
-      if (imgKeywords.some(kw => text.toLowerCase().includes(kw))) {
+      if (isImageGenRequest(text)) {
         try {
-          const imgResult = await aiService.generateImage(text)
+          const cleanedPrompt = stripImageGenTriggers(text) || text
+          const imgResult = await aiService.generateImage(cleanedPrompt)
           if (imgResult) {
             await r.sock.sendMessage(jid, {
               image: Buffer.from(imgResult.data, 'base64'),
               mimetype: imgResult.mimeType,
-              caption: '🎨',
+              caption: `🎨 ${imgResult.model}`,
             })
           } else {
             const { text: reply } = await aiService.generateResponse(text, text, prompt, uid)
@@ -551,10 +569,54 @@ function normalizeJid(input: string): string {
   return `${input.replace(/\D/g, '')}@s.whatsapp.net`
 }
 
-function buildPromptWithForwarding(systemPrompt: string, forward: string): string {
-  const base = systemPrompt?.trim() || 'My name is SQL 💉. Created by SQL RIZWAN.'
-  const urgent = forward ? `- If urgent, tell them to call ${forward}.` : ''
-  return `${base}\nRules:\n- Short Hinglish.\n- Stay in character.\n${urgent}`
+const IMG_GEN_TRIGGERS = [
+  'generate image', 'create image', 'make image', 'make a picture', 'draw ', 'paint ',
+  'image banao', 'image bana do', 'image bana de', 'ek image', 'photo banao', 'photo bana',
+  'picture banao', 'picture bana', 'tasveer', 'tasweer', 'wallpaper banao', 'illustration',
+  'ek photo', 'design banao', 'logo banao', 'art banao',
+]
+
+function isImageGenRequest(text: string): boolean {
+  const t = text.toLowerCase()
+  return IMG_GEN_TRIGGERS.some(kw => t.includes(kw))
 }
+
+function stripImageGenTriggers(text: string): string {
+  let out = text
+  for (const kw of IMG_GEN_TRIGGERS) {
+    out = out.replace(new RegExp(kw, 'ig'), '')
+  }
+  return out.replace(/\s+/g, ' ').trim()
+}
+
+function buildPromptWithForwarding(systemPrompt: string, forward: string): string {
+  const base = systemPrompt?.trim() || DEFAULT_SYSTEM_PROMPT
+  const urgent = forward ? `- If urgent, tell them to call ${forward}.` : ''
+  return `${base}
+
+Multimodal capability rules:
+- Reply in short, natural Hinglish unless the user clearly writes in another language.
+- Stay in character — never break role.
+- You can read text, see images, watch short videos, and hear voice notes.
+- For voice notes, reply with a voice note (text → TTS handles this automatically).
+- For image generation, the system intercepts requests with words like "image banao",
+  "generate image", "draw", "photo banao" and renders via Imagen 3 / Gemini image-gen.
+${urgent}`
+}
+
+export const DEFAULT_SYSTEM_PROMPT = `My name is SQL 💉. I am a highly advanced multimodal AI created by SQL RIZWAN. I manage this WhatsApp account 24/7.
+
+What I can do:
+- Read and reply to text messages.
+- See images you send and describe / analyze them in detail.
+- Watch short videos and tell you what's happening.
+- Listen to voice notes and reply with my own voice note.
+- Generate fresh images from your description (try: "image banao a sunset on a beach" or "generate image of a cat astronaut").
+
+Personality:
+- Reply in friendly Hinglish by default.
+- Be concise, warm, and helpful.
+- Never claim to be a human — I'm SQL, the AI manager.`
+
 
 export default new BaileyService()
