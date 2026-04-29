@@ -1,305 +1,305 @@
-# Render deploy log — Wed Apr 29 18:13:02 UTC 2026
-Commit: c8318747326fb23d9bb811acd7a67c26816603d9
+# Render deploy log — Wed Apr 29 18:17:47 UTC 2026
+Commit: addcb91f5bdbb95c64d66c94ab84f6534bd9c00a
 
 ```
-2026-04-29T18:12:17.134979885Z     at /opt/render/project/src/backend/dist/app.js:82:9
-2026-04-29T18:12:17.134982896Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-2026-04-29T18:12:17.134985996Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
-2026-04-29T18:12:17.134989076Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
-2026-04-29T18:12:17.135649336Z 2026-04-29 18:12:17 [info] {"method":"GET","path":"/","status":404,"duration":"1ms","ip":"::1"}
-2026-04-29T18:12:19.315976929Z 2026-04-29 18:12:19 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.98"}
-2026-04-29T18:12:20.66057192Z 2026-04-29 18:12:20 [info] [server] auto-reconnecting WhatsApp for uid=2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:20.808026446Z 2026-04-29 18:12:20 [info] [wa] 2a0780dd-50a4-4fda-bf7b-dad5714154dd has stored creds — reconnecting silently
-2026-04-29T18:12:20.808347855Z 2026-04-29 18:12:20 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:12:21.014801452Z 2026-04-29 18:12:21 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:21.094241806Z 2026-04-29 18:12:21 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.209"}
-2026-04-29T18:12:21.287486777Z 2026-04-29 18:12:21 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:12:21.291146607Z 2026-04-29 18:12:21 [warn] [ai] text failed — gemini-2.5-flash: [429] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to
-2026-04-29T18:12:21.291303652Z 2026-04-29 18:12:21 [info] [ai] text 429 — waiting 4000ms before retry
-2026-04-29T18:12:22.209873005Z 2026-04-29 18:12:22 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:12:22.209891776Z 2026-04-29 18:12:22 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:12:22.37582683Z 2026-04-29 18:12:22 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:12:22.553994252Z 2026-04-29 18:12:22 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:22.770598284Z 2026-04-29 18:12:22 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:22.770975735Z 2026-04-29 18:12:22 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:12:22.771038527Z 2026-04-29 18:12:22 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:23.360871997Z 2026-04-29 18:12:23 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:12:23.484844549Z 2026-04-29 18:12:23 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:23.48740301Z 2026-04-29 18:12:23 [info] [wa] Connected as 919012277862
-2026-04-29T18:12:23.651403876Z 2026-04-29 18:12:23 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:12:24.101014878Z 2026-04-29 18:12:24 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:24.192326309Z 2026-04-29 18:12:24 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:12:24.19236631Z 2026-04-29 18:12:24 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:12:24.20269931Z 2026-04-29 18:12:24 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:24.25061909Z 2026-04-29 18:12:24 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:12:24.250634251Z 2026-04-29 18:12:24 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:24.309236668Z 2026-04-29 18:12:24 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:12:24.316174001Z 2026-04-29 18:12:24 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.98"}
-2026-04-29T18:12:24.499130394Z 2026-04-29 18:12:24 [info] [wa] Connected as 919012277862
-2026-04-29T18:12:25.310274915Z 2026-04-29 18:12:25 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:12:25.406134282Z 2026-04-29 18:12:25 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:25.40872507Z 2026-04-29 18:12:25 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:12:25.520305379Z 2026-04-29 18:12:25 [warn] [ai] text failed — gemini-2.5-flash: [429] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to
-2026-04-29T18:12:25.520582567Z 2026-04-29 18:12:25 [warn] [ai] text — moving to next model after gemini-2.5-flash
-2026-04-29T18:12:25.629204267Z 2026-04-29 18:12:25 [warn] [ai] text failed — gemini-2.5-flash-preview-05-20: [404] models/gemini-2.5-flash-preview-05-20 is not found for API version v1beta, or is not supported for generateContent. Call
-2026-04-29T18:12:25.629226048Z 2026-04-29 18:12:25 [warn] [ai] text — moving to next model after gemini-2.5-flash-preview-05-20
-2026-04-29T18:12:25.730384365Z 2026-04-29 18:12:25 [warn] [ai] text failed — gemini-2.0-flash: [429] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to
-2026-04-29T18:12:25.730421246Z 2026-04-29 18:12:25 [info] [ai] text 429 — waiting 4000ms before retry
-2026-04-29T18:12:25.768976326Z 2026-04-29 18:12:25 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:12:25.769492012Z 2026-04-29 18:12:25 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:12:25.833097728Z 2026-04-29 18:12:25 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:25.891579055Z 2026-04-29 18:12:25 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:12:25.930842592Z 2026-04-29 18:12:25 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:25.93110718Z 2026-04-29 18:12:25 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:12:25.931179622Z 2026-04-29 18:12:25 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:26.043610457Z 2026-04-29 18:12:26 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.209"}
-2026-04-29T18:12:26.044546574Z 2026-04-29 18:12:26 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.209"}
-2026-04-29T18:12:26.398516099Z 2026-04-29 18:12:26 [info] [wa] Connected as 919012277862
-2026-04-29T18:12:26.892132747Z 2026-04-29 18:12:26 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:12:27.074743866Z 2026-04-29 18:12:27 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:27.076980159Z 2026-04-29 18:12:27 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:12:27.480525257Z 2026-04-29 18:12:27 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:12:27.480555437Z 2026-04-29 18:12:27 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:12:27.551637291Z 2026-04-29 18:12:27 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:27.621583221Z 2026-04-29 18:12:27 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:12:27.86240845Z 2026-04-29 18:12:27 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:27.862499916Z 2026-04-29 18:12:27 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:12:27.862511027Z 2026-04-29 18:12:27 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:28.352592237Z 2026-04-29 18:12:28 [info] [wa] Connected as 919012277862
-2026-04-29T18:12:28.62202689Z 2026-04-29 18:12:28 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:12:28.712525836Z 2026-04-29 18:12:28 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:28.714696072Z 2026-04-29 18:12:28 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:12:29.113731491Z 2026-04-29 18:12:29 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:12:29.113751632Z 2026-04-29 18:12:29 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:12:29.200686829Z 2026-04-29 18:12:29 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:29.232037544Z 2026-04-29 18:12:29 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:12:29.276743192Z 2026-04-29 18:12:29 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:29.276961138Z 2026-04-29 18:12:29 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:12:29.27703115Z 2026-04-29 18:12:29 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:29.316257207Z 2026-04-29 18:12:29 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.98"}
-2026-04-29T18:12:29.741730549Z 2026-04-29 18:12:29 [info] [wa] Connected as 919012277862
-2026-04-29T18:12:29.830625537Z 2026-04-29 18:12:29 [warn] [ai] text failed — gemini-2.0-flash: [429] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to
-2026-04-29T18:12:29.830696879Z 2026-04-29 18:12:29 [warn] [ai] text — moving to next model after gemini-2.0-flash
-2026-04-29T18:12:29.93700571Z 2026-04-29 18:12:29 [warn] [ai] text failed — gemini-2.0-flash-lite: [429] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to
-2026-04-29T18:12:29.937055542Z 2026-04-29 18:12:29 [info] [ai] text 429 — waiting 4000ms before retry
-2026-04-29T18:12:30.232420414Z 2026-04-29 18:12:30 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:12:30.332383348Z 2026-04-29 18:12:30 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:30.332400449Z 2026-04-29 18:12:30 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:12:30.672016602Z 2026-04-29 18:12:30 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:12:30.672046503Z 2026-04-29 18:12:30 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:12:30.724747049Z 2026-04-29 18:12:30 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:30.790802608Z 2026-04-29 18:12:30 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:12:30.807684444Z 2026-04-29 18:12:30 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:30.807700985Z 2026-04-29 18:12:30 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:12:30.807706446Z 2026-04-29 18:12:30 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:31.042781921Z 2026-04-29 18:12:31 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.209"}
-2026-04-29T18:12:31.086053578Z 2026-04-29 18:12:31 [info] [wa] Connected as 919012277862
-2026-04-29T18:12:31.791248217Z 2026-04-29 18:12:31 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:12:31.886592999Z 2026-04-29 18:12:31 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:31.888729843Z 2026-04-29 18:12:31 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:12:32.366873484Z 2026-04-29 18:12:32 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:12:32.367113951Z 2026-04-29 18:12:32 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:12:32.432724601Z 2026-04-29 18:12:32 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:32.489238306Z 2026-04-29 18:12:32 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:12:32.529389203Z 2026-04-29 18:12:32 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:32.529828906Z 2026-04-29 18:12:32 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:12:32.529880057Z 2026-04-29 18:12:32 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:32.990589946Z 2026-04-29 18:12:32 [info] [wa] Connected as 919012277862
-2026-04-29T18:12:33.489197007Z 2026-04-29 18:12:33 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:12:33.588951486Z 2026-04-29 18:12:33 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:33.592765138Z 2026-04-29 18:12:33 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:12:34.049208141Z 2026-04-29 18:12:34 [warn] [ai] text failed — gemini-2.0-flash-lite: [429] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to
-2026-04-29T18:12:34.049233312Z 2026-04-29 18:12:34 [warn] [ai] text — moving to next model after gemini-2.0-flash-lite
-2026-04-29T18:12:34.155251684Z 2026-04-29 18:12:34 [warn] [ai] text failed — gemini-1.5-flash-latest: [404] models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ListMo
-2026-04-29T18:12:34.15543632Z 2026-04-29 18:12:34 [warn] [ai] text — moving to next model after gemini-1.5-flash-latest
-2026-04-29T18:12:34.155730769Z 2026-04-29 18:12:34 [info] [startup] readiness: firestore=true ai=false tts.gemini=true tts.elevenlabs=false tts.gtts=true
-2026-04-29T18:12:34.155807411Z 2026-04-29 18:12:34 [error] [startup] ❌ Gemini FAILED: AI unavailable (text): gemini-1.5-flash-latest: [404] models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ListMo
-2026-04-29T18:12:34.156067889Z 2026-04-29 18:12:34 [error] [startup] Check GEMINI_API_KEY in Render environment variables!
-2026-04-29T18:12:34.316655564Z 2026-04-29 18:12:34 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.98"}
-2026-04-29T18:12:34.874097521Z 2026-04-29 18:12:34 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:12:34.874162603Z 2026-04-29 18:12:34 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:12:34.992365731Z 2026-04-29 18:12:34 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:12:35.220109648Z 2026-04-29 18:12:35 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:35.469848707Z 2026-04-29 18:12:35 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:35.469874548Z 2026-04-29 18:12:35 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:12:35.469878738Z 2026-04-29 18:12:35 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:35.780968799Z 2026-04-29 18:12:35 [info] [wa] Connected as 919012277862
-2026-04-29T18:12:35.992946344Z 2026-04-29 18:12:35 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:12:36.043057859Z 2026-04-29 18:12:36 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.209"}
-2026-04-29T18:12:36.08809326Z 2026-04-29 18:12:36 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:36.089647347Z 2026-04-29 18:12:36 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:12:36.605784999Z 2026-04-29 18:12:36 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:36.635678297Z 2026-04-29 18:12:36 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:12:36.635696408Z 2026-04-29 18:12:36 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:12:36.680820722Z 2026-04-29 18:12:36 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:36.681055098Z 2026-04-29 18:12:36 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:12:36.6811118Z 2026-04-29 18:12:36 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:36.806447933Z 2026-04-29 18:12:36 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:12:37.120100367Z 2026-04-29 18:12:37 [info] [wa] Connected as 919012277862
-2026-04-29T18:12:37.806950982Z 2026-04-29 18:12:37 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:12:37.900149011Z 2026-04-29 18:12:37 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:37.902127147Z 2026-04-29 18:12:37 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:12:38.494626665Z 2026-04-29 18:12:38 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:12:38.494649595Z 2026-04-29 18:12:38 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:12:38.617396379Z 2026-04-29 18:12:38 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:12:38.637965332Z 2026-04-29 18:12:38 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:38.69690585Z 2026-04-29 18:12:38 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:38.69735687Z 2026-04-29 18:12:38 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:12:38.697506421Z 2026-04-29 18:12:38 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:38.959810322Z 2026-04-29 18:12:38 [info] [wa] Connected as 919012277862
-2026-04-29T18:12:39.316380275Z 2026-04-29 18:12:39 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.98"}
-2026-04-29T18:12:39.617565731Z 2026-04-29 18:12:39 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:12:39.710448699Z 2026-04-29 18:12:39 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:39.712270643Z 2026-04-29 18:12:39 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:12:40.088968655Z 2026-04-29 18:12:40 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:12:40.088985916Z 2026-04-29 18:12:40 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:12:40.108515817Z 2026-04-29 18:12:40 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:40.197782386Z 2026-04-29 18:12:40 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:40.198128757Z 2026-04-29 18:12:40 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:12:40.202391605Z 2026-04-29 18:12:40 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:40.292224981Z 2026-04-29 18:12:40 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:12:40.669741133Z 2026-04-29 18:12:40 [info] [wa] Connected as 919012277862
-2026-04-29T18:12:41.043280825Z 2026-04-29 18:12:41 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.209"}
-2026-04-29T18:12:41.221322429Z 2026-04-29 18:12:41 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::1"}
-2026-04-29T18:12:41.29288384Z 2026-04-29 18:12:41 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:12:41.383868708Z 2026-04-29 18:12:41 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:41.385698743Z 2026-04-29 18:12:41 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:12:42.000155746Z 2026-04-29 18:12:41 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:12:42.000184057Z 2026-04-29 18:12:42 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:12:42.106720855Z 2026-04-29 18:12:42 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:12:42.136471365Z 2026-04-29 18:12:42 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:42.165750825Z 2026-04-29 18:12:42 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:42.16684548Z 2026-04-29 18:12:42 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:12:42.169363903Z 2026-04-29 18:12:42 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:42.535492273Z 2026-04-29 18:12:42 [info] [wa] Connected as 919012277862
-2026-04-29T18:12:43.108133913Z 2026-04-29 18:12:43 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:12:43.200947139Z 2026-04-29 18:12:43 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:43.203067763Z 2026-04-29 18:12:43 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:12:44.134030306Z 2026-04-29 18:12:44 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:12:44.134049387Z 2026-04-29 18:12:44 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:12:44.247965949Z 2026-04-29 18:12:44 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:12:44.316464922Z 2026-04-29 18:12:44 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.98"}
-2026-04-29T18:12:44.460413043Z 2026-04-29 18:12:44 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:44.686792798Z 2026-04-29 18:12:44 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:44.687000554Z 2026-04-29 18:12:44 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:12:44.687314953Z 2026-04-29 18:12:44 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:45.132177786Z 2026-04-29 18:12:45 [info] [wa] Connected as 919012277862
-2026-04-29T18:12:45.249072529Z 2026-04-29 18:12:45 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:12:45.330290736Z 2026-04-29 18:12:45 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:45.331796929Z 2026-04-29 18:12:45 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:12:46.042605074Z 2026-04-29 18:12:46 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.209"}
-2026-04-29T18:12:46.147569314Z 2026-04-29 18:12:46 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:46.183601396Z 2026-04-29 18:12:46 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:12:46.183623486Z 2026-04-29 18:12:46 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:12:46.29200884Z 2026-04-29 18:12:46 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:12:46.306381689Z 2026-04-29 18:12:46 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:46.306578732Z 2026-04-29 18:12:46 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:12:46.306586983Z 2026-04-29 18:12:46 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:46.538505737Z 2026-04-29 18:12:46 [info] [wa] Connected as 919012277862
-2026-04-29T18:12:47.292442409Z 2026-04-29 18:12:47 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:12:47.481009289Z 2026-04-29 18:12:47 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:47.482672749Z 2026-04-29 18:12:47 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:12:47.965905959Z 2026-04-29 18:12:47 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:12:47.965938561Z 2026-04-29 18:12:47 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:12:48.05908767Z 2026-04-29 18:12:48 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:48.073915905Z 2026-04-29 18:12:48 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:12:48.092359029Z 2026-04-29 18:12:48 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:48.092575375Z 2026-04-29 18:12:48 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:12:48.092626607Z 2026-04-29 18:12:48 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:48.788722771Z 2026-04-29 18:12:48 [info] [wa] Connected as 919012277862
-2026-04-29T18:12:49.075571583Z 2026-04-29 18:12:49 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:12:49.172431584Z 2026-04-29 18:12:49 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:49.174094158Z 2026-04-29 18:12:49 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:12:49.315916936Z 2026-04-29 18:12:49 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.98"}
-2026-04-29T18:12:49.689921841Z 2026-04-29 18:12:49 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:12:49.689961232Z 2026-04-29 18:12:49 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:12:49.762882637Z 2026-04-29 18:12:49 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:49.796967654Z 2026-04-29 18:12:49 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:12:49.831440834Z 2026-04-29 18:12:49 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:49.831621927Z 2026-04-29 18:12:49 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:12:49.831627567Z 2026-04-29 18:12:49 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:50.034070578Z 2026-04-29 18:12:50 [info] [wa] Connected as 919012277862
-2026-04-29T18:12:50.797234858Z 2026-04-29 18:12:50 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:12:51.042739537Z 2026-04-29 18:12:51 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.209"}
-2026-04-29T18:12:51.109216102Z 2026-04-29 18:12:51 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:51.111248573Z 2026-04-29 18:12:51 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:12:51.453676304Z 2026-04-29 18:12:51 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:12:51.453695035Z 2026-04-29 18:12:51 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:12:51.50628216Z 2026-04-29 18:12:51 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:51.587599081Z 2026-04-29 18:12:51 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:51.587841078Z 2026-04-29 18:12:51 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:12:51.587850029Z 2026-04-29 18:12:51 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:51.621651758Z 2026-04-29 18:12:51 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:12:52.029596708Z 2026-04-29 18:12:52 [info] [wa] Connected as 919012277862
-2026-04-29T18:12:52.622123025Z 2026-04-29 18:12:52 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:12:52.705886536Z 2026-04-29 18:12:52 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:52.707737534Z 2026-04-29 18:12:52 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:12:53.606110358Z 2026-04-29 18:12:53 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:12:53.606131139Z 2026-04-29 18:12:53 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:12:53.715008337Z 2026-04-29 18:12:53 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:12:53.956098072Z 2026-04-29 18:12:53 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:54.208323931Z 2026-04-29 18:12:54 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:54.208844836Z 2026-04-29 18:12:54 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:12:54.209078163Z 2026-04-29 18:12:54 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:54.316924978Z 2026-04-29 18:12:54 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.98"}
-2026-04-29T18:12:54.530678575Z 2026-04-29 18:12:54 [info] [wa] Connected as 919012277862
-2026-04-29T18:12:54.715423025Z 2026-04-29 18:12:54 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:12:54.811128928Z 2026-04-29 18:12:54 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:54.813218891Z 2026-04-29 18:12:54 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:12:55.360846488Z 2026-04-29 18:12:55 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:12:55.36086822Z 2026-04-29 18:12:55 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:12:55.377940261Z 2026-04-29 18:12:55 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:55.39288233Z 2026-04-29 18:12:55 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:55.393258711Z 2026-04-29 18:12:55 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:12:55.393368184Z 2026-04-29 18:12:55 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:55.472205925Z 2026-04-29 18:12:55 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:12:55.833267298Z 2026-04-29 18:12:55 [info] [wa] Connected as 919012277862
-2026-04-29T18:12:56.042770427Z 2026-04-29 18:12:56 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.209"}
-2026-04-29T18:12:56.046923281Z 2026-04-29 18:12:56 [info] {"method":"GET","path":"/health","status":200,"duration":"3ms","ip":"::ffff:10.203.24.209"}
-2026-04-29T18:12:56.475332014Z 2026-04-29 18:12:56 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:12:56.570686271Z 2026-04-29 18:12:56 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:56.57562781Z 2026-04-29 18:12:56 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:12:57.401015605Z 2026-04-29 18:12:57 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:12:57.401063817Z 2026-04-29 18:12:57 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:12:57.50744073Z 2026-04-29 18:12:57 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:12:57.707629389Z 2026-04-29 18:12:57 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:57.917719365Z 2026-04-29 18:12:57 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:57.91823638Z 2026-04-29 18:12:57 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:12:57.918246621Z 2026-04-29 18:12:57 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:58.19145108Z 2026-04-29 18:12:58 [info] [wa] Connected as 919012277862
-2026-04-29T18:12:58.50826426Z 2026-04-29 18:12:58 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:12:58.60153384Z 2026-04-29 18:12:58 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:58.603124608Z 2026-04-29 18:12:58 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:12:59.125330025Z 2026-04-29 18:12:59 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:12:59.125349216Z 2026-04-29 18:12:59 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:12:59.144494828Z 2026-04-29 18:12:59 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:59.179414776Z 2026-04-29 18:12:59 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:12:59.179652673Z 2026-04-29 18:12:59 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:12:59.179657703Z 2026-04-29 18:12:59 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:12:59.235675352Z 2026-04-29 18:12:59 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:12:59.315943793Z 2026-04-29 18:12:59 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.98"}
-2026-04-29T18:12:59.510449862Z 2026-04-29 18:12:59 [info] [wa] Connected as 919012277862
-2026-04-29T18:13:00.235394867Z 2026-04-29 18:13:00 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
-2026-04-29T18:13:00.440825663Z 2026-04-29 18:13:00 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:13:00.441862184Z 2026-04-29 18:13:00 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
-2026-04-29T18:13:00.849079792Z 2026-04-29 18:13:00 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
-2026-04-29T18:13:00.849114113Z 2026-04-29 18:13:00 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
-2026-04-29T18:13:00.877196566Z 2026-04-29 18:13:00 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:13:00.954848976Z 2026-04-29 18:13:00 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
-2026-04-29T18:13:00.97482928Z 2026-04-29 18:13:00 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
-2026-04-29T18:13:00.975026393Z 2026-04-29 18:13:00 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
-2026-04-29T18:13:00.975030304Z 2026-04-29 18:13:00 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
-2026-04-29T18:13:01.042713334Z 2026-04-29 18:13:01 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.209"}
-2026-04-29T18:13:01.219413164Z 2026-04-29 18:13:01 [info] [ai] image gen via Imagen: imagen-3.0-generate-002
-2026-04-29T18:13:01.275103698Z 2026-04-29 18:13:01 [info] [wa] Connected as 919012277862
-2026-04-29T18:13:01.354075491Z 2026-04-29 18:13:01 [warn] [ai] Imagen imagen-3.0-generate-002 failed: models/imagen-3.0-generate-002 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and the
-2026-04-29T18:13:01.354090522Z 2026-04-29 18:13:01 [info] [ai] image gen via Imagen: imagen-3.0-fast-generate-001
-2026-04-29T18:13:01.453978761Z 2026-04-29 18:13:01 [warn] [ai] Imagen imagen-3.0-fast-generate-001 failed: models/imagen-3.0-fast-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models an
-2026-04-29T18:13:01.454100639Z 2026-04-29 18:13:01 [info] [ai] image gen via Gemini: gemini-2.0-flash-preview-image-generation
-2026-04-29T18:13:01.549819121Z 2026-04-29 18:13:01 [warn] [ai] Gemini image-gen gemini-2.0-flash-preview-image-generation failed: models/gemini-2.0-flash-preview-image-generation is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list o
-2026-04-29T18:13:01.549840713Z 2026-04-29 18:13:01 [info] [ai] image gen via Gemini: gemini-2.0-flash-exp-image-generation
-2026-04-29T18:13:01.649167193Z 2026-04-29 18:13:01 [warn] [ai] Gemini image-gen gemini-2.0-flash-exp-image-generation failed: models/gemini-2.0-flash-exp-image-generation is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of av
-2026-04-29T18:13:01.650171232Z 2026-04-29 18:13:01 [error] [ai] all image generation models failed
-2026-04-29T18:13:01.886372901Z 2026-04-29 18:13:01 [warn] [ai] text failed — gemini-2.5-flash: [429] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to
-2026-04-29T18:13:01.886388042Z 2026-04-29 18:13:01 [info] [ai] text 429 — waiting 4000ms before retry
+2026-04-29T18:16:56.177988198Z 2026-04-29 18:16:56 [info] [ai] Gemini REST ready — chain: gemini-2.5-flash → gemini-2.5-flash-preview-05-20 → gemini-2.0-flash → gemini-2.0-flash-lite → gemini-1.5-flash-latest → gemini-1.5-flash → gemini-1.5-flash-8b → gemini-2.5-pro → gemini-1.5-pro
+2026-04-29T18:16:56.178875256Z 2026-04-29 18:16:56 [info] [ai] Imagen chain: imagen-3.0-generate-002 → imagen-3.0-generate-001 → imagen-3.0-fast-generate-001 → imagen-4.0-generate-001
+2026-04-29T18:16:56.179032219Z 2026-04-29 18:16:56 [info] [ai] TTS chain: gemini-2.5-flash-preview-tts → gemini-2.0-flash-preview-tts → gemini-2.5-flash → gemini-2.0-flash
+2026-04-29T18:16:57.570454152Z 2026-04-29 18:16:57 [info] Firestore initialized successfully
+2026-04-29T18:16:57.666204597Z 2026-04-29 18:16:57 [info] ✅ Server running on http://localhost:10000
+2026-04-29T18:16:57.666230157Z 2026-04-29 18:16:57 [info] Environment: production
+2026-04-29T18:16:57.666589824Z 2026-04-29 18:16:57 [info] API URL: http://localhost:5000
+2026-04-29T18:16:57.666601395Z 2026-04-29 18:16:57 [info] Frontend URL: https://whatsapp-ai-automation.vercel.app
+2026-04-29T18:16:58.11678125Z 2026-04-29 18:16:58 [error] Route / not found
+2026-04-29T18:16:58.116820681Z Error: Route / not found
+2026-04-29T18:16:58.116830131Z     at /opt/render/project/src/backend/dist/app.js:134:15
+2026-04-29T18:16:58.116837022Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-29T18:16:58.116843402Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-29T18:16:58.116849182Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-29T18:16:58.116853702Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-29T18:16:58.116858162Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-29T18:16:58.116862532Z     at /opt/render/project/src/backend/dist/app.js:82:9
+2026-04-29T18:16:58.116866792Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-29T18:16:58.116870502Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-29T18:16:58.116874312Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-29T18:16:58.122437691Z 2026-04-29 18:16:58 [info] {"method":"HEAD","path":"/","status":404,"duration":"5ms","ip":"::1"}
+2026-04-29T18:17:00.441878984Z 2026-04-29 18:17:00 [info] {"method":"GET","path":"/health","status":200,"duration":"2ms","ip":"::ffff:10.203.27.204"}
+2026-04-29T18:17:00.444384353Z 2026-04-29 18:17:00 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.204"}
+2026-04-29T18:17:01.04492527Z 2026-04-29 18:17:01 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.209"}
+2026-04-29T18:17:01.674817878Z [0;32m[1m==> [0m[1mYour service is live 🎉[0m
+2026-04-29T18:17:01.968876316Z [0;32m[1m==> [0m[1m[0m
+2026-04-29T18:17:01.972368722Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
+2026-04-29T18:17:01.974797436Z [0;32m[1m==> [0m[1m[0m
+2026-04-29T18:17:01.977335861Z [0;32m[1m==> [0m[1mAvailable at your primary URL https://whatsapp-ai-backend-8ylf.onrender.com[0m
+2026-04-29T18:17:01.979873397Z [0;32m[1m==> [0m[1m[0m
+2026-04-29T18:17:01.98182797Z [0;32m[1m==> [0m[1m///////////////////////////////////////////////////////////[0m
+2026-04-29T18:17:03.168369654Z 2026-04-29 18:17:03 [info] {"method":"GET","path":"/status","status":200,"duration":"3ms","ip":"::1"}
+2026-04-29T18:17:03.177206946Z 2026-04-29 18:17:03 [error] Route / not found
+2026-04-29T18:17:03.177228597Z Error: Route / not found
+2026-04-29T18:17:03.177235347Z     at /opt/render/project/src/backend/dist/app.js:134:15
+2026-04-29T18:17:03.177240117Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-29T18:17:03.177243737Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-29T18:17:03.177260757Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-29T18:17:03.177262677Z     at router.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
+2026-04-29T18:17:03.177264447Z     at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
+2026-04-29T18:17:03.177266167Z     at /opt/render/project/src/backend/dist/app.js:82:9
+2026-04-29T18:17:03.177267958Z     at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
+2026-04-29T18:17:03.177269978Z     at trim_prefix (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:328:13)
+2026-04-29T18:17:03.177271907Z     at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:286:9
+2026-04-29T18:17:03.178032072Z 2026-04-29 18:17:03 [info] {"method":"GET","path":"/","status":404,"duration":"1ms","ip":"::1"}
+2026-04-29T18:17:03.632599464Z 2026-04-29 18:17:03 [info] {"method":"GET","path":"/status","status":200,"duration":"2ms","ip":"::1"}
+2026-04-29T18:17:03.778474744Z 2026-04-29 18:17:03 [info] [server] auto-reconnecting WhatsApp for uid=2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:03.866739773Z 2026-04-29 18:17:03 [info] Client connected: 8X6ZH0H_Ojmws2wiAAAB
+2026-04-29T18:17:03.972456391Z 2026-04-29 18:17:03 [info] [wa] 2a0780dd-50a4-4fda-bf7b-dad5714154dd has stored creds — reconnecting silently
+2026-04-29T18:17:03.972836879Z 2026-04-29 18:17:03 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
+2026-04-29T18:17:04.066726637Z 2026-04-29 18:17:04 [info] [startup] available text/vision models: deep-research-pro-preview-12-2025, gemini-2.0-flash, gemini-2.0-flash-001, gemini-2.0-flash-lite, gemini-2.0-flash-lite-001, gemini-2.5-computer-use-preview-10-2025, gemini-2.5-flash, gemini-2.5-flash-image, gemini-2.5-flash-lite, gemini-2.5-flash-native-audio-latest, gemini-2.5-flash-native-audio-preview-09-2025, gemini-2.5-flash-native-audio-preview-12-2025, gemini-2.5-flash-preview-tts, gemini-2.5-pro, gemini-2.5-pro-preview-tts, gemini-3-flash-preview, gemini-3-pro-image-preview, gemini-3-pro-preview, gemini-3.1-flash-image-preview, gemini-3.1-flash-lite-preview, gemini-3.1-flash-live-preview, gemini-3.1-flash-tts-preview, gemini-3.1-pro-preview, gemini-3.1-pro-preview-customtools, gemini-flash-latest, gemini-flash-lite-latest, gemini-pro-latest, lyria-3-pro-preview, nano-banana-pro-preview
+2026-04-29T18:17:04.066756567Z 2026-04-29 18:17:04 [info] [startup] available image-gen models: gemini-2.5-flash-image, gemini-3-pro-image-preview, gemini-3.1-flash-image-preview, imagen-4.0-fast-generate-001, imagen-4.0-generate-001, imagen-4.0-ultra-generate-001
+2026-04-29T18:17:04.066774108Z 2026-04-29 18:17:04 [info] [startup] available tts models: gemini-2.5-flash-preview-tts, gemini-2.5-pro-preview-tts, gemini-3.1-flash-tts-preview
+2026-04-29T18:17:04.085404331Z 2026-04-29 18:17:04 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:04.194825651Z 2026-04-29 18:17:04 [info] User 2a0780dd-50a4-4fda-bf7b-dad5714154dd authenticated with socket 8X6ZH0H_Ojmws2wiAAAB
+2026-04-29T18:17:04.273917031Z 2026-04-29 18:17:04 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-29T18:17:04.36885621Z 2026-04-29 18:17:04 [warn] [ai] text failed — gemini-2.5-flash: [429] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to
+2026-04-29T18:17:04.369041873Z 2026-04-29 18:17:04 [info] [ai] text 429 — waiting 4000ms before retry
+2026-04-29T18:17:04.901547827Z 2026-04-29 18:17:04 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-29T18:17:04.901593888Z 2026-04-29 18:17:04 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
+2026-04-29T18:17:05.017133546Z 2026-04-29 18:17:05 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
+2026-04-29T18:17:05.170218054Z 2026-04-29 18:17:05 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:05.268340804Z 2026-04-29 18:17:05 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:05.268842454Z 2026-04-29 18:17:05 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
+2026-04-29T18:17:05.269088989Z 2026-04-29 18:17:05 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:05.440580238Z 2026-04-29 18:17:05 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.204"}
+2026-04-29T18:17:05.600114795Z 2026-04-29 18:17:05 [info] [wa] Connected as 919012277862
+2026-04-29T18:17:06.017241384Z 2026-04-29 18:17:06 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
+2026-04-29T18:17:06.042664377Z 2026-04-29 18:17:06 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.209"}
+2026-04-29T18:17:06.111410241Z 2026-04-29 18:17:06 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:06.113603736Z 2026-04-29 18:17:06 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-29T18:17:06.560183119Z 2026-04-29 18:17:06 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-29T18:17:06.560216319Z 2026-04-29 18:17:06 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
+2026-04-29T18:17:06.65546274Z 2026-04-29 18:17:06 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:06.677261699Z 2026-04-29 18:17:06 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
+2026-04-29T18:17:06.692974556Z 2026-04-29 18:17:06 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:06.693168852Z 2026-04-29 18:17:06 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
+2026-04-29T18:17:06.694063869Z 2026-04-29 18:17:06 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:06.958107204Z 2026-04-29 18:17:06 [info] [wa] Connected as 919012277862
+2026-04-29T18:17:07.678019835Z 2026-04-29 18:17:07 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
+2026-04-29T18:17:07.850626936Z 2026-04-29 18:17:07 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:07.853100804Z 2026-04-29 18:17:07 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-29T18:17:08.538607842Z 2026-04-29 18:17:08 [warn] [ai] text failed — gemini-2.5-flash: [429] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to
+2026-04-29T18:17:08.538747095Z 2026-04-29 18:17:08 [warn] [ai] text — moving to next model after gemini-2.5-flash
+2026-04-29T18:17:08.659323993Z 2026-04-29 18:17:08 [warn] [ai] text failed — gemini-2.5-flash-preview-05-20: [404] models/gemini-2.5-flash-preview-05-20 is not found for API version v1beta, or is not supported for generateContent. Call
+2026-04-29T18:17:08.659355904Z 2026-04-29 18:17:08 [warn] [ai] text — moving to next model after gemini-2.5-flash-preview-05-20
+2026-04-29T18:17:08.745594775Z 2026-04-29 18:17:08 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-29T18:17:08.745632396Z 2026-04-29 18:17:08 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
+2026-04-29T18:17:08.759861421Z 2026-04-29 18:17:08 [warn] [ai] text failed — gemini-2.0-flash: [429] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to
+2026-04-29T18:17:08.759900371Z 2026-04-29 18:17:08 [info] [ai] text 429 — waiting 4000ms before retry
+2026-04-29T18:17:08.872464033Z 2026-04-29 18:17:08 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
+2026-04-29T18:17:09.051263665Z 2026-04-29 18:17:09 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:09.289516184Z 2026-04-29 18:17:09 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:09.289737988Z 2026-04-29 18:17:09 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
+2026-04-29T18:17:09.289792439Z 2026-04-29 18:17:09 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:09.526800604Z 2026-04-29 18:17:09 [info] [wa] Connected as 919012277862
+2026-04-29T18:17:09.873346404Z 2026-04-29 18:17:09 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
+2026-04-29T18:17:09.962200622Z 2026-04-29 18:17:09 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:09.969247503Z 2026-04-29 18:17:09 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-29T18:17:10.440298171Z 2026-04-29 18:17:10 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.204"}
+2026-04-29T18:17:10.910537838Z 2026-04-29 18:17:10 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-29T18:17:10.91062554Z 2026-04-29 18:17:10 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
+2026-04-29T18:17:11.016346728Z 2026-04-29 18:17:11 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
+2026-04-29T18:17:11.044054293Z 2026-04-29 18:17:11 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.209"}
+2026-04-29T18:17:11.246703986Z 2026-04-29 18:17:11 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:11.514244936Z 2026-04-29 18:17:11 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:11.515202695Z 2026-04-29 18:17:11 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
+2026-04-29T18:17:11.515428711Z 2026-04-29 18:17:11 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:11.774989722Z 2026-04-29 18:17:11 [info] [wa] Connected as 919012277862
+2026-04-29T18:17:12.017191426Z 2026-04-29 18:17:12 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
+2026-04-29T18:17:12.108403752Z 2026-04-29 18:17:12 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:12.110759328Z 2026-04-29 18:17:12 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-29T18:17:12.692147349Z 2026-04-29 18:17:12 [info] Client connected: ZmlBdZAfNcC4z-E-AAAD
+2026-04-29T18:17:12.769552186Z 2026-04-29 18:17:12 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:12.797154612Z 2026-04-29 18:17:12 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-29T18:17:12.797181473Z 2026-04-29 18:17:12 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
+2026-04-29T18:17:12.84778594Z 2026-04-29 18:17:12 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:12.848017654Z 2026-04-29 18:17:12 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
+2026-04-29T18:17:12.848055515Z 2026-04-29 18:17:12 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:12.871217776Z 2026-04-29 18:17:12 [warn] [ai] text failed — gemini-2.0-flash: [429] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to
+2026-04-29T18:17:12.871256937Z 2026-04-29 18:17:12 [warn] [ai] text — moving to next model after gemini-2.0-flash
+2026-04-29T18:17:12.903223556Z 2026-04-29 18:17:12 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
+2026-04-29T18:17:12.990340335Z 2026-04-29 18:17:12 [warn] [ai] text failed — gemini-2.0-flash-lite: [429] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to
+2026-04-29T18:17:12.990364246Z 2026-04-29 18:17:12 [info] [ai] text 429 — waiting 4000ms before retry
+2026-04-29T18:17:13.000163516Z 2026-04-29 18:17:12 [info] User 2a0780dd-50a4-4fda-bf7b-dad5714154dd authenticated with socket ZmlBdZAfNcC4z-E-AAAD
+2026-04-29T18:17:13.082742104Z 2026-04-29 18:17:13 [info] [wa] Connected as 919012277862
+2026-04-29T18:17:13.22731895Z 2026-04-29 18:17:13 [info] {"method":"GET","path":"/status","status":200,"duration":"1ms","ip":"::1"}
+2026-04-29T18:17:13.903654304Z 2026-04-29 18:17:13 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
+2026-04-29T18:17:14.020742648Z 2026-04-29 18:17:14 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:14.022618904Z 2026-04-29 18:17:14 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-29T18:17:14.8435371Z 2026-04-29 18:17:14 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-29T18:17:14.843658263Z 2026-04-29 18:17:14 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
+2026-04-29T18:17:14.970945391Z 2026-04-29 18:17:14 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
+2026-04-29T18:17:15.1502529Z 2026-04-29 18:17:15 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:15.373247303Z 2026-04-29 18:17:15 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:15.373418969Z 2026-04-29 18:17:15 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
+2026-04-29T18:17:15.37346065Z 2026-04-29 18:17:15 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:15.440107206Z 2026-04-29 18:17:15 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.204"}
+2026-04-29T18:17:15.617555806Z 2026-04-29 18:17:15 [info] [wa] Connected as 919012277862
+2026-04-29T18:17:15.971184677Z 2026-04-29 18:17:15 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
+2026-04-29T18:17:16.042692467Z 2026-04-29 18:17:16 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.209"}
+2026-04-29T18:17:16.058707822Z 2026-04-29 18:17:16 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:16.061471695Z 2026-04-29 18:17:16 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-29T18:17:16.672163327Z 2026-04-29 18:17:16 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:16.71878786Z 2026-04-29 18:17:16 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-29T18:17:16.718828631Z 2026-04-29 18:17:16 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
+2026-04-29T18:17:16.801637078Z 2026-04-29 18:17:16 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:16.802497154Z 2026-04-29 18:17:16 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
+2026-04-29T18:17:16.802964823Z 2026-04-29 18:17:16 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:16.821714579Z 2026-04-29 18:17:16 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
+2026-04-29T18:17:17.074668034Z 2026-04-29 18:17:17 [info] [wa] Connected as 919012277862
+2026-04-29T18:17:17.097244204Z 2026-04-29 18:17:17 [warn] [ai] text failed — gemini-2.0-flash-lite: [429] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to
+2026-04-29T18:17:17.097669582Z 2026-04-29 18:17:17 [warn] [ai] text — moving to next model after gemini-2.0-flash-lite
+2026-04-29T18:17:17.192625591Z 2026-04-29 18:17:17 [warn] [ai] text failed — gemini-1.5-flash-latest: [404] models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ListMo
+2026-04-29T18:17:17.192699022Z 2026-04-29 18:17:17 [warn] [ai] text — moving to next model after gemini-1.5-flash-latest
+2026-04-29T18:17:17.286679122Z 2026-04-29 18:17:17 [warn] [ai] text failed — gemini-1.5-flash: [404] models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to
+2026-04-29T18:17:17.286725263Z 2026-04-29 18:17:17 [warn] [ai] text — moving to next model after gemini-1.5-flash
+2026-04-29T18:17:17.394588383Z 2026-04-29 18:17:17 [warn] [ai] text failed — gemini-1.5-flash-8b: [404] models/gemini-1.5-flash-8b is not found for API version v1beta, or is not supported for generateContent. Call ListModels
+2026-04-29T18:17:17.395560512Z 2026-04-29 18:17:17 [warn] [ai] text — moving to next model after gemini-1.5-flash-8b
+2026-04-29T18:17:17.49506558Z 2026-04-29 18:17:17 [warn] [ai] text failed — gemini-2.5-pro: [429] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to
+2026-04-29T18:17:17.495188102Z 2026-04-29 18:17:17 [info] [ai] text 429 — waiting 4000ms before retry
+2026-04-29T18:17:17.821392584Z 2026-04-29 18:17:17 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
+2026-04-29T18:17:17.915320954Z 2026-04-29 18:17:17 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:17.916819048Z 2026-04-29 18:17:17 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-29T18:17:18.486174458Z 2026-04-29 18:17:18 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::1"}
+2026-04-29T18:17:19.214118053Z 2026-04-29 18:17:19 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-29T18:17:19.214176124Z 2026-04-29 18:17:19 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
+2026-04-29T18:17:19.414057256Z 2026-04-29 18:17:19 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
+2026-04-29T18:17:19.546516634Z 2026-04-29 18:17:19 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:19.768226968Z 2026-04-29 18:17:19 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:19.768454085Z 2026-04-29 18:17:19 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
+2026-04-29T18:17:19.768520457Z 2026-04-29 18:17:19 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:19.986564371Z 2026-04-29 18:17:19 [info] [wa] Connected as 919012277862
+2026-04-29T18:17:20.414885344Z 2026-04-29 18:17:20 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
+2026-04-29T18:17:20.439665516Z 2026-04-29 18:17:20 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.204"}
+2026-04-29T18:17:20.512411212Z 2026-04-29 18:17:20 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:20.514182367Z 2026-04-29 18:17:20 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-29T18:17:21.042760063Z 2026-04-29 18:17:21 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.209"}
+2026-04-29T18:17:21.511802391Z 2026-04-29 18:17:21 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-29T18:17:21.511828292Z 2026-04-29 18:17:21 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
+2026-04-29T18:17:21.631986358Z 2026-04-29 18:17:21 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
+2026-04-29T18:17:21.797177929Z 2026-04-29 18:17:21 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:22.029064804Z 2026-04-29 18:17:22 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:22.029090704Z 2026-04-29 18:17:22 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
+2026-04-29T18:17:22.029094645Z 2026-04-29 18:17:22 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:22.143080314Z 2026-04-29 18:17:22 [warn] [ai] text failed — gemini-2.5-pro: [429] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to
+2026-04-29T18:17:22.143115455Z 2026-04-29 18:17:22 [warn] [ai] text — moving to next model after gemini-2.5-pro
+2026-04-29T18:17:22.237752467Z 2026-04-29 18:17:22 [info] [wa] Connected as 919012277862
+2026-04-29T18:17:22.23836737Z 2026-04-29 18:17:22 [warn] [ai] text failed — gemini-1.5-pro: [404] models/gemini-1.5-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to s
+2026-04-29T18:17:22.238462152Z 2026-04-29 18:17:22 [warn] [ai] text — moving to next model after gemini-1.5-pro
+2026-04-29T18:17:22.238626335Z 2026-04-29 18:17:22 [info] [startup] readiness: firestore=true ai=false tts.gemini=true tts.elevenlabs=false tts.gtts=true
+2026-04-29T18:17:22.238651555Z 2026-04-29 18:17:22 [error] [startup] ❌ Gemini FAILED: AI unavailable (text): gemini-1.5-pro: [404] models/gemini-1.5-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to s
+2026-04-29T18:17:22.238760637Z 2026-04-29 18:17:22 [error] [startup] Check GEMINI_API_KEY quota / billing — see ListModels output above
+2026-04-29T18:17:22.633238551Z 2026-04-29 18:17:22 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
+2026-04-29T18:17:22.716460949Z 2026-04-29 18:17:22 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:22.717881011Z 2026-04-29 18:17:22 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-29T18:17:23.64045324Z 2026-04-29 18:17:23 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-29T18:17:23.640493111Z 2026-04-29 18:17:23 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
+2026-04-29T18:17:23.758882056Z 2026-04-29 18:17:23 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
+2026-04-29T18:17:23.985458158Z 2026-04-29 18:17:23 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:24.211306226Z 2026-04-29 18:17:24 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:24.211559244Z 2026-04-29 18:17:24 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
+2026-04-29T18:17:24.211567714Z 2026-04-29 18:17:24 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:24.453709422Z 2026-04-29 18:17:24 [info] [wa] Connected as 919012277862
+2026-04-29T18:17:24.759923708Z 2026-04-29 18:17:24 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
+2026-04-29T18:17:24.859261312Z 2026-04-29 18:17:24 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:24.861282692Z 2026-04-29 18:17:24 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-29T18:17:25.440223725Z 2026-04-29 18:17:25 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.204"}
+2026-04-29T18:17:25.540664817Z 2026-04-29 18:17:25 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-29T18:17:25.540702808Z 2026-04-29 18:17:25 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
+2026-04-29T18:17:25.565739329Z 2026-04-29 18:17:25 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:25.583439363Z 2026-04-29 18:17:25 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:25.583750469Z 2026-04-29 18:17:25 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
+2026-04-29T18:17:25.58377737Z 2026-04-29 18:17:25 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:25.633785242Z 2026-04-29 18:17:25 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
+2026-04-29T18:17:25.795310279Z 2026-04-29 18:17:25 [info] [wa] Connected as 919012277862
+2026-04-29T18:17:26.042662344Z 2026-04-29 18:17:26 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.209"}
+2026-04-29T18:17:26.633822888Z 2026-04-29 18:17:26 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
+2026-04-29T18:17:26.728453928Z 2026-04-29 18:17:26 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:26.729869941Z 2026-04-29 18:17:26 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-29T18:17:27.11834968Z 2026-04-29 18:17:27 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-29T18:17:27.118392621Z 2026-04-29 18:17:27 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
+2026-04-29T18:17:27.137860487Z 2026-04-29 18:17:27 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:27.236122416Z 2026-04-29 18:17:27 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:27.236308271Z 2026-04-29 18:17:27 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
+2026-04-29T18:17:27.236320392Z 2026-04-29 18:17:27 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:27.240342166Z 2026-04-29 18:17:27 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
+2026-04-29T18:17:27.475043167Z 2026-04-29 18:17:27 [info] [wa] Connected as 919012277862
+2026-04-29T18:17:28.241675313Z 2026-04-29 18:17:28 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
+2026-04-29T18:17:28.334255766Z 2026-04-29 18:17:28 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:28.341955466Z 2026-04-29 18:17:28 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-29T18:17:28.491735992Z 2026-04-29 18:17:28 [info] {"method":"GET","path":"/status","status":200,"duration":"2ms","ip":"::1"}
+2026-04-29T18:17:29.145242298Z 2026-04-29 18:17:29 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-29T18:17:29.145269448Z 2026-04-29 18:17:29 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
+2026-04-29T18:17:29.267312162Z 2026-04-29 18:17:29 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
+2026-04-29T18:17:29.436213503Z 2026-04-29 18:17:29 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:29.669087367Z 2026-04-29 18:17:29 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:29.671010034Z 2026-04-29 18:17:29 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
+2026-04-29T18:17:29.671156367Z 2026-04-29 18:17:29 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:29.880115876Z 2026-04-29 18:17:29 [info] [wa] Connected as 919012277862
+2026-04-29T18:17:30.267495512Z 2026-04-29 18:17:30 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
+2026-04-29T18:17:30.366979878Z 2026-04-29 18:17:30 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:30.369186564Z 2026-04-29 18:17:30 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-29T18:17:30.439882246Z 2026-04-29 18:17:30 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.27.204"}
+2026-04-29T18:17:30.440709102Z 2026-04-29 18:17:30 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.204"}
+2026-04-29T18:17:31.042591696Z 2026-04-29 18:17:31 [info] {"method":"GET","path":"/health","status":200,"duration":"1ms","ip":"::ffff:10.203.24.209"}
+2026-04-29T18:17:31.265892739Z 2026-04-29 18:17:31 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-29T18:17:31.26592502Z 2026-04-29 18:17:31 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
+2026-04-29T18:17:31.371019506Z 2026-04-29 18:17:31 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
+2026-04-29T18:17:31.604520442Z 2026-04-29 18:17:31 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:31.836490505Z 2026-04-29 18:17:31 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:31.836673801Z 2026-04-29 18:17:31 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
+2026-04-29T18:17:31.836689611Z 2026-04-29 18:17:31 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:32.081088297Z 2026-04-29 18:17:32 [info] [wa] Connected as 919012277862
+2026-04-29T18:17:32.371586548Z 2026-04-29 18:17:32 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
+2026-04-29T18:17:32.46103591Z 2026-04-29 18:17:32 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:32.463024339Z 2026-04-29 18:17:32 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-29T18:17:32.873635334Z 2026-04-29 18:17:32 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:32.939411449Z 2026-04-29 18:17:32 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-29T18:17:32.93943822Z 2026-04-29 18:17:32 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
+2026-04-29T18:17:32.955634981Z 2026-04-29 18:17:32 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:32.955661991Z 2026-04-29 18:17:32 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
+2026-04-29T18:17:32.955666251Z 2026-04-29 18:17:32 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:33.034754211Z 2026-04-29 18:17:33 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
+2026-04-29T18:17:33.194454101Z 2026-04-29 18:17:33 [info] [wa] Connected as 919012277862
+2026-04-29T18:17:34.03525017Z 2026-04-29 18:17:34 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
+2026-04-29T18:17:34.118746777Z 2026-04-29 18:17:34 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:34.120342314Z 2026-04-29 18:17:34 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-29T18:17:34.511463285Z 2026-04-29 18:17:34 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-29T18:17:34.511494436Z 2026-04-29 18:17:34 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
+2026-04-29T18:17:34.603441336Z 2026-04-29 18:17:34 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
+2026-04-29T18:17:34.612698392Z 2026-04-29 18:17:34 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:34.688736145Z 2026-04-29 18:17:34 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:34.68890846Z 2026-04-29 18:17:34 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
+2026-04-29T18:17:34.688967312Z 2026-04-29 18:17:34 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:34.938267364Z 2026-04-29 18:17:34 [info] [wa] Connected as 919012277862
+2026-04-29T18:17:35.440187469Z 2026-04-29 18:17:35 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.27.204"}
+2026-04-29T18:17:35.603446477Z 2026-04-29 18:17:35 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
+2026-04-29T18:17:35.673686015Z 2026-04-29 18:17:35 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:35.676081402Z 2026-04-29 18:17:35 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-29T18:17:36.042685403Z 2026-04-29 18:17:36 [info] {"method":"GET","path":"/health","status":200,"duration":"0ms","ip":"::ffff:10.203.24.209"}
+2026-04-29T18:17:36.901916863Z 2026-04-29 18:17:36 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-29T18:17:36.901955824Z 2026-04-29 18:17:36 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
+2026-04-29T18:17:37.00109819Z 2026-04-29 18:17:37 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
+2026-04-29T18:17:37.295740109Z 2026-04-29 18:17:37 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:37.461965795Z 2026-04-29 18:17:37 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:37.46217922Z 2026-04-29 18:17:37 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
+2026-04-29T18:17:37.46222085Z 2026-04-29 18:17:37 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:37.648929906Z 2026-04-29 18:17:37 [info] [wa] Connected as 919012277862
+2026-04-29T18:17:38.001476076Z 2026-04-29 18:17:38 [info] [wa] spawning connection for 2a0780dd-50a4-4fda-bf7b-dad5714154dd (attempt 1)
+2026-04-29T18:17:38.081038944Z 2026-04-29 18:17:38 [info] [wa-auth] loaded existing creds for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:38.082931911Z 2026-04-29 18:17:38 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=connecting, qr=false, lastDisconnect=false
+2026-04-29T18:17:38.484554895Z 2026-04-29 18:17:38 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:38.564650906Z 2026-04-29 18:17:38 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=close, qr=false, lastDisconnect=true
+2026-04-29T18:17:38.564679717Z 2026-04-29 18:17:38 [warn] [wa] Connection closed for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: code=440, error=Stream Errored (conflict)
+2026-04-29T18:17:38.583637759Z 2026-04-29 18:17:38 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=undefined, qr=false, lastDisconnect=false
+2026-04-29T18:17:38.584367181Z 2026-04-29 18:17:38 [info] [wa] connection.update for 2a0780dd-50a4-4fda-bf7b-dad5714154dd: connection=open, qr=false, lastDisconnect=false
+2026-04-29T18:17:38.584383532Z 2026-04-29 18:17:38 [info] [wa] Connection opened for 2a0780dd-50a4-4fda-bf7b-dad5714154dd
+2026-04-29T18:17:38.669656511Z 2026-04-29 18:17:38 [info] [wa] Reconnecting 2a0780dd-50a4-4fda-bf7b-dad5714154dd in 1000ms (attempt 1)
+2026-04-29T18:17:38.78857955Z 2026-04-29 18:17:38 [info] [wa] Connected as 919012277862
 ```
