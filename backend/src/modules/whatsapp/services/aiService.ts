@@ -11,45 +11,50 @@ const GEMINI_FILES_BASE = 'https://generativelanguage.googleapis.com/v1beta/file
 const GEMINI_UPLOAD_BASE = 'https://generativelanguage.googleapis.com/upload/v1beta/files'
 
 // User-specified Gemini fallback chain (highest → lowest preference) +
-// recovery aliases appended so we don't dead-end on 404s when a preview/-latest
-// alias is retired by Google. The first 5 entries are the literal user spec.
+// recovery aliases verified to exist on the configured GEMINI_API_KEY via
+// ListModels. The first 5 entries are the literal user spec; the trailing
+// recovery aliases are reached only if everything above 404s/429s.
 const GEMINI_FALLBACK_MODELS = [
   'gemini-2.5-flash',
   'gemini-2.5-flash-preview-05-20',
   'gemini-2.0-flash',
   'gemini-2.0-flash-lite',
   'gemini-1.5-flash-latest',
-  // recovery — only reached if everything above 404s/429s
-  'gemini-1.5-flash',
-  'gemini-1.5-flash-8b',
-  'gemini-2.5-pro',
-  'gemini-1.5-pro',
+  // recovery (verified available on the configured key)
+  'gemini-2.5-flash-lite',
+  'gemini-2.0-flash-001',
+  'gemini-2.0-flash-lite-001',
 ] as const
 
 // Imagen image-generation chain (preferred per Gemini API docs §5).
-// Extra aliases included to survive name churn between Imagen 3 / 4 / preview.
+// Imagen 4 is what the public Gemini API exposes today; Imagen 3 names from
+// the doc are kept as fallbacks for keys that still resolve them.
 const IMAGEN_MODELS = [
+  'imagen-4.0-generate-001',
+  'imagen-4.0-fast-generate-001',
+  'imagen-4.0-ultra-generate-001',
   'imagen-3.0-generate-002',
   'imagen-3.0-generate-001',
   'imagen-3.0-fast-generate-001',
-  'imagen-4.0-generate-001',
 ] as const
 
 // Gemini multimodal image-generation fallback (works with :generateContent).
+// gemini-2.5-flash-image is the current GA model on the public API.
 const GEMINI_IMAGE_GEN_MODELS = [
-  'gemini-2.5-flash-image-preview',
   'gemini-2.5-flash-image',
+  'gemini-3-pro-image-preview',
+  'gemini-3.1-flash-image-preview',
+  'gemini-2.5-flash-image-preview',
   'gemini-2.0-flash-preview-image-generation',
   'gemini-2.0-flash-exp-image-generation',
-  'gemini-2.0-flash-exp',
 ] as const
 
 // Gemini TTS / native-audio-output models (per docs §6)
 const GEMINI_TTS_MODELS = [
   'gemini-2.5-flash-preview-tts',
+  'gemini-2.5-pro-preview-tts',
+  'gemini-3.1-flash-tts-preview',
   'gemini-2.0-flash-preview-tts',
-  'gemini-2.5-flash',
-  'gemini-2.0-flash',
 ] as const
 
 // Threshold above which we route media through the Files API instead of inline
