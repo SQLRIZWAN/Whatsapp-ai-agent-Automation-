@@ -9,12 +9,19 @@ concurrency:
   group: deploy-${{ github.ref }}
   cancel-in-progress: false
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
 
   # ── Backend → Render ──────────────────────────────────────────
   deploy-backend:
     name: Backend to Render
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Lookup Render service ID by name
         run: |
