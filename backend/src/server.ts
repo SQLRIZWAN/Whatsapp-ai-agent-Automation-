@@ -93,10 +93,25 @@ export const startServer = async (app: Express): Promise<http.Server> => {
     setTimeout(async () => {
       const { firestoreReady } = await import('@modules/database/firestore')
       const { ttsReadiness } = await import('@modules/whatsapp/services/ttsService')
+      const { listAvailableModels } = await import('@modules/whatsapp/services/aiService')
       const aiService = (await import('@modules/whatsapp/services/aiService')).default
 
       const fs = firestoreReady()
       const tts = ttsReadiness()
+
+      // Discover what models the API key actually has access to. This makes
+      // 404 chasing much easier — the answer is always visible in /health.
+      const models = await listAvailableModels()
+      if (models.length > 0) {
+        const txt = models.filter((m) => /flash|pro|gemini-1\.5|gemini-2/.test(m)).slice(0, 30)
+        const img = models.filter((m) => /imagen|image/i.test(m))
+        const tts2 = models.filter((m) => /tts/i.test(m))
+        logger.info(`[startup] available text/vision models: ${txt.join(', ') || '(none)'}`)
+        logger.info(`[startup] available image-gen models: ${img.join(', ') || '(none)'}`)
+        logger.info(`[startup] available tts models: ${tts2.join(', ') || '(none)'}`)
+      } else {
+        logger.warn('[startup] ListModels returned empty — key may be invalid or restricted')
+      }
 
       let aiOk = false
       let aiModel = ''
@@ -114,7 +129,7 @@ export const startServer = async (app: Express): Promise<http.Server> => {
       )
       if (!aiOk) {
         logger.error(`[startup] ❌ Gemini FAILED: ${aiErr}`)
-        logger.error('[startup] Check GEMINI_API_KEY in Render environment variables!')
+        logger.error('[startup] Check GEMINI_API_KEY quota / billing — see ListModels output above')
       }
       if (!fs) {
         logger.warn('[startup] ⚠ Firestore offline — running in memory-only mode (set FIREBASE_* envs to enable persistence)')

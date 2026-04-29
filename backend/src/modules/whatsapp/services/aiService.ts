@@ -10,32 +10,45 @@ const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models'
 const GEMINI_FILES_BASE = 'https://generativelanguage.googleapis.com/v1beta/files'
 const GEMINI_UPLOAD_BASE = 'https://generativelanguage.googleapis.com/upload/v1beta/files'
 
-// User-specified Gemini fallback chain (highest → lowest preference).
-// Used by all text/vision/audio/decision calls.
+// User-specified Gemini fallback chain (highest → lowest preference) +
+// recovery aliases appended so we don't dead-end on 404s when a preview/-latest
+// alias is retired by Google. The first 5 entries are the literal user spec.
 const GEMINI_FALLBACK_MODELS = [
   'gemini-2.5-flash',
   'gemini-2.5-flash-preview-05-20',
   'gemini-2.0-flash',
   'gemini-2.0-flash-lite',
   'gemini-1.5-flash-latest',
+  // recovery — only reached if everything above 404s/429s
+  'gemini-1.5-flash',
+  'gemini-1.5-flash-8b',
+  'gemini-2.5-pro',
+  'gemini-1.5-pro',
 ] as const
 
-// Imagen image-generation chain (preferred per Gemini API docs)
+// Imagen image-generation chain (preferred per Gemini API docs §5).
+// Extra aliases included to survive name churn between Imagen 3 / 4 / preview.
 const IMAGEN_MODELS = [
   'imagen-3.0-generate-002',
+  'imagen-3.0-generate-001',
   'imagen-3.0-fast-generate-001',
+  'imagen-4.0-generate-001',
 ] as const
 
-// Gemini multimodal image-generation fallback (works with :generateContent)
+// Gemini multimodal image-generation fallback (works with :generateContent).
 const GEMINI_IMAGE_GEN_MODELS = [
+  'gemini-2.5-flash-image-preview',
+  'gemini-2.5-flash-image',
   'gemini-2.0-flash-preview-image-generation',
   'gemini-2.0-flash-exp-image-generation',
+  'gemini-2.0-flash-exp',
 ] as const
 
 // Gemini TTS / native-audio-output models (per docs §6)
 const GEMINI_TTS_MODELS = [
   'gemini-2.5-flash-preview-tts',
   'gemini-2.0-flash-preview-tts',
+  'gemini-2.5-flash',
   'gemini-2.0-flash',
 ] as const
 
@@ -59,6 +72,8 @@ type GeminiPart =
 let preferredModel: string | null = null
 let lastAiError: { at: number; tag: string; status: number | string; message: string } | null = null
 let lastAiOk: { at: number; model: string } | null = null
+let availableModels: string[] = []
+let availableModelsAt: number | null = null
 
 export function getAiDiag() {
   return {
@@ -68,8 +83,37 @@ export function getAiDiag() {
     chain: GEMINI_FALLBACK_MODELS.join(' → '),
     imagen: IMAGEN_MODELS.join(' → '),
     tts: GEMINI_TTS_MODELS.join(' → '),
+    availableModels,
+    availableModelsAt,
     lastOk: lastAiOk,
     lastError: lastAiError,
+  }
+}
+
+/**
+ * Probe the ListModels endpoint at startup so operators can see which models
+ * the configured GEMINI_API_KEY actually has access to. Hugely useful for
+ * diagnosing 404s on preview/imagen models — the answer is always "is this
+ * model in the available list?".
+ */
+export async function listAvailableModels(apiKey?: string): Promise<string[]> {
+  const key = apiKey || CONFIG.GEMINI_API_KEY
+  if (!key) return []
+  try {
+    const res = await axios.get(
+      `https://generativelanguage.googleapis.com/v1beta/models?pageSize=200&key=${key}`,
+      { timeout: 8_000 }
+    )
+    const names = (res.data?.models || [])
+      .map((m: any) => (m.name as string)?.replace(/^models\//, ''))
+      .filter(Boolean)
+      .sort()
+    availableModels = names
+    availableModelsAt = Date.now()
+    return names
+  } catch (e: any) {
+    logger.warn(`[ai] ListModels failed: ${(e.response?.data?.error?.message || e.message || '').substring(0, 160)}`)
+    return []
   }
 }
 
