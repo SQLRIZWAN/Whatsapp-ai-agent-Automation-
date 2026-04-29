@@ -36,6 +36,21 @@ type GeminiPart =
 // Reset whenever it fails so we don't get stuck on a model that just stopped working.
 let preferredModel: string | null = null
 
+// Last failure (truncated) — surfaced on /health so user can diagnose without
+// Render dashboard access. No key material is ever stored here.
+let lastAiError: { at: number; tag: string; status: number | string; message: string } | null = null
+let lastAiOk: { at: number; model: string } | null = null
+
+export function getAiDiag() {
+  return {
+    keyPresent: !!CONFIG.GEMINI_API_KEY,
+    keyLen: CONFIG.GEMINI_API_KEY ? CONFIG.GEMINI_API_KEY.length : 0,
+    preferredModel,
+    lastOk: lastAiOk,
+    lastError: lastAiError,
+  }
+}
+
 const PER_MODEL_TIMEOUT_MS = 8000
 
 async function callGeminiREST(
@@ -80,6 +95,7 @@ async function callGeminiREST(
         }
 
         preferredModel = modelName
+        lastAiOk = { at: Date.now(), model: modelName }
         logger.info(`[ai] ${tag} OK via ${modelName}`)
         return { text, model: modelName }
       } catch (e: any) {
@@ -87,6 +103,7 @@ async function callGeminiREST(
         const msg: string =
           e.response?.data?.error?.message || e.message || 'unknown'
         lastError = `${modelName}: [${status || 'ERR'}] ${msg.substring(0, 120)}`
+        lastAiError = { at: Date.now(), tag, status: status || 'ERR', message: msg.substring(0, 200) }
         logger.warn(`[ai] ${tag} failed — ${lastError}`)
 
         if (preferredModel === modelName) preferredModel = null

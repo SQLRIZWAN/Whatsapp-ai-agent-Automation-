@@ -9,7 +9,7 @@ import authRoutes from '@modules/auth/routes/authRoutes'
 import whatsappRoutes from '@modules/whatsapp/routes/whatsappRoutes'
 import configRoutes from '@modules/config/routes/configRoutes'
 import { firestoreReady } from '@modules/database/firestore'
-import aiService from '@modules/whatsapp/services/aiService'
+import aiService, { getAiDiag } from '@modules/whatsapp/services/aiService'
 import { ttsReadiness } from '@modules/whatsapp/services/ttsService'
 
 export const createApp = (): Express => {
@@ -75,7 +75,26 @@ export const createApp = (): Express => {
       uptime: process.uptime(),
       ...subsystems,
       ttsLayers: tts,
+      ai_diag: getAiDiag(),
     })
+  }))
+
+  // Live AI probe — runs a real Gemini ping and returns the verbatim error
+  // (truncated) so the operator can diagnose without Render dashboard access.
+  // No key material is ever returned.
+  app.get('/api/diag/ai', asyncHandler(async (_req: Request, res: Response) => {
+    const start = Date.now()
+    try {
+      const r = await aiService.generateResponse('ping', 'Reply with exactly: OK', undefined, undefined)
+      res.json({ ok: true, model: r.model, ms: Date.now() - start, diag: getAiDiag() })
+    } catch (e: any) {
+      res.status(503).json({
+        ok: false,
+        ms: Date.now() - start,
+        error: (e?.message || String(e)).substring(0, 300),
+        diag: getAiDiag(),
+      })
+    }
   }))
 
   // Ping endpoint (keep-alive alias for Render free tier)
