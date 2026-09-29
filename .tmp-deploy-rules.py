@@ -1,7 +1,7 @@
 import base64, json, os, subprocess, sys, time, urllib.error, urllib.parse, urllib.request
 
 TARGET_PROJECT = "treding-store-2"
-RULES_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tmp-firestore.rules")
+RULES_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".tmp-firestore.rules")
 
 def log(*a):
     print(*a, flush=True)
